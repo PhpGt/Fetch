@@ -1,0 +1,27 @@
+{
+    "name": "phpgt/fetch",
+    "description": "Asynchronous HTTP client with promises for PHP 7 applications.",
+    "type": "library",
+
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "5.*"
+    },
+
+    "license": "MIT",
+
+    "authors": [
+        {
+            "name": "Greg Bowler",
+            "email": "greg.bowler@g105b.com"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "phpgt\\fetch\\": "./src"
+        }
+    }
+}
