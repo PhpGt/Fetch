@@ -1,0 +1,21 @@
+build:
+  environment:
+    php:
+      version: 7.0.8
+  tests:
+    override:
+      -
+        command: 'vendor/bin/phpunit --coverage-clover=coverage'
+        coverage:
+          file: 'coverage'
+          format: 'php-clover'
+
+checks:
+  php:
+    code_rating: true
+    duplication: true
+
+filter:
+  excluded_paths:
+    - test/*
+    - vendor/*
