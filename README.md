@@ -1,5 +1,7 @@
 # Asynchronous HTTP client with promises for PHP 7 applications.
 
+A promise-based wrapper to cURL multi.
+
 ***
 
 <a href="https://gitter.im/phpgt/fetch" target="_blank">
@@ -17,3 +19,9 @@
 <a href="https://packagist.org/packages/phpgt/fetch" target="_blank">
     <img src="https://img.shields.io/packagist/v/phpgt/fetch.svg?style=flat-square" alt="Current version" />
 </a>
+
+## Example usage: compute multiple slow HTTP requests.
+
+```php
+// TODO.
+```
