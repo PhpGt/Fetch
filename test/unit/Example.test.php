@@ -16,9 +16,6 @@ public function testPromiseReturned() {
 	$this->assertInstanceOf("\React\Promise\Promise", $promise2);
 }
 
-/**
- * @group failing
- */
 public function testCallbackInvoked() {
 	$stubStdClass = $this->getMockBuilder(stdClass::class)
 		->setMethods(["mockCallback"])
