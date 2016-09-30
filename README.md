@@ -20,8 +20,42 @@ A promise-based wrapper to cURL multi.
     <img src="https://img.shields.io/packagist/v/phpgt/fetch.svg?style=flat-square" alt="Current version" />
 </a>
 
-## Example usage: compute multiple slow HTTP requests.
+## Example usage: compute multiple HTTP requests in parallel.
 
 ```php
-// TODO.
+<?php
+$http = new \phpgt\fetch\Http();
+
+$http->get("http://example.com/api/something.json")
+->then(function($response) {
+	if($response->status !== 200) {
+		echo "Looks like there was a problem. Status code: "
+			. $response->status . PHP_EOL;
+		return;
+	}
+
+    return $response->json();
+})
+->then(function($json) {
+    echo "Got JSON result length "
+    	. count($json->results)
+    	. PHP_EOL;
+
+    echo "Name of first result: "
+    	. $json->results[0]->name
+    	. PHP_EOL;
+});
+
+$http->get("http://example.com/something.jpg")
+->then(function($response) {
+    return $response->blob();
+})
+->then(function($blob) {
+    echo "Got JPG blob. Saving file." . PHP_EOL;
+    file_put_contents("/tmp/something.jpg", $blob);
+});
+
+$http->all()->then(function() {
+    echo "All HTTP calls have completed!" . PHP_EOL;
+});
 ```
