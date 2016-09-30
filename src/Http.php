@@ -15,16 +15,13 @@ private $loop;
  */
 private $timer;
 /**
- * @var phpgt\Fetch\Request
+ * @var phpgt\Fetch\RequestResolver
  */
-private $input;
-private $promiseArray;
+private $requestResolver;
 
 public function __construct(float $interval = 0.1) {
 	$this->loop = EventLoopFactory::create();
-}
-
-public function tick() {
+	$this->requestResolver = new RequestResolver();
 }
 
 /**
@@ -41,15 +38,41 @@ public function request($input, array $init = []) {
 		$input = new Request($input, $init);
 	}
 
-	$this->input = $input;
+	$this->requestResolver->add($input, $promise);
 
-	$this->promiseArray []= $promise;
 	return $promise;
 }
 
+public function tick() {
+	foreach($this->requestResolver as $input => $promise) {
+		$promise->resolve();
+		var_dump($input, $promise);die();
+	}
+
+	$this->loop->cancelTimer($this->timer);
+}
+
+/**
+ * Executes all promises in parallel, not returning until all requests have
+ * completed.
+ */
 public function wait() {
 	$this->timer = $this->loop->addTimer(0.1, [$this, "tick"]);
 	$this->loop->run($this->timer);
 }
+
+/**
+ * Executes all promises in parallel, returning a promise that resolves when
+ * all HTTP requests have completed.
+ *
+ * @return GuzzleHttp\Promise\Promise Resolved when all HTTP requests have
+ * completed
+ */
+public function all() {
+	$promise = new Promise();
+
+	return $promise;
+}
+
 
 }#
