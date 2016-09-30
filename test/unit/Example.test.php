@@ -30,6 +30,28 @@ public function testCallbackInvoked() {
 	$http->wait();
 }
 
+public function testMultipleCallbacksInvoked() {
+	$stubStdClass = $this->getMockBuilder(stdClass::class)
+		->setMethods(["mockCallback1", "mockCallback2", "mockCallback3"])
+		->getMock();
+	$stubStdClass->expects($this->once())
+		->method("mockCallback1");
+	$stubStdClass->expects($this->once())
+		->method("mockCallback2");
+	$stubStdClass->expects($this->once())
+		->method("mockCallback3");
+
+	$http = new Http();
+	$http->request(self::URL)
+		->then([$stubStdClass, "mockCallback1"])
+		->then([$stubStdClass, "mockCallback2"]);
+
+	$http->request(self::URL)
+		->then([$stubStdClass, "mockCallback3"]);
+
+	$http->wait();
+}
+
 public function testResponseType() {
 	$http = new Http();
 	$http->request(self::URL)
