@@ -1,7 +1,7 @@
 <?php
 namespace phpgt\fetch;
 
-use GuzzleHttp\Promise\Promise;
+use React\Promise\Deferred;
 
 /**
  * Contains multiple requests and their promises.
@@ -9,20 +9,20 @@ use GuzzleHttp\Promise\Promise;
 class RequestResolver implements \Iterator {
 
 private $requestArray = [];
-private $promiseArray = [];
+private $deferredArray = [];
 private $index;
 
 public function __construct() {
 
 }
 
-public function add(Request $request, Promise $promise) {
+public function add(Request $request, Deferred $deferred) {
 	$this->requestArray []= $request;
-	$this->promiseArray []= $promise;
+	$this->deferredArray []= $deferred;
 }
 
 public function current() {
-	return $this->promiseArray[$this->index];
+	return $this->deferredArray[$this->index];
 }
 
 public function key() {

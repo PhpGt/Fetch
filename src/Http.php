@@ -2,7 +2,8 @@
 namespace phpgt\fetch;
 
 use React\EventLoop\Factory as EventLoopFactory;
-use GuzzleHttp\Promise\Promise;
+use React\Promise\Deferred;
+use React\Promise\Promise;
 
 class Http {
 
@@ -32,21 +33,21 @@ public function __construct(float $interval = 0.1) {
  * @return GuzzleHttp\Promise\Promise
  */
 public function request($input, array $init = []) {
-	$promise = new Promise();
+	$deferred = new Deferred();
+	$promise = $deferred->promise();
 
 	if(!$input instanceof Request) {
 		$input = new Request($input, $init);
 	}
 
-	$this->requestResolver->add($input, $promise);
+	$this->requestResolver->add($input, $deferred);
 
 	return $promise;
 }
 
 public function tick() {
-	foreach($this->requestResolver as $input => $promise) {
-		$promise->resolve();
-		var_dump($input, $promise);die();
+	foreach($this->requestResolver as $input => $deferred) {
+		$deferred->resolve($input);
 	}
 
 	$this->loop->cancelTimer($this->timer);
@@ -69,9 +70,9 @@ public function wait() {
  * completed
  */
 public function all() {
-	$promise = new Promise();
+	$deferred = new Deferred();
 
-	return $promise;
+	return $deferred->promise();
 }
 
 
