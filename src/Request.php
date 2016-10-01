@@ -2,7 +2,6 @@
 namespace phpgt\fetch;
 
 use PHPCurl\CurlWrapper\Curl;
-use PHPCurl\CurlWrapper\CurlMulti;
 
 class Request {
 
@@ -53,20 +52,17 @@ private $redirect;
 private $referer;
 private $integrity;
 
-private $curlClass;
-private $curlMultiClass;
 /**
- * @var PHPCurl\CurlWrapper\CurlMulti
+ * @var PHPCurl\CurlWrapper\Curl
  */
-private $curlMulti;
+private $curl;
 
 /**
  * @param string $uri Direct URI of the object to be fetched
  * @param array $init Optional associative array of options
  */
 public function __construct(string $uri, array $init = [],
-string $curlClass = "\PHPCurl\CurlWrapper\Curl",
-string $curlMultiClass = "\PHPCurl\CurlWrapper\CurlMulti") {
+string $curlClass = "\PHPCurl\CurlWrapper\Curl") {
 	$method = self::METHOD_GET;
 	if(!empty($init["method"])) {
 		$method = strtolower($init["method"]);
@@ -123,17 +119,7 @@ string $curlMultiClass = "\PHPCurl\CurlWrapper\CurlMulti") {
 		$this->integrity = $init["integrity"];
 	}
 
-	$this->curlClass = $curlClass;
-	$this->curlMultiClass = $curlMultiClass;
-	$this->resetCurlMulti();
-}
-
-public function resetCurlMulti() {
-	if(isset($this->curlMulti)) {
-		unset($this->curlMulti);
-	}
-
-	$this->curlMulti = new $this->curlMultiClass();
+	$this->curl = new $curlClass();
 }
 
 }#
