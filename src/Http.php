@@ -36,13 +36,13 @@ public function __construct(float $interval = 0.1) {
 
 public function __call($name, $arguments) {
 	switch($name) {
-	case "get":
-	case "post":
-	case "head":
-	case "put":
-	case "delete":
-	case "options":
-	case "patch":
+	case Request::METHOD_GET:
+	case Request::METHOD_POST:
+	case Request::METHOD_HEAD:
+	case Request::METHOD_PUT:
+	case Request::METHOD_DELETE:
+	case Request::METHOD_OPTIONS:
+	case Request::METHOD_PATCH:
 		if(!isset($arguments[1])) {
 			$arguments[1] = [];
 		}
