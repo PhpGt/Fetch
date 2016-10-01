@@ -12,7 +12,7 @@ const METHOD_POST = "post";
 const METHOD_PUT = "put";
 const METHOD_DELETE = "delete";
 const METHOD_TRACE = "trace";
-const METHOD_OPTION = "options";
+const METHOD_OPTIONS = "options";
 const METHOD_CONNECT = "connect";
 const METHOD_PATCH = "patch";
 const AVAILABLE_METHODS = [
@@ -22,7 +22,7 @@ const AVAILABLE_METHODS = [
 	self::METHOD_PUT,
 	self::METHOD_DELETE,
 	self::METHOD_TRACE,
-	self::METHOD_OPTION,
+	self::METHOD_OPTIONS,
 	self::METHOD_CONNECT,
 	self::METHOD_PATCH,
 ];
