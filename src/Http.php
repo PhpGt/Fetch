@@ -65,7 +65,7 @@ public function __call($name, $arguments) {
 /**
  * @param string|Request $input Defines the resource that you wish to fetch
  * @param array $init An associative array containing any custom settings that
- * you wish to apply to the request.
+ * you wish to apply to the request
  *
  * @return React\Promise\Promise
  */
