@@ -33,6 +33,9 @@ public function add(Request $request, Deferred $deferred) {
  * as requests complete.
  */
 public function tick() {
+	for($i = 0, $length = count($this->requestArray); $i < $length; $i++) {
+		$this->deferredArray[$i]->resolve(true);
+	}
 }
 
 }#

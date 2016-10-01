@@ -82,20 +82,12 @@ public function request($input, array $init = []) {
 	return $promise;
 }
 
-public function tick() {
-	foreach($this->requestResolver as $input => $deferred) {
-		$deferred->resolve($input);
-	}
-
-	$this->loop->cancelTimer($this->timer);
-}
-
 /**
  * Executes all promises in parallel, not returning until all requests have
  * completed.
  */
 public function wait() {
-	$this->timer = $this->loop->addTimer(0.1, [$this, "tick"]);
+	$this->timer = $this->loop->addTimer(0.1, [$this->requestResolver, "tick"]);
 	$this->loop->run($this->timer);
 }
 

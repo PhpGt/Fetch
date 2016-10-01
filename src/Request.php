@@ -1,8 +1,6 @@
 <?php
 namespace phpgt\fetch;
 
-use PHPCurl\CurlWrapper\Curl;
-
 class Request {
 
 const METHOD_GET = "get";
