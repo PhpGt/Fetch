@@ -52,6 +52,9 @@ private $credentials;
 private $redirect;
 private $referer;
 private $integrity;
+
+private $curlClass;
+private $curlMultiClass;
 /**
  * @var PHPCurl\CurlWrapper\CurlMulti
  */
@@ -61,7 +64,9 @@ private $curlMulti;
  * @param string $uri Direct URI of the object to be fetched
  * @param array $init Optional associative array of options
  */
-public function __construct(string $uri, array $init = []) {
+public function __construct(string $uri, array $init = [],
+string $curlClass = "\PHPCurl\CurlWrapper\Curl",
+string $curlMultiClass = "\PHPCurl\CurlWrapper\CurlMulti") {
 	$method = self::METHOD_GET;
 	if(!empty($init["method"])) {
 		$method = strtolower($init["method"]);
@@ -118,6 +123,8 @@ public function __construct(string $uri, array $init = []) {
 		$this->integrity = $init["integrity"];
 	}
 
+	$this->curlClass = $curlClass;
+	$this->curlMultiClass = $curlMultiClass;
 	$this->resetCurlMulti();
 }
 
@@ -126,7 +133,7 @@ public function resetCurlMulti() {
 		unset($this->curlMulti);
 	}
 
-	$this->curlMulti = new CurlMulti();
+	$this->curlMulti = new $this->curlMultiClass();
 }
 
 }#
