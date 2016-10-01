@@ -6,14 +6,20 @@ use React\Promise\Deferred;
 /**
  * Contains multiple requests and their promises.
  */
-class RequestResolver implements \Iterator {
+class RequestResolver {
+
+/**
+ * @var PHPCurl\CurlWrapper\CurlMulti
+ */
+private $curlMultiHandle;
 
 private $requestArray = [];
 private $deferredArray = [];
 private $index;
 
-public function __construct() {
-
+public function __construct(
+string $curlMultiClass = "\PHPCurl\CurlWrapper\CurlMulti") {
+	$this->curlMultiHandle = new $curlMultiClass();
 }
 
 public function add(Request $request, Deferred $deferred) {
@@ -21,26 +27,12 @@ public function add(Request $request, Deferred $deferred) {
 	$this->deferredArray []= $deferred;
 }
 
-// Iterator methods ////////////////////////////////////////////////////////////
-
-public function current() {
-	return $this->deferredArray[$this->index];
-}
-
-public function key() {
-	return $this->requestArray[$this->index];
-}
-
-public function next() {
-	++ $this->index;
-}
-
-public function rewind() {
-	$this->index = 0;
-}
-
-public function valid() {
-	return isset($this->requestArray[$this->index]);
+/**
+ * Called from an event loop. This function periodically checks the status of
+ * the requests within requestArray, resolving corresponding Deferred objects
+ * as requests complete.
+ */
+public function tick() {
 }
 
 }#
