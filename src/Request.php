@@ -62,6 +62,8 @@ public function __construct(string $uri, array $init = []) {
 		if(!in_array($method, self::AVAILABLE_METHODS)) {
 			throw new HttpMethodException($method);
 		}
+
+		$this->method = $method;
 	}
 
 	if(!empty($init["headers"])
