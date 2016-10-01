@@ -48,7 +48,7 @@ public function __call($name, $arguments) {
 		}
 		$arguments[1]["method"] = $name;
 
-		call_user_func_array([$this, "request"], $arguments);
+		return call_user_func_array([$this, "request"], $arguments);
 		break;
 
 	default:
@@ -95,7 +95,7 @@ public function wait() {
  * Executes all promises in parallel, returning a promise that resolves when
  * all HTTP requests have completed.
  *
- * @return GuzzleHttp\Promise\Promise Resolved when all HTTP requests have
+ * @return React\Promise\Promise Resolved when all HTTP requests have
  * completed
  */
 public function all() {
