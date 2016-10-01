@@ -16,12 +16,12 @@ public function __construct() {
 
 }
 
-// Iterator methods ////////////////////////////////////////////////////////////
-
 public function add(Request $request, Deferred $deferred) {
 	$this->requestArray []= $request;
 	$this->deferredArray []= $deferred;
 }
+
+// Iterator methods ////////////////////////////////////////////////////////////
 
 public function current() {
 	return $this->deferredArray[$this->index];
