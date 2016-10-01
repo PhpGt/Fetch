@@ -61,13 +61,20 @@ public function testResponseType() {
 	$http->wait();
 }
 
+/**
+ * @group failing
+ */
 public function testAllMethod() {
+	$stubStdClass = $this->getMockBuilder(stdClass::class)
+		->setMethods(["mockCallback"])
+		->getMock();
+	$stubStdClass->expects($this->once())
+		->method("mockCallback");
+
 	$http = new Http();
 	$http->request(self::URL);
 
-	$http->all(function() {
-		die("YES!");
-	});
+	$http->all()->then([$stubStdClass, "mockCallback"]);
 }
 
 }#

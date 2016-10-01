@@ -71,6 +71,8 @@ public function wait() {
  */
 public function all() {
 	$deferred = new Deferred();
+	$this->wait();
+	$deferred->resolve(true);
 
 	return $deferred->promise();
 }

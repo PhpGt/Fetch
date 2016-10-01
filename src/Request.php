@@ -50,8 +50,11 @@ private $redirect;
 private $referer;
 private $integrity;
 
-public function __construct(
-string $input = self::METHOD_GET, array $init = []) {
+/**
+ * @param string $uri Direct URI of the object to be fetched
+ * @param array $init Optional associative array of options
+ */
+public function __construct(string $uri, array $init = []) {
 	$method = self::METHOD_GET;
 	if(!empty($init["method"])) {
 		$method = strtolower($init["method"]);
