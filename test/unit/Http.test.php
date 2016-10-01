@@ -3,7 +3,7 @@ namespace phpgt\fetch;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
-class ExampleTest extends \PHPUnit_Framework_TestCase {
+class HttpTest extends \PHPUnit_Framework_TestCase {
 
 const URL = "https://github.com/phpgt/fetch";
 
@@ -61,5 +61,13 @@ public function testResponseType() {
 	$http->wait();
 }
 
+public function testAllMethod() {
+	$http = new Http();
+	$http->request(self::URL);
+
+	$http->all(function() {
+		die("YES!");
+	});
+}
 
 }#
