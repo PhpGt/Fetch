@@ -16,6 +16,8 @@ public function __construct() {
 
 }
 
+// Iterator methods ////////////////////////////////////////////////////////////
+
 public function add(Request $request, Deferred $deferred) {
 	$this->requestArray []= $request;
 	$this->deferredArray []= $deferred;
