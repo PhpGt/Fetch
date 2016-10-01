@@ -5,6 +5,15 @@ use React\EventLoop\Factory as EventLoopFactory;
 use React\Promise\Deferred;
 use React\Promise\Promise;
 
+/**
+ * @method React\Promise\Promise get(string|Request $input, array $init)
+ * @method React\Promise\Promise post(string|Request $input, array $init)
+ * @method React\Promise\Promise head(string|Request $input, array $init)
+ * @method React\Promise\Promise put(string|Request $input, array $init)
+ * @method React\Promise\Promise delete(string|Request $input, array $init)
+ * @method React\Promise\Promise options(string|Request $input, array $init)
+ * @method React\Promise\Promise patch(string|Request $input, array $init)
+ */
 class Http {
 
 /**
@@ -25,12 +34,40 @@ public function __construct(float $interval = 0.1) {
 	$this->requestResolver = new RequestResolver();
 }
 
+public function __call($name, $arguments) {
+	switch($name) {
+	case "get":
+	case "post":
+	case "head":
+	case "put":
+	case "delete":
+	case "options":
+	case "patch":
+		if(!isset($arguments[1])) {
+			$arguments[1] = [];
+		}
+		$arguments[1]["method"] = $name;
+
+		call_user_func_array([$this, "request"], $arguments);
+		break;
+
+	default:
+		trigger_error("Call to undefined method "
+			. __CLASS__
+			. "::"
+			. $name
+			. "()"
+			, E_USER_ERROR
+		);
+	}
+}
+
 /**
  * @param string|Request $input Defines the resource that you wish to fetch
  * @param array $init An associative array containing any custom settings that
- * you want to apply to the request.
+ * you wish to apply to the request.
  *
- * @return GuzzleHttp\Promise\Promise
+ * @return React\Promise\Promise
  */
 public function request($input, array $init = []) {
 	$deferred = new Deferred();
