@@ -74,4 +74,15 @@ public function testAllMethod() {
 	$http->all()->then([$stubStdClass, "mockCallback"]);
 }
 
+public function testShorthandMethods() {
+	$http = new Http();
+
+	foreach(["get","post","head","put","delete","options","patch"] as $method) {
+		$http->$method(self::URL);
+	}
+
+	$this->setExpectedException("PHPUnit_Framework_Error");
+	$http->notAMethod();
+}
+
 }#
