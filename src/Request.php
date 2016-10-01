@@ -1,6 +1,9 @@
 <?php
 namespace phpgt\fetch;
 
+use PHPCurl\CurlWrapper\Curl;
+use PHPCurl\CurlWrapper\CurlMulti;
+
 class Request {
 
 const METHOD_GET = "get";
@@ -49,6 +52,10 @@ private $credentials;
 private $redirect;
 private $referer;
 private $integrity;
+/**
+ * @var PHPCurl\CurlWrapper\CurlMulti
+ */
+private $curlMulti;
 
 /**
  * @param string $uri Direct URI of the object to be fetched
@@ -110,6 +117,16 @@ public function __construct(string $uri, array $init = []) {
 
 		$this->integrity = $init["integrity"];
 	}
+
+	$this->resetCurlMulti();
+}
+
+public function resetCurlMulti() {
+	if(isset($this->curlMulti)) {
+		unset($this->curlMulti);
+	}
+
+	$this->curlMulti = new CurlMulti();
 }
 
 }#
