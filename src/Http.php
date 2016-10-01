@@ -77,5 +77,4 @@ public function all() {
 	return $deferred->promise();
 }
 
-
 }#
