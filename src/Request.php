@@ -45,11 +45,12 @@ const AVAILABLE_CREDENTIALS = [
 	self::CREDENTIAL_INCLUDE,
 ];
 
+private $method;
 private $headers;
 private $body;
 private $credentials;
 private $redirect;
-private $referer;
+private $referrer;
 private $integrity;
 
 /**
@@ -60,8 +61,9 @@ private $curl;
 /**
  * @param string $uri Direct URI of the object to be fetched
  * @param array $init Optional associative array of options
+ * @param array $curlOpt Optional associative array of curl_setopt settings
  */
-public function __construct(string $uri, array $init = [],
+public function __construct(string $uri, array $init = [], array $curlOpt = [],
 string $curlClass = "\PHPCurl\CurlWrapper\Curl") {
 	$method = self::METHOD_GET;
 	if(!empty($init["method"])) {
@@ -71,8 +73,8 @@ string $curlClass = "\PHPCurl\CurlWrapper\Curl") {
 			throw new HttpMethodException($method);
 		}
 
-		$this->method = $method;
 	}
+	$this->method = $method;
 
 	if(!empty($init["headers"])
 	&& is_array($init["headers"])) {
@@ -103,12 +105,12 @@ string $curlClass = "\PHPCurl\CurlWrapper\Curl") {
 		$this->redirect = $init["redirect"];
 	}
 
-	if(!empty($init["referer"])) {
-		if(!is_string($init["referer"])) {
-			throw new HttpInitException("referer");
+	if(!empty($init["referrer"])) {
+		if(!is_string($init["referrer"])) {
+			throw new HttpInitException("referrer");
 		}
 
-		$this->referer = $init["referer"];
+		$this->referrer = $init["referrer"];
 	}
 
 	if(!empty($init["integrity"])) {
@@ -119,7 +121,38 @@ string $curlClass = "\PHPCurl\CurlWrapper\Curl") {
 		$this->integrity = $init["integrity"];
 	}
 
-	$this->curl = new $curlClass();
+	$this->curl = new $curlClass($uri);
+	$this->curlInit($curlOpt);
+}
+
+private function curlInit($options = []) {
+	$defaultOptions = [];
+
+	$defaultOptions[CURLOPT_CUSTOMREQUEST] = $this->method;
+
+	if(isset($this->headers)) {
+		$defaultOptions[CURLOPT_HTTPHEADER] = $this->headers;
+	}
+
+	if(isset($this->body)) {
+		$defaultOptions[CURLOPT_POSTFIELDS] = $this->body;
+	}
+	// TODO: Set up cookie jar for $this->credentials
+	// as described https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch
+
+	if($this->redirect === self::REDIRECT_FOLLOW) {
+		$defaultOptions[CURLOPT_FOLLOWLOCATION] = true;
+	}
+	else {
+		$defaultOptions[CURLOPT_FOLLOWLOCATION] = false;
+	}
+
+	if(isset($this->referrer)) {
+		$defaultOptions[CURLOPT_REFERER] = $this->referrer;
+	}
+
+	$options = array_merge($defaultOptions, $options);
+	$this->curl->setOptArray($options);
 }
 
 }#
