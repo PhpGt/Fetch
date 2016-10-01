@@ -123,6 +123,10 @@ string $curlClass = "\PHPCurl\CurlWrapper\Curl") {
 	$this->curlInit($curlOpt);
 }
 
+public function getCurlHandle() {
+	return $this->curl;
+}
+
 private function curlInit($options = []) {
 	$defaultOptions = [];
 
@@ -135,8 +139,8 @@ private function curlInit($options = []) {
 	if(isset($this->body)) {
 		$defaultOptions[CURLOPT_POSTFIELDS] = $this->body;
 	}
-	// TODO: Set up cookie jar for $this->credentials
-	// as described https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch
+// TODO: Set up cookie jar for $this->credentials
+// as described https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch
 
 	if($this->redirect === self::REDIRECT_FOLLOW) {
 		$defaultOptions[CURLOPT_FOLLOWLOCATION] = true;

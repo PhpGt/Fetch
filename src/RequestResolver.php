@@ -11,15 +11,16 @@ class RequestResolver {
 /**
  * @var PHPCurl\CurlWrapper\CurlMulti
  */
-private $curlMultiHandle;
+private $curlMulti;
 
 private $requestArray = [];
 private $deferredArray = [];
 private $index;
+private $runningStatus = null;
 
 public function __construct(
 string $curlMultiClass = "\PHPCurl\CurlWrapper\CurlMulti") {
-	$this->curlMultiHandle = new $curlMultiClass();
+	$this->curlMulti = new $curlMultiClass();
 }
 
 public function add(Request $request, Deferred $deferred) {
@@ -33,9 +34,34 @@ public function add(Request $request, Deferred $deferred) {
  * as requests complete.
  */
 public function tick() {
-	for($i = 0, $length = count($this->requestArray); $i < $length; $i++) {
-		$this->deferredArray[$i]->resolve(true);
+	if(is_null($this->runningStatus)) {
+		$this->start();
 	}
+
+	while(false !== ($message = $this->curlMulti->infoRead($messageCount))) {
+		var_dump($message);
+	}
+
+	// foreach($this->requestArray as $i => $request) {
+		// $deferred = $this->deferredArray[$i];
+	// }
+}
+
+private function start() {
+// Add curl handles to the curlMulti stack.
+	foreach($this->requestArray as $i => $request) {
+		$successCode = $this->curlMulti->add($request->getCurlHandle());
+
+		if($successCode !== 0) {
+			throw new CurlMultiException($successCode);
+		}
+	}
+
+	$this->runningStatus = null;
+
+// Execute all curl handles on the curlMulti stack.
+	while(CURLM_CALL_MULTI_PERFORM
+	=== $this->curlMulti->exec($this->runningStatus));
 }
 
 }#
