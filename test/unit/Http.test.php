@@ -61,9 +61,6 @@ public function testResponseType() {
 	$http->wait();
 }
 
-/**
- * @group failing
- */
 public function testAllMethod() {
 	$stubStdClass = $this->getMockBuilder(stdClass::class)
 		->setMethods(["mockCallback"])
