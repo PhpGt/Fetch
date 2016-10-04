@@ -1,4 +1,4 @@
 <?php
 namespace phpgt\fetch;
 
-class CurlMultiHandleException extends \Exception {}#
+class CurlMultiException extends \Exception {}#

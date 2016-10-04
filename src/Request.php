@@ -127,6 +127,15 @@ public function getCurlHandle() {
 	return $this->curl;
 }
 
+public function getResponseCode():int {
+	return (int)$this->curl->getInfo(CURLINFO_HTTP_CODE);
+}
+
+public function getResponse() {
+	$response = new Response();
+	die("NOT YET IMPLEMENTED");
+}
+
 private function curlInit($options = []) {
 	$defaultOptions = [];
 
@@ -154,6 +163,11 @@ private function curlInit($options = []) {
 	}
 
 	$options = array_merge($defaultOptions, $options);
+
+// The returntransfer option MUST be set, otherwise the promise resolution
+// callbacks will not be able to get the content of the HTTP requests.
+	$options[CURLOPT_RETURNTRANSFER] = true;
+
 	$this->curl->setOptArray($options);
 }
 

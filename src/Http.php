@@ -87,8 +87,10 @@ public function request($input, array $init = []) {
  * completed.
  */
 public function wait() {
-	$this->timer = $this->loop->addTimer(0.1, [$this->requestResolver, "tick"]);
-	$this->loop->run($this->timer);
+	$this->timer = $this->loop->addPeriodicTimer(
+		0.1, [$this->requestResolver, "tick"]
+	);
+	$this->loop->run();
 }
 
 /**
