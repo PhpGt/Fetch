@@ -133,7 +133,9 @@ public function getResponseCode():int {
 
 public function getResponse() {
 	$response = new Response();
-	die("NOT YET IMPLEMENTED");
+
+// until Response is developed, pass back the Curl object.
+	return $this->curl;
 }
 
 private function curlInit($options = []) {
