@@ -131,13 +131,6 @@ public function getResponseCode():int {
 	return (int)$this->curl->getInfo(CURLINFO_HTTP_CODE);
 }
 
-public function getResponse() {
-	$response = new Response();
-
-// until Response is developed, pass back the Curl object.
-	return $this->curl;
-}
-
 private function curlInit($options = []) {
 	$defaultOptions = [];
 
@@ -169,6 +162,7 @@ private function curlInit($options = []) {
 // The returntransfer option MUST be set, otherwise the promise resolution
 // callbacks will not be able to get the content of the HTTP requests.
 	$options[CURLOPT_RETURNTRANSFER] = true;
+	$options[CURLOPT_HEADER] = true;
 
 	$this->curl->setOptArray($options);
 }

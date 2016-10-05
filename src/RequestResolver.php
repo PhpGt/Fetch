@@ -48,8 +48,12 @@ public function tick() {
 		$request = $this->matchRequest($info["handle"]);
 		if($request->getResponseCode() === 200) {
 			$requestIndex = array_search($request, $this->requestArray);
+			$curl = $request->getCurlHandle();
 			$this->deferredArray[$requestIndex]->resolve(
-				$request->getResponse()
+				new Response(
+					$this->curlMulti->getContent($curl),
+					$curl->getInfo()
+				)
 			);
 		}
 
