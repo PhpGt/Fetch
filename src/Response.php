@@ -37,37 +37,4 @@ public function __construct(string $rawResponse, array $curlInfo) {
 	$this->curlInfo = $curlInfo;
 }
 
-// TODO: Move these functions to the `Body` trait. (Issue #8).
-
-public function arrayBuffer() {
-
-}
-
-public function blob() {
-
-}
-
-public function clone() {
-
-}
-
-public function error() {
-
-}
-
-public function formData() {
-
-}
-
-public function json() {
-
-}
-
-public function redirect() {
-
-}
-
-public function text() {
-
-}
 }#
