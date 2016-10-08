@@ -26,5 +26,18 @@
         "psr-4": {
             "phpgt\\fetch\\": "./src"
         }
-    }
+    },
+
+    "keywords": [
+        "http",
+        "fetch",
+        "async",
+        "asynchronous",
+        "xmlhttprequest",
+        "ajax",
+        "get",
+        "post",
+        "curl",
+        "curl_multi"
+    ]
 }
