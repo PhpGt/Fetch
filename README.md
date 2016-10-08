@@ -1,6 +1,6 @@
 # Asynchronous HTTP client with promises for PHP 7 applications.
 
-A promise-based wrapper to cURL multi.
+Based on the client-side [JavaScript fetch API][fetch].
 
 ***
 
@@ -59,3 +59,5 @@ $http->all()->then(function() {
     echo "All HTTP calls have completed!" . PHP_EOL;
 });
 ```
+
+[fetch]: https://developer.mozilla.org/en/docs/Web/API/Fetch_API
