@@ -31,7 +31,7 @@ private $requestResolver;
 
 public function __construct(float $interval = 0.1) {
 	$this->loop = EventLoopFactory::create();
-	$this->requestResolver = new RequestResolver();
+	$this->requestResolver = new RequestResolver($this->loop);
 }
 
 public function __call($name, $arguments) {

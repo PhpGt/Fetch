@@ -2,12 +2,17 @@
 namespace phpgt\fetch;
 
 use React\Promise\Deferred;
+use React\EventLoop\LoopInterface;
 
 /**
  * Contains multiple requests and their promises.
  */
 class RequestResolver {
 
+/**
+ * @var React\EventLoop\LoopInterface
+ */
+private $loop;
 /**
  * @var PHPCurl\CurlWrapper\CurlMulti
  */
@@ -19,8 +24,9 @@ private $responseArray = [];
 private $index;
 private $openConnectionCount = null;
 
-public function __construct(
+public function __construct(LoopInterface $loop,
 string $curlMultiClass = "\PHPCurl\CurlWrapper\CurlMulti") {
+	$this->loop = $loop;
 	$this->curlMulti = new $curlMultiClass();
 }
 
@@ -50,19 +56,13 @@ public function tick() {
 		if($request->getResponseCode() === 200) {
 			$requestIndex = array_search($request, $this->requestArray);
 			$curl = $request->getCurlHandle();
-			// $this->deferredArray[$requestIndex]->resolve(
-			// 	new Response(
-			// 		$this->curlMulti->getContent($curl),
-			// 		$curl->getInfo()
-			// 	)
-			// );
 		}
 
 	}while($messagesInQueue > 0);
 
 	if($this->openConnectionCount === 0) {
-// $this->stopLoopSomehow() no need for comment - function should explain.
-		die("ALL DONE!");
+// TODO: Do we need to do anything else here?
+		$this->loop->stop();
 	}
 
 // Wait for activity on any of the handles.
@@ -80,7 +80,7 @@ public function tick() {
  */
 private function start() {
 	foreach($this->requestArray as $i => $request) {
-		$response = new Response($this->deferredArray[$i]);
+		$response = new Response($this->deferredArray[$i], $this->loop);
 		$this->responseArray []= $response;
 		$curl = $request->setStream([$response, "stream"]);
 
