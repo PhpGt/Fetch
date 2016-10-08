@@ -63,8 +63,12 @@ public function has(string $name):bool {
  * already exists and accepts multiple values, set() overwrites the existing
  * value with the new one, whereas append() appends the new value to the end of
  * the set of values.
+ *
+ * @param string $name The header name
+ * @param string|array $value The header value, either a string or array of
+ * strings to append to the same header
  */
-public function set(string $name, string $value) {
+public function set(string $name, $value) {
 
 }
 
