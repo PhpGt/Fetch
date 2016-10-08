@@ -2,6 +2,8 @@
 namespace phpgt\fetch;
 
 use React\Promise\Deferred;
+use React\EventLoop\LoopInterface;
+use React\Stream\Stream;
 
 /**
  * @property-read bool $bodyUsed Indicates whether the body has been read yet
@@ -20,31 +22,48 @@ use React\Promise\Deferred;
 class Response {
 use Body;
 
-const HEADER_END = "\r\n\r\n";
+const STREAM_MEMORY = "php://memory";
 
 /**
- * @var React\Promise\Deferred;
+ * @var Headers
+ */
+private $headers;
+/**
+ * @var React\Promise\Deferred
  */
 private $deferredResponse;
-private $rawHeaders;
-private $headers;
+/**
+ * @var React\Stream\Stream
+ */
+private $streamHeader;
+/**
+ * @var React\Stream\Stream
+ */
+private $streamBody;
+private $isHeaderStreaming;
 
-public function __construct(Deferred $deferredResponse) {
+public function __construct(Deferred $deferredResponse, LoopInterface $loop) {
 	$this->headers = new Headers();
 	$this->deferredResponse = $deferredResponse;
+
+	$this->streamHeader = new Stream(fopen(self::STREAM_MEMORY, "w+"), $loop);
+	$this->streamBody = new Stream(fopen(self::STREAM_MEMORY, "w+"), $loop);
 }
 
 public function stream($curlHandle, string $data):int {
 	$bytesRead = strlen($data);
 
-	if(!isset($this->rawBody)) {
-		$this->rawHeaders .= $data;
+	if(is_null($this->isHeaderStreaming)) {
+		$this->isHeaderStreaming = true;
+	}
 
-		if(strstr($this->rawHeaders, self::HEADER_END)) {
-			$this->setHeaders();
-			$this->deferredResponse->resolve($this);
-			$this->rawBody = "";
-		}
+	if($this->isHeaderStreaming) {
+		$this->streamHeader->write($data);
+		$this->isHeaderStreaming = $this->setHeaders($data);
+		$this->deferredResponse->resolve($this);
+	}
+	else {
+		$this->streamBody->write($data);
 	}
 
 	return $bytesRead;
@@ -54,10 +73,27 @@ public function redirect() {
 
 }
 
-private function setHeaders() {
-	foreach($this->parseHeaders($this->rawHeaders) as $header => $value) {
+/**
+ * Parses the raw header(s) provided as a string to this function and sets them
+ * using the Headers object.
+ *
+ * @param string $rawHeader The unprocessed HTTP header string, direct from the
+ * web server
+ *
+ * @return bool True if the header(s) have been set, false if the header section
+ * has ended
+ */
+private function setHeaders(string $rawHeader):bool {
+	foreach($this->parseHeaders($rawHeader) as $header => $value) {
+		if(empty($header)
+		&& empty($value)) {
+			return false;
+		}
+
 		$this->headers->set($header, $value);
 	}
+
+	return true;
 }
 
 /**

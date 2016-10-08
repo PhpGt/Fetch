@@ -2,6 +2,7 @@
 namespace phpgt\fetch;
 
 use React\Promise\Promise;
+use React\Promise\Deferred;
 
 use StdClass;
 
@@ -47,11 +48,28 @@ public function json():Promise {
  * Returns a promise that resolves with a UTF-8 encoded string.
  */
 public function text():Promise {
+	$deferred = new Deferred();
+
+	$this->bufferBody($deferred);
+
+	return $deferred->promise();
 	// $charset = $this->getCharset();
 	// $toEncoding = "utf-8";
 
 	// $converted = mb_convert_encoding($this->body, $toEncoding, $charset);
 	// return $converted;
+}
+
+private function bufferBody(Deferred $deferred) {
+	$buffer = "";
+
+	// $this->streamBody->on("data", function($data) use(&$buffer) {
+	// 	$buffer .= $data;
+	// });
+
+	// $this->streamBody->on("end", function() use($deferred, &$buffer) {
+	// 	$deferred->resolve($buffer);
+	// });
 }
 
 }#
