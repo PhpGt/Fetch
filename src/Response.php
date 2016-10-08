@@ -3,7 +3,6 @@ namespace phpgt\fetch;
 
 use React\Promise\Deferred;
 use React\EventLoop\LoopInterface;
-use React\Stream\Stream;
 
 /**
  * @property-read bool $bodyUsed Indicates whether the body has been read yet
@@ -22,32 +21,25 @@ use React\Stream\Stream;
 class Response {
 use Body;
 
-const STREAM_MEMORY = "php://memory";
-
 /**
  * @var Headers
  */
 private $headers;
+private $rawHeaders = "";
+private $rawBody = "";
+/**
+ * React\Promise\Deferred;
+ */
+private $readRawBodyDeferred;
 /**
  * @var React\Promise\Deferred
  */
 private $deferredResponse;
-/**
- * @var React\Stream\Stream
- */
-private $streamHeader;
-/**
- * @var React\Stream\Stream
- */
-private $streamBody;
 private $isHeaderStreaming;
 
 public function __construct(Deferred $deferredResponse, LoopInterface $loop) {
 	$this->headers = new Headers();
 	$this->deferredResponse = $deferredResponse;
-
-	$this->streamHeader = new Stream(fopen(self::STREAM_MEMORY, "w+"), $loop);
-	$this->streamBody = new Stream(fopen(self::STREAM_MEMORY, "w+"), $loop);
 }
 
 public function stream($curlHandle, string $data):int {
@@ -58,15 +50,29 @@ public function stream($curlHandle, string $data):int {
 	}
 
 	if($this->isHeaderStreaming) {
-		$this->streamHeader->write($data);
+		$this->rawHeaders .= $data;
 		$this->isHeaderStreaming = $this->setHeaders($data);
-		$this->deferredResponse->resolve($this);
+
+		if(!$this->isHeaderStreaming) {
+			$this->deferredResponse->resolve($this);
+		}
 	}
 	else {
-		$this->streamBody->write($data);
+		$this->rawBody .= $data;
+		if(is_callable([$this->readRawBodyDeferred, "notify"])) {
+			$this->readRawBodyDeferred->notify($data);
+		}
 	}
 
 	return $bytesRead;
+}
+
+/**
+ * Called when the underlying curl handle completes. At this point, all of the
+ * response has arrived, so we can resolve any functions reading the body.
+ */
+public function complete(int $statusCode) {
+	$this->readRawBodyDeferred->resolve($this->rawBody);
 }
 
 public function redirect() {

@@ -53,10 +53,10 @@ public function tick() {
 		}
 
 		$request = $this->matchRequest($info["handle"]);
-		if($request->getResponseCode() === 200) {
-			$requestIndex = array_search($request, $this->requestArray);
-			$curl = $request->getCurlHandle();
-		}
+		$code = $request->getResponseCode();
+		$requestIndex = array_search($request, $this->requestArray);
+		$curl = $request->getCurlHandle();
+		$this->responseArray[$requestIndex]->complete($code);
 
 	}while($messagesInQueue > 0);
 
