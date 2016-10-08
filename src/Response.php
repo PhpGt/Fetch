@@ -28,6 +28,8 @@ private $rawBody = "";
 
 /** @var React\Promise\Deferred[] */
 private $readRawBodyDeferredArray = [];
+/** @var callable[] */
+private $readRawBodyDeferredTransformArray = [];
 
 /** @var React\Promise\Deferred */
 private $deferredResponse;
@@ -70,10 +72,15 @@ public function stream($curlHandle, string $data):int {
 /**
  * Called when the underlying curl handle completes. At this point, all of the
  * response has arrived, so we can resolve any functions reading the body.
+ *
+ * Each deferred reader has its own transform function to manupulate the body
+ * into the expected format, which is called within the same iteration.
  */
 public function complete(int $statusCode) {
-	foreach($this->readRawBodyDeferredArray as $readRawBodyDeferred) {
-		$readRawBodyDeferred->resolve($this->rawBody);
+	foreach($this->readRawBodyDeferredArray as $i => $readRawBodyDeferred) {
+		$readRawBodyDeferred->resolve(
+			$this->readRawBodyDeferredTransformArray[$i]($this->rawBody)
+		);
 	}
 }
 
@@ -170,8 +177,8 @@ private function getCharset():string {
 	$charset = mb_internal_encoding();
 
 	if(isset($this->headers)
-	&& isset($this->headers["Content-Type"])) {
-		$contentTypeString = $this->headers["Content-Type"];
+	&& $this->headers->has("Content-Type")) {
+		$contentTypeString = $this->headers->get("Content-Type");
 		$charsetEquals = "charset=";
 
 		if(!strstr($contentTypeString, $charsetEquals)) {

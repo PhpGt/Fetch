@@ -41,7 +41,14 @@ public function formData():Promise {
  * Returns a promise that resolves with a StdClass object containing JSON data.
  */
 public function json():Promise {
-	// return json_decode($this->body);
+	$deferredJson = new Deferred();
+	$promise = $deferredJson->promise();
+	$this->readRawBodyDeferredArray []= $deferredJson;
+	$this->readRawBodyDeferredTransformArray []= function($data) {
+		return json_decode($data);
+	};
+
+	return $promise;
 }
 
 /**
@@ -51,12 +58,13 @@ public function text():Promise {
 	$deferredText = new Deferred();
 	$promise = $deferredText->promise();
 	$this->readRawBodyDeferredArray []= $deferredText;
-	return $promise;
-	// $charset = $this->getCharset();
-	// $toEncoding = "utf-8";
+	$this->readRawBodyDeferredTransformArray []= function($data) {
+		$charset = $this->getCharset();
+		$toEncoding = "utf-8";
+		return mb_convert_encoding($data, $toEncoding, $charset);
+	};
 
-	// $converted = mb_convert_encoding($this->body, $toEncoding, $charset);
-	// return $converted;
+	return $promise;
 }
 
 }#

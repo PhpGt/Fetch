@@ -10,6 +10,8 @@ namespace phpgt\fetch;
  */
 class Headers {
 
+private $headerArray = [];
+
 public function __construct(array $init = []) {
 
 }
@@ -19,7 +21,7 @@ public function __construct(array $init = []) {
  * adds the header if it does not already exist.
  */
 public function append(string $name, string $value) {
-
+	$this->headerArray[$name] []= $value;
 }
 
 /**
@@ -36,7 +38,11 @@ public function delete(string $name) {
  * returns null.
  */
 public function get(string $name) {
+	if($this->has($name)) {
+		return $this->headerArray[$name][0];
+	}
 
+	return null;
 }
 
 /**
@@ -52,7 +58,7 @@ public function getAll():array {
  * Returns a boolean stating whether a Headers object contains a certain header.
  */
 public function has(string $name):bool {
-
+	return !empty($this->headerArray[$name]);
 }
 
 /**
@@ -69,7 +75,8 @@ public function has(string $name):bool {
  * strings to append to the same header
  */
 public function set(string $name, $value) {
-
+	$this->headerArray[$name] = [];
+	$this->append($name, $value);
 }
 
 }#
