@@ -1,6 +1,10 @@
 <?php
 namespace phpgt\fetch;
 
+use React\Promise\Promise;
+
+use StdClass;
+
 /**
  * Represents the body of the response/request, allowing you to declare what
  * its content type is and how it should be handled.
@@ -11,36 +15,43 @@ namespace phpgt\fetch;
  */
 trait Body {
 
-public function arrayBuffer() {
+/**
+ * Returns a promise that resolves with an ArrayBuffer containing response data.
+ */
+public function arrayBuffer():Promise {
 
 }
 
-public function blob() {
+/**
+ * Returns a promise that resolves with a Blob representation of response data.
+ */
+public function blob():Promise {
 
 }
 
-public function clone() {
+/**
+ * Returns a promise that resolves with a FormData response object.
+ */
+public function formData():Promise {
 
 }
 
-public function error() {
-
+/**
+ * Returns a promise that resolves with a StdClass object containing JSON data.
+ */
+public function json():Promise {
+	// return json_decode($this->body);
 }
 
-public function formData() {
+/**
+ * Returns a promise that resolves with a UTF-8 encoded string.
+ */
+public function text():Promise {
+	// $charset = $this->getCharset();
+	// $toEncoding = "utf-8";
 
-}
-
-public function json() {
-
-}
-
-public function redirect() {
-
-}
-
-public function text() {
-
+	// $converted = mb_convert_encoding($this->body, $toEncoding, $charset);
+	// return $converted;
 }
 
 }#
