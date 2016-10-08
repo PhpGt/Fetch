@@ -15,6 +15,7 @@ private $curlMulti;
 
 private $requestArray = [];
 private $deferredArray = [];
+private $responseArray = [];
 private $index;
 private $openConnectionCount = null;
 
@@ -49,12 +50,12 @@ public function tick() {
 		if($request->getResponseCode() === 200) {
 			$requestIndex = array_search($request, $this->requestArray);
 			$curl = $request->getCurlHandle();
-			$this->deferredArray[$requestIndex]->resolve(
-				new Response(
-					$this->curlMulti->getContent($curl),
-					$curl->getInfo()
-				)
-			);
+			// $this->deferredArray[$requestIndex]->resolve(
+			// 	new Response(
+			// 		$this->curlMulti->getContent($curl),
+			// 		$curl->getInfo()
+			// 	)
+			// );
 		}
 
 	}while($messagesInQueue > 0);
@@ -79,9 +80,11 @@ public function tick() {
  */
 private function start() {
 	foreach($this->requestArray as $i => $request) {
-		$successCode = $this->curlMulti->add($request->getCurlHandle());
+		$response = new Response($this->deferredArray[$i]);
+		$this->responseArray []= $response;
+		$curl = $request->setStream([$response, "stream"]);
 
-		if($successCode !== 0) {
+		if(0 !== $this->curlMulti->add($request->getCurlHandle())) {
 			throw new CurlMultiException($successCode);
 		}
 	}

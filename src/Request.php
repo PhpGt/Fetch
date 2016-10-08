@@ -131,6 +131,10 @@ public function getResponseCode():int {
 	return (int)$this->curl->getInfo(CURLINFO_HTTP_CODE);
 }
 
+public function setStream(callable $callback) {
+	$this->curl->setOpt(CURLOPT_WRITEFUNCTION, $callback);
+}
+
 private function curlInit($options = []) {
 	$defaultOptions = [];
 
