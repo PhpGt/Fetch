@@ -21,19 +21,15 @@ use React\EventLoop\LoopInterface;
 class Response {
 use Body;
 
-/**
- * @var Headers
- */
+/** @var Headers */
 private $headers;
 private $rawHeaders = "";
 private $rawBody = "";
-/**
- * React\Promise\Deferred;
- */
-private $readRawBodyDeferred;
-/**
- * @var React\Promise\Deferred
- */
+
+/** @var React\Promise\Deferred[] */
+private $readRawBodyDeferredArray = [];
+
+/** @var React\Promise\Deferred */
 private $deferredResponse;
 private $isHeaderStreaming;
 
@@ -59,9 +55,13 @@ public function stream($curlHandle, string $data):int {
 	}
 	else {
 		$this->rawBody .= $data;
-		if(is_callable([$this->readRawBodyDeferred, "notify"])) {
-			$this->readRawBodyDeferred->notify($data);
+
+		foreach($this->readRawBodyDeferredArray as $readRawBodyDeferred) {
+			if(is_callable([$readRawBodyDeferred, "notify"])) {
+				$readRawBodyDeferred->notify($data);
+			}
 		}
+
 	}
 
 	return $bytesRead;
@@ -72,7 +72,9 @@ public function stream($curlHandle, string $data):int {
  * response has arrived, so we can resolve any functions reading the body.
  */
 public function complete(int $statusCode) {
-	$this->readRawBodyDeferred->resolve($this->rawBody);
+	foreach($this->readRawBodyDeferredArray as $readRawBodyDeferred) {
+		$readRawBodyDeferred->resolve($this->rawBody);
+	}
 }
 
 public function redirect() {

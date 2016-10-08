@@ -50,7 +50,7 @@ public function json():Promise {
 public function text():Promise {
 	$deferredText = new Deferred();
 	$promise = $deferredText->promise();
-	$this->readRawBodyDeferred = $deferredText;
+	$this->readRawBodyDeferredArray []= $deferredText;
 	return $promise;
 	// $charset = $this->getCharset();
 	// $toEncoding = "utf-8";
