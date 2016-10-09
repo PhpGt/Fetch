@@ -3,6 +3,7 @@ namespace phpgt\fetch;
 
 use React\Promise\Deferred;
 use React\EventLoop\LoopInterface;
+use PHPCurl\CurlWrapper\Curl;
 
 /**
  * @property-read bool $bodyUsed Indicates whether the body has been read yet
@@ -25,6 +26,7 @@ use Body;
 private $headers;
 private $rawHeaders = "";
 private $rawBody = "";
+private $curlInfo;
 
 /** @var React\Promise\Deferred[] */
 private $readRawBodyDeferredArray = [];
@@ -40,6 +42,16 @@ public function __construct(Deferred $deferredResponse, LoopInterface $loop) {
 	$this->deferredResponse = $deferredResponse;
 }
 
+public function __get($name) {
+	switch($name) {
+	case "status":
+		return (int)$this->curlInfo["http_code"];
+
+	case "info":
+		return $this->curlInfo;
+	}
+}
+
 public function stream($curlHandle, string $data):int {
 	$bytesRead = strlen($data);
 
@@ -52,6 +64,7 @@ public function stream($curlHandle, string $data):int {
 		$this->isHeaderStreaming = $this->setHeaders($data);
 
 		if(!$this->isHeaderStreaming) {
+			$this->curlInfo = curl_getinfo($curlHandle);
 			$this->deferredResponse->resolve($this);
 		}
 	}
