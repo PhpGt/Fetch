@@ -15,9 +15,12 @@ private $loop;
 private $curlMulti;
 
 // TODO: Should these be refactored out into objects?
-private $requestArray = [];
+/** @var Deferred[] */
 private $deferredArray = [];
+/** @var Response[] */
 private $responseArray = [];
+/** @var Request[] */
+private $requestArray = [];
 /** @var int  */
 private $openConnectionCount = null;
 
