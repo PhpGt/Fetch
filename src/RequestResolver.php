@@ -9,19 +9,16 @@ use React\EventLoop\LoopInterface;
  */
 class RequestResolver {
 
-/**
- * @var \React\EventLoop\LoopInterface
- */
+/** @var \React\EventLoop\LoopInterface */
 private $loop;
-/**
- * @var \PHPCurl\CurlWrapper\CurlMulti
- */
+/** @var \PHPCurl\CurlWrapper\CurlMulti */
 private $curlMulti;
 
 // TODO: Should these be refactored out into objects?
 private $requestArray = [];
 private $deferredArray = [];
 private $responseArray = [];
+/** @var int  */
 private $openConnectionCount = null;
 
 public function __construct(LoopInterface $loop,
@@ -45,10 +42,13 @@ public function tick() {
 		$this->start();
 	}
 
-// Set by the curlMulti->infoRead (passed by reference).
+// Set by the curlMulti->infoRead (passed by reference).  Note this is not
+// the same as the number of requests or responses that are open.
 	$messagesInQueue = 0;
 
 	do {
+// always returns false until at least one curl handle has response headers
+// ready to read.  (The body might not be there yet though.)
 		$info = $this->curlMulti->infoRead($messagesInQueue);
 
 		if($info === false) {
@@ -56,11 +56,11 @@ public function tick() {
 		}
 
 		$request = $this->matchRequest($info["handle"]);
-		$code = $request->getResponseCode();
-		$requestIndex = array_search($request, $this->requestArray);
-		$this->responseArray[$requestIndex]->complete($code);
+        $requestIndex = array_search($request, $this->requestArray);
+        $httpStatusCode = $request->getResponseCode();
+        $this->responseArray[$requestIndex]->complete($httpStatusCode);
 
-	}while($messagesInQueue > 0);
+	} while($messagesInQueue > 0);
 
 	if($this->openConnectionCount === 0) {
 // TODO: Do we need to do anything else here?
@@ -71,6 +71,7 @@ public function tick() {
 	$this->curlMulti->select();
 
 // Execute the multi handle for processing next tick.
+// openConnectionCount is passed by reference and updated by this call in each tick
 	$status = $this->curlMulti->exec($this->openConnectionCount);
 	if($status !== CURLM_OK) {
 		throw new CurlMultiException($status);
