@@ -6,30 +6,27 @@ use React\Promise\Deferred;
 use React\Promise\Promise;
 
 /**
- * @method React\Promise\Promise get(string|Request $input, array $init)
- * @method React\Promise\Promise post(string|Request $input, array $init)
- * @method React\Promise\Promise head(string|Request $input, array $init)
- * @method React\Promise\Promise put(string|Request $input, array $init)
- * @method React\Promise\Promise delete(string|Request $input, array $init)
- * @method React\Promise\Promise options(string|Request $input, array $init)
- * @method React\Promise\Promise patch(string|Request $input, array $init)
+ * @method Promise get(string|Request $input, array $init)
+ * @method Promise post(string|Request $input, array $init)
+ * @method Promise head(string|Request $input, array $init)
+ * @method Promise put(string|Request $input, array $init)
+ * @method Promise delete(string|Request $input, array $init)
+ * @method Promise options(string|Request $input, array $init)
+ * @method Promise patch(string|Request $input, array $init)
  */
 class Http {
 
-/**
- * @var React\EventLoop\LoopInterface
- */
+/** @var \React\EventLoop\LoopInterface */
 private $loop;
-/**
- * @var React\EventLoop\Timer\TimerInterface
- */
+/** @var \React\EventLoop\Timer\TimerInterface */
 private $timer;
-/**
- * @var phpgt\Fetch\RequestResolver
- */
+/** @var \phpgt\Fetch\RequestResolver */
 private $requestResolver;
+/** @var float */
+private $interval;
 
-public function __construct(float $interval = 0.1) {
+public function __construct(float $interval = 0.01) {
+    $this->interval = $interval;
 	$this->loop = EventLoopFactory::create();
 	$this->requestResolver = new RequestResolver($this->loop);
 }
@@ -67,7 +64,7 @@ public function __call($name, $arguments) {
  * @param array $init An associative array containing any custom settings that
  * you wish to apply to the request
  *
- * @return React\Promise\Promise
+ * @return \React\Promise\Promise
  */
 public function request($input, array $init = []) {
 	$deferred = new Deferred();
@@ -88,7 +85,7 @@ public function request($input, array $init = []) {
  */
 public function wait() {
 	$this->timer = $this->loop->addPeriodicTimer(
-		0.1, [$this->requestResolver, "tick"]
+		$this->interval, [$this->requestResolver, "tick"]
 	);
 	$this->loop->run();
 }
@@ -97,7 +94,7 @@ public function wait() {
  * Executes all promises in parallel, returning a promise that resolves when
  * all HTTP requests have completed.
  *
- * @return React\Promise\Promise Resolved when all HTTP requests have
+ * @return \React\Promise\Promise Resolved when all HTTP requests have
  * completed
  */
 public function all() {

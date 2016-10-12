@@ -3,7 +3,6 @@ namespace phpgt\fetch;
 
 use React\Promise\Deferred;
 use React\EventLoop\LoopInterface;
-use PHPCurl\CurlWrapper\Curl;
 
 /**
  * @property-read bool $bodyUsed Indicates whether the body has been read yet
@@ -22,20 +21,25 @@ use PHPCurl\CurlWrapper\Curl;
 class Response {
 use Body;
 
+const STREAM_TARGET_HEADERS = "HEADERS";
+const STREAM_TARGET_BODY = "BODY";
+
+/** @var int Can only be accessed via the __get, as per the fetch API. */
+private $statusCode;
 /** @var Headers */
 private $headers;
-private $rawHeaders = "";
 private $rawBody = "";
+/** @var array */
 private $curlInfo;
 
-/** @var React\Promise\Deferred[] */
+/** @var Deferred[] */
 private $readRawBodyDeferredArray = [];
 /** @var callable[] */
 private $readRawBodyDeferredTransformArray = [];
 
-/** @var React\Promise\Deferred */
+/** @var Deferred */
 private $deferredResponse;
-private $isHeaderStreaming;
+private $streamTarget = self::STREAM_TARGET_HEADERS;
 
 public function __construct(Deferred $deferredResponse, LoopInterface $loop) {
 	$this->headers = new Headers();
@@ -45,39 +49,40 @@ public function __construct(Deferred $deferredResponse, LoopInterface $loop) {
 public function __get($name) {
 	switch($name) {
 	case "status":
-		return (int)$this->curlInfo["http_code"];
+		return $this->statusCode;
+        break;
 
-	case "info":
-		return $this->curlInfo;
-	}
+    default:
+        trigger_error("Undefined property: "
+            . __CLASS__
+            . "::\$"
+            . $name
+            , E_USER_NOTICE
+        );
+        return null;
+    }
 }
 
 public function stream($curlHandle, string $data):int {
 	$bytesRead = strlen($data);
 
-	if(is_null($this->isHeaderStreaming)) {
-		$this->isHeaderStreaming = true;
-	}
+    if($this->streamTarget === self::STREAM_TARGET_HEADERS) {
+        if ($this->setHeaders($data) !== true) {
+            $this->streamTarget = self::STREAM_TARGET_BODY;
+            $this->curlInfo = curl_getinfo($curlHandle);
+            $this->deferredResponse->resolve($this);
+        }
+    }
 
-	if($this->isHeaderStreaming) {
-		$this->rawHeaders .= $data;
-		$this->isHeaderStreaming = $this->setHeaders($data);
+    if($this->streamTarget === self::STREAM_TARGET_BODY) {
+        $this->rawBody .= $data;
 
-		if(!$this->isHeaderStreaming) {
-			$this->curlInfo = curl_getinfo($curlHandle);
-			$this->deferredResponse->resolve($this);
-		}
-	}
-	else {
-		$this->rawBody .= $data;
-
-		foreach($this->readRawBodyDeferredArray as $readRawBodyDeferred) {
-			if(is_callable([$readRawBodyDeferred, "notify"])) {
-				$readRawBodyDeferred->notify($data);
-			}
-		}
-
-	}
+        foreach ($this->readRawBodyDeferredArray as $readRawBodyDeferred) {
+            if (is_callable([$readRawBodyDeferred, "notify"])) {
+                $readRawBodyDeferred->notify($data);
+            }
+        }
+    }
 
 	return $bytesRead;
 }
@@ -88,8 +93,11 @@ public function stream($curlHandle, string $data):int {
  *
  * Each deferred reader has its own transform function to manupulate the body
  * into the expected format, which is called within the same iteration.
+ *
+ * @param   $statusCode  int    The HTTP status code of the completed response
  */
 public function complete(int $statusCode) {
+    $this->statusCode = $statusCode;
 	foreach($this->readRawBodyDeferredArray as $i => $readRawBodyDeferred) {
 		$readRawBodyDeferred->resolve(
 			$this->readRawBodyDeferredTransformArray[$i]($this->rawBody)
@@ -98,7 +106,8 @@ public function complete(int $statusCode) {
 }
 
 public function redirect() {
-
+// TODO: Implement redirect()
+    throw new \Exception("Method not yet implemented");
 }
 
 /**
@@ -118,7 +127,7 @@ private function setHeaders(string $rawHeader):bool {
 			return false;
 		}
 
-		$this->headers->set($header, $value);
+		$this->headers->append($header, $value);
 	}
 
 	return true;
@@ -128,6 +137,9 @@ private function setHeaders(string $rawHeader):bool {
  * Parses provided header string, returning KVP array.
  * Code taken from http://php.net/manual/bg/function.http-parse-headers.php
  * as not all systems will have PECL HTTP extension installed.
+ *
+ * @param   $rawHeaders string  The raw headers to be parsed
+ * @return  array               An array of headers
  */
 private function parseHeaders(string $rawHeaders):array {
 	$headers = [];
@@ -172,11 +184,13 @@ private function parseHeaders(string $rawHeaders):array {
 
 
 public function clone() {
-
+// TODO: Implement clone()
+    throw new \Exception("Method not yet implemented");
 }
 
 public function error() {
-
+// TODO: Implement error()
+    throw new \Exception("Method not yet implemented");
 }
 
 /**
