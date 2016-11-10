@@ -24,7 +24,7 @@ Based on the client-side [JavaScript fetch API][fetch].
 
 ```php
 <?php
-$http = new \phpgt\fetch\Http();
+$http = new \Gt\Fetch\Http();
 
 $http->get("http://example.com/api/something.json")
 ->then(function($response) {

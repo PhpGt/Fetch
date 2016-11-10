@@ -1,5 +1,5 @@
 <?php
-namespace phpgt\fetch;
+namespace Gt\Fetch;
 
 use React\EventLoop\Factory as EventLoopFactory;
 use React\Promise\Deferred;
@@ -20,7 +20,7 @@ class Http {
 private $loop;
 /** @var \React\EventLoop\Timer\TimerInterface */
 private $timer;
-/** @var \phpgt\Fetch\RequestResolver */
+/** @var \Gt\Fetch\RequestResolver */
 private $requestResolver;
 /** @var float */
 private $interval;

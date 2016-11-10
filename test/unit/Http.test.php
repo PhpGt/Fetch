@@ -1,5 +1,5 @@
 <?php
-namespace phpgt\fetch;
+namespace Gt\Fetch;
 
 require_once __DIR__ . "/../../vendor/autoload.php";
 
@@ -56,7 +56,7 @@ public function testResponseType() {
 	$http = new Http();
 	$http->request(self::URL)
 		->then(function($response) {
-			$this->assertInstanceOf("\phpgt\fetch\Response", $response);
+			$this->assertInstanceOf("\Gt\Fetch\Response", $response);
 		});
 	$http->wait();
 }

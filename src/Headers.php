@@ -1,5 +1,5 @@
 <?php
-namespace phpgt\fetch;
+namespace Gt\Fetch;
 
 /**
  * The Headers interface of the Fetch API allows you to perform various actions

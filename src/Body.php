@@ -1,5 +1,5 @@
 <?php
-namespace phpgt\fetch;
+namespace Gt\Fetch;
 
 use React\Promise\Promise;
 use React\Promise\Deferred;

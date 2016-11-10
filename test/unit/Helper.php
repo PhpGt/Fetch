@@ -1,3 +1,4 @@
 <?php
-namespace phpgt\fetch\test;
+namespace Gt\Fetch\Test;
+
 class Helper {}#
