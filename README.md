@@ -1,4 +1,4 @@
-# Asynchronous HTTP client with promises for PHP 7 applications.
+# Asynchronous HTTP client with promises for PHP 7 projects.
 
 Based on the client-side [JavaScript fetch API][fetch].
 
