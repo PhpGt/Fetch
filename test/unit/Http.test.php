@@ -1,11 +1,7 @@
 <?php
 namespace Gt\Fetch;
 
-require_once __DIR__ . "/../../vendor/autoload.php";
-
 class HttpTest extends \PHPUnit_Framework_TestCase {
-
-const URL = "https://github.com/phpgt/fetch";
 
 public function testPromiseReturned() {
 	$http = new Http();
