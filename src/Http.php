@@ -3,7 +3,8 @@ namespace Gt\Fetch;
 
 use Http\Client\HttpClient;
 use Http\Client\HttpAsyncClient;
-use Http\Promise\Promise;
+use React\EventLoop\StreamSelectLoop;
+use React\Promise\Deferred;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Factory as EventLoopFactory;
@@ -12,9 +13,13 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 
 const REFERRER = "PhpGt/Fetch";
 
+/** @var float */
 private $interval;
+/** @var StreamSelectLoop  */
 private $loop;
+/** @var RequestResolver */
 private $requestResolver;
+/** @var array cURL options */
 private $options = [
 	CURLOPT_CUSTOMREQUEST => "GET",
 	CURLOPT_FOLLOWLOCATION => true,
@@ -34,7 +39,9 @@ public function getOptions():array {
 }
 
 public function fetch($input, array $init = []):Promise {
-	// TODO: Implement fetch() method.
+	$deferred = new Deferred();
+	$promise = new Promise($deferred->promise());
+	return $promise;
 }
 
 /**
