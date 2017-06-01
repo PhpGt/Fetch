@@ -3,6 +3,7 @@ namespace Gt\Fetch;
 
 use Http\Client\HttpClient;
 use Http\Client\HttpAsyncClient;
+use Psr\Http\Message\UriInterface;
 use React\EventLoop\StreamSelectLoop;
 use React\Promise\Deferred;
 use Psr\Http\Message\RequestInterface;
@@ -38,9 +39,26 @@ public function getOptions():array {
 	return $this->options;
 }
 
+/**
+ * Creates a new Deferred object to perform the resolution of the request and
+ * returns a PSR-7 compatible promise that represents the result of the response
+ *
+ * Long-hand for the GlobalFetchHelper get, head, post, etc.
+ *
+ * @param string|RequestInterface $input
+ * @param array $init
+ * @return Promise
+ */
 public function fetch($input, array $init = []):Promise {
 	$deferred = new Deferred();
 	$promise = new Promise($deferred->promise());
+
+	$uri = $input;
+	if($uri instanceof RequestInterface) {
+		$uri = (string)$uri;
+	}
+
+	$this->requestResolver->add($uri, $deferred);
 	return $promise;
 }
 
