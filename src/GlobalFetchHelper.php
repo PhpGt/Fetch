@@ -40,7 +40,6 @@ public function __call($name, $args) {
 			,
 			E_USER_ERROR
 		);
-		return;
 	}
 
 	$init = $args[1] ?? [];

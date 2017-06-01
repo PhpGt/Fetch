@@ -6,6 +6,6 @@ use Http\Promise\Promise;
 
 interface GlobalFetch {
 
-public function fetch($input, array $init = []) : Promise;
+public function fetch($input, array $init = []):Promise;
 
 }#
