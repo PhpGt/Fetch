@@ -35,10 +35,6 @@ public function __construct(array $options = [], float $interval = 0.01) {
 	$this->requestResolver = new RequestResolver($this->loop);
 }
 
-public function getOptions():array {
-	return $this->options;
-}
-
 /**
  * Creates a new Deferred object to perform the resolution of the request and
  * returns a PSR-7 compatible promise that represents the result of the response
@@ -60,6 +56,10 @@ public function fetch($input, array $init = []):Promise {
 
 	$this->requestResolver->add($uri, $deferred);
 	return $promise;
+}
+
+public function getOptions():array {
+	return $this->options;
 }
 
 /**
