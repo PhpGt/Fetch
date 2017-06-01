@@ -5,10 +5,10 @@
 
     "require": {
         "php": ">=7.0.0",
-        "react/event-loop": "^0.4.2",
-        "react/promise": "^2.4",
+        "react/event-loop": "^0.4",
+        "react/stream": "^0.7",
         "phpcurl/curlwrapper": "^1.0",
-        "react/stream": "^0.4.4"
+        "php-http/httplug": "^1.1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "5.*"
@@ -31,6 +31,7 @@
 
     "keywords": [
         "http",
+        "httplug",
         "fetch",
         "async",
         "asynchronous",
