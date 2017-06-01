@@ -63,6 +63,31 @@ public function getOptions():array {
 }
 
 /**
+ * Executes all promises in parallel, returning only when all promises
+ * have been fulfilled.
+ */
+public function wait() {
+	$this->timer = $this->loop->addPeriodicTimer(
+		$this->interval,
+		[$this->requestResolver, "tick"]
+	);
+	$this->loop->run();
+}
+
+/**
+ * Begins execution of all promises, returning its own Promise that will
+ * resolve when the last HTTP request is fully resolved.
+ */
+public function all():Promise {
+	$deferred = new Deferred();
+	$promise = new Promise($deferred);
+	$this->wait();
+
+	$deferred->resolve(true);
+	return $promise;
+}
+
+/**
  * Sends a PSR-7 request.
  *
  * @param RequestInterface $request
