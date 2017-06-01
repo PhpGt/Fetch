@@ -49,10 +49,7 @@ public function fetch($input, array $init = []):Promise {
 	$deferred = new Deferred();
 	$promise = new Promise($deferred->promise());
 
-	$uri = $input;
-	if($uri instanceof RequestInterface) {
-		$uri = (string)$uri;
-	}
+	$uri = $this->ensureStringUri($input);
 
 	$this->requestResolver->add($uri, $deferred);
 	return $promise;
@@ -60,6 +57,18 @@ public function fetch($input, array $init = []):Promise {
 
 public function getOptions():array {
 	return $this->options;
+}
+
+/**
+ * @param string|RequestInterface $uri
+ * @return string
+ */
+public function ensureStringUri($uri):string {
+	if($uri instanceof RequestInterface) {
+		$uri = (string)$uri;
+	}
+
+	return $uri;
 }
 
 /**

@@ -3,6 +3,7 @@ namespace Gt\Fetch;
 
 use PHPCurl\CurlWrapper\CurlMulti;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 
 class RequestResolver {
 
@@ -15,6 +16,10 @@ public function __construct(
 ) {
 	$this->loop = $loop;
 	$this->curlMulti = new $curlMultiClass();
+}
+
+public function add(string $uri, Deferred $deferred) {
+
 }
 
 }

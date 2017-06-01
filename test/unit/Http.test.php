@@ -25,4 +25,10 @@ public function testDefaultOptionsOverridden() {
 	$this->assertEquals(false, $actualOptions[CURLOPT_FOLLOWLOCATION]);
 }
 
+public function testEnsureStringUri() {
+	$http = new Http();
+	$uriToUse = Test\Helper::URI_FAKE;
+	$request = new Request();
+}
+
 }#
