@@ -12,4 +12,17 @@ public function testDefaultOptions() {
 	$this->assertNotEmpty($http->getOptions());
 }
 
+public function testDefaultOptionsOverridden() {
+	$http = new Http();
+	$options = $http->getOptions();
+	$this->assertTrue($options[CURLOPT_FOLLOWLOCATION]);
+
+	$options = [
+		CURLOPT_FOLLOWLOCATION => false,
+	];
+	$http = new Http($options);
+	$actualOptions = $http->getOptions();
+	$this->assertEquals(false, $actualOptions[CURLOPT_FOLLOWLOCATION]);
+}
+
 }#

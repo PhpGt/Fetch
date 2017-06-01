@@ -22,7 +22,7 @@ private $options = [
 ];
 
 public function __construct(array $options = [], float $interval = 0.01) {
-	$this->options = array_merge($this->options, $options);
+	$this->options = $options + $this->options;
 	$this->interval = $interval;
 
 	$this->loop = EventLoopFactory::create();
