@@ -1,6 +1,6 @@
 # Asynchronous HTTP client with promises for PHP 7 projects.
 
-[PSR-7 compatible][psr-7] PHP implementation of the [Fetch Standard][fetch-standard] which defines requests, responses, and the process that binds them: fetching.
+[PSR-7 compatible][psr-7] implementation of the [Fetch Standard][fetch-standard] which defines requests, responses, and the process that binds them: fetching.
 
 See also, the [JavaScript implementation][fetch-js] that ships as standard in all modern browsers.
 
