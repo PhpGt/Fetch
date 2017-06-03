@@ -1,30 +1,29 @@
 # Asynchronous HTTP client with promises for PHP 7 projects.
 
-Based on the client-side [JavaScript fetch API][fetch].
+[PSR-7 compatible][psr-7] PHP implementation of the [Fetch Standard][fetch-standard] which defines requests, responses, and the process that binds them: fetching.
+
+See also, the [JavaScript implementation][fetch-js] that ships as standard in all modern browsers.
 
 ***
 
-<a href="https://gitter.im/phpgt/fetch" target="_blank">
-    <img src="https://img.shields.io/gitter/room/phpgt/fetch.svg?style=flat-square" alt="Gitter chat" />
+<a href="https://circleci.com/gh/PhpGt/Fetch" target="_blank">
+    <img src="https://img.shields.io/circleci/project/PhpGt/Fetch/master.svg?style=flat-square" alt="Build status" />
 </a>
-<a href="https://circleci.com/gh/phpgt/fetch" target="_blank">
-    <img src="https://img.shields.io/circleci/project/phpgt/fetch/master.svg?style=flat-square" alt="Build status" />
+<a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
+    <img src="https://img.shields.io/scrutinizer/g/PhpGt/Fetch/master.svg?style=flat-square" alt="Code quality" />
 </a>
-<a href="https://scrutinizer-ci.com/g/phpgt/fetch" target="_blank">
-    <img src="https://img.shields.io/scrutinizer/g/phpgt/fetch/master.svg?style=flat-square" alt="Code quality" />
+<a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
+    <img src="https://img.shields.io/scrutinizer/coverage/g/PhpGt/Fetch/master.svg?style=flat-square" alt="Code coverage" />
 </a>
-<a href="https://scrutinizer-ci.com/g/phpgt/fetch" target="_blank">
-    <img src="https://img.shields.io/scrutinizer/coverage/g/phpgt/fetch/master.svg?style=flat-square" alt="Code coverage" />
-</a>
-<a href="https://packagist.org/packages/phpgt/fetch" target="_blank">
-    <img src="https://img.shields.io/packagist/v/phpgt/fetch.svg?style=flat-square" alt="Current version" />
+<a href="https://packagist.org/packages/PhpGt/Fetch" target="_blank">
+    <img src="https://img.shields.io/packagist/v/PhpGt/Fetch.svg?style=flat-square" alt="Current version" />
 </a>
 
 ## Example usage: compute multiple HTTP requests in parallel.
 
 ```php
 <?php
-$http = new \Gt\Fetch\Http();
+$http = new Gt\Fetch\Http();
 
 $http->get("http://example.com/api/something.json")
 ->then(function($response) {
@@ -60,4 +59,6 @@ $http->all()->then(function() {
 });
 ```
 
-[fetch]: https://developer.mozilla.org/en/docs/Web/API/Fetch_API
+[psr-7]: http://www.php-fig.org/psr/psr-7/
+[fetch-standard]: https://fetch.spec.whatwg.org/
+[fetch-js]: https://developer.mozilla.org/en/docs/Web/API/Fetch_API
