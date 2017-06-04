@@ -60,4 +60,13 @@ public function testWithPort() {
 	$this->assertEquals(1234, $newUri->getPort());
 	$this->assertEquals("fake://php.gt:1234/fetch", (string)$newUri);
 }
+
+public function testWithPath() {
+	$uri = new Uri(test\Helper::URI_SIMPLE);
+	$newUri = $uri->withPath("/webengine");
+
+	$this->assertEquals("/webengine", $newUri->getPath());
+	$this->assertEquals("fake://php.gt/webengine", (string)$newUri);
+}
+
 }#
