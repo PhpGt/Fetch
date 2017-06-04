@@ -361,6 +361,7 @@ public function withHost($host) {
 public function withPort($port) {
 	$new = clone $this;
 	$new->setComponents(["port" => $port]);
+	return $new;
 }
 
 /**

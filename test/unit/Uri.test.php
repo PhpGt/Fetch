@@ -52,4 +52,12 @@ public function testWithHost() {
 	$this->assertEquals("phpgt.com", $newUri->getHost());
 	$this->assertEquals("fake://phpgt.com/fetch", (string)$newUri);
 }
+
+public function testWithPort() {
+	$uri = new Uri(test\Helper::URI_SIMPLE);
+	$newUri = $uri->withPort(1234);
+
+	$this->assertEquals(1234, $newUri->getPort());
+	$this->assertEquals("fake://php.gt:1234/fetch", (string)$newUri);
+}
 }#
