@@ -29,4 +29,12 @@ public function testComplexUrl() {
 	$this->assertEquals("example", $uri->getFragment());
 }
 
+public function testWithScheme() {
+	$uri = new Uri(test\Helper::URI_SIMPLE);
+	$newUri = $uri->withScheme("updated");
+
+	$this->assertEquals("updated", $newUri->getScheme());
+	$this->assertEquals("updated://php.gt/fetch", (string)$newUri);
+}
+
 }#
