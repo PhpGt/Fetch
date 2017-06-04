@@ -77,4 +77,12 @@ public function testWithQuery() {
 	$this->assertEquals("fake://php.gt/fetch?name=Scarlett", (string)$newUri);
 }
 
+public function testWithFragment() {
+	$uri = new Uri(test\Helper::URI_SIMPLE);
+	$newUri = $uri->withFragment("example");
+
+	$this->assertEquals("example", $newUri->getFragment());
+	$this->assertEquals("fake://php.gt/fetch#example", (string)$newUri);
+}
+
 }#
