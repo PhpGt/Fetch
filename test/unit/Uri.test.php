@@ -45,4 +45,11 @@ public function testWithUserInfo() {
 	$this->assertEquals("fake://admin:secret@php.gt/fetch", (string)$newUri);
 }
 
+public function testWithHost() {
+	$uri = new Uri(test\Helper::URI_SIMPLE);
+	$newUri = $uri->withHost("phpgt.com");
+
+	$this->assertEquals("phpgt.com", $newUri->getHost());
+	$this->assertEquals("fake://phpgt.com/fetch", (string)$newUri);
+}
 }#
