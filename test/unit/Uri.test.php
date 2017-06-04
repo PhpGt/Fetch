@@ -37,4 +37,12 @@ public function testWithScheme() {
 	$this->assertEquals("updated://php.gt/fetch", (string)$newUri);
 }
 
+public function testWithUserInfo() {
+	$uri = new Uri(test\Helper::URI_SIMPLE);
+	$newUri = $uri->withUserInfo("admin", "secret");
+
+	$this->assertEquals("admin:secret", $newUri->getUserInfo());
+	$this->assertEquals("fake://admin:secret@php.gt/fetch", (string)$newUri);
+}
+
 }#
