@@ -86,7 +86,7 @@ public function withRequestTarget($requestTarget) {
  * @return string Returns the request method.
  */
 public function getMethod() {
-	// TODO: Implement getMethod() method.
+	return $this->method;
 }
 
 /**
@@ -105,7 +105,10 @@ public function getMethod() {
  * @throws \InvalidArgumentException for invalid HTTP methods.
  */
 public function withMethod($method) {
-	// TODO: Implement withMethod() method.
+	$new = clone $this;
+	$new->method = $method;
+
+	return $new;
 }
 
 /**
@@ -118,7 +121,7 @@ public function withMethod($method) {
  *     representing the URI of the request.
  */
 public function getUri() {
-	// TODO: Implement getUri() method.
+	return $this->uri;
 }
 
 /**
@@ -178,6 +181,14 @@ private function updateHostFromUri() {
 	// Ensure Host is the first header.
 	// See: http://tools.ietf.org/html/rfc7230#section-5.4
 	$this->headers = [$header => [$host]] + $this->headers;
+}
+
+private function getStream($contents) {
+
+}
+
+public function __toString() {
+	return (string)$this->uri;
 }
 
 }#
