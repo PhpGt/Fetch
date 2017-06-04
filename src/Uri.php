@@ -5,6 +5,11 @@ use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface {
 
+const STANDARD_PORTS = [
+	"http" => 80,
+	"https" => 443,
+];
+
 /** @var string */
 private $url;
 
@@ -69,7 +74,7 @@ public function setComponents(
  * @return string The URI scheme.
  */
 public function getScheme() {
-	// TODO: Implement getScheme() method.
+	return $this->getComponents()["scheme"];
 }
 
 /**
@@ -91,7 +96,23 @@ public function getScheme() {
  * @return string The URI authority, in "[user-info@]host[:port]" format.
  */
 public function getAuthority() {
-	// TODO: Implement getAuthority() method.
+	$userInfo = $this->getUserInfo();
+	$port = $this->getPort();
+
+	$authority = "";
+	if(!empty($userInfo)) {
+		$authority .= $userInfo;
+		$authority .= "@";
+	}
+
+	$authority .= $this->getHost();
+
+	if(!empty($port)) {
+		$authority .= ":";
+		$authority .= $port;
+	}
+
+	return $authority;
 }
 
 /**
@@ -110,7 +131,22 @@ public function getAuthority() {
  * @return string The URI user information, in "username[:password]" format.
  */
 public function getUserInfo() {
-	// TODO: Implement getUserInfo() method.
+	$userInfo = "";
+
+	$components = $this->getComponents();
+	$user = $components["user"] ?? "";
+	$pass = $components["pass"] ?? "";
+
+	if(!empty($user)) {
+		$userInfo .= $user;
+
+		if(!empty($pass)) {
+			$userInfo .= ":";
+			$userInfo .= $pass;
+		}
+	}
+
+	return $userInfo;
 }
 
 /**
@@ -125,7 +161,7 @@ public function getUserInfo() {
  * @return string The URI host.
  */
 public function getHost() {
-	// TODO: Implement getHost() method.
+	return $this->getComponents()["host"];
 }
 
 /**
@@ -144,7 +180,20 @@ public function getHost() {
  * @return null|int The URI port.
  */
 public function getPort() {
-	// TODO: Implement getPort() method.
+	$port = $this->getComponents()["port"] ?? null;
+	$scheme = $this->getComponents()["scheme"] ?? null;
+
+	if(is_null($scheme)) {
+		return $port;
+	}
+
+	if(array_key_exists($port, self::STANDARD_PORTS)) {
+		if(self::STANDARD_PORTS[$scheme] === $port) {
+			return null;
+		}
+	}
+
+	return $port;
 }
 
 /**
@@ -173,7 +222,7 @@ public function getPort() {
  * @return string The URI path.
  */
 public function getPath() {
-	// TODO: Implement getPath() method.
+	return $this->getComponents()["path"] ?? "";
 }
 
 /**
@@ -197,7 +246,7 @@ public function getPath() {
  * @return string The URI query string.
  */
 public function getQuery() {
-	// TODO: Implement getQuery() method.
+	return $this->getComponents()["query"] ?? "";
 }
 
 /**
@@ -217,7 +266,7 @@ public function getQuery() {
  * @return string The URI fragment.
  */
 public function getFragment() {
-	// TODO: Implement getFragment() method.
+	return $this->getComponents()["fragment"] ?? "";
 }
 
 /**
