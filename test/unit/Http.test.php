@@ -1,8 +1,6 @@
 <?php
 namespace Gt\Fetch;
 
-use Psr\Http\Message\RequestInterface;
-
 class HttpTest extends \PHPUnit_Framework_TestCase {
 
 /**
@@ -31,6 +29,9 @@ public function testEnsureStringUri() {
 	$http = new Http();
 	$uriToUse = Test\Helper::URI_FAKE;
 	$request = new Request("GET", $uriToUse);
+
+	$this->assertEquals($uriToUse, $http->ensureStringUri($request));
+	$this->assertEquals($uriToUse, $http->ensureStringUri($uriToUse));
 }
 
 }#
