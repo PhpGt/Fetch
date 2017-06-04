@@ -27,7 +27,7 @@ public function testDefaultOptionsOverridden() {
 
 public function testEnsureStringUri() {
 	$http = new Http();
-	$uriToUse = Test\Helper::URI_FAKE;
+	$uriToUse = Test\Helper::URI_SIMPLE;
 	$request = new Request("GET", $uriToUse);
 
 	$this->assertEquals($uriToUse, $http->ensureStringUri($request));
