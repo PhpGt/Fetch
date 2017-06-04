@@ -18,18 +18,22 @@ public function __construct(string $uri) {
 }
 
 public function getComponents():array {
-	return parse_url($this->url);
+	$c = parse_url($this->url);
+	if(false === $c) {
+		var_dump($this->url);die("!!!!!");
+	}
+	return $c;
 }
 
-public function setComponents(
-	string $scheme,
-	string $userInfo,
-	string $host,
-	int $port,
-	string $path = "/",
-	string $query = "",
-	string $fragment = ""
-) {
+public function setComponents(array $components) {
+	$scheme = $components["scheme"] ?? $this->getScheme();
+	$userInfo = $components["userInfo"] ?? $this->getUserInfo();
+	$host = $components["host"] ?? $this->getHost();
+	$port = $components["port"] ?? $this->getPort();
+	$path = $components["path"] ?? $this->getPath();
+	$query = $components["query"] ?? $this->getQuery();
+	$fragment = $components["fragment"] ?? $this->getFragment();
+
 	$url = "";
 	$url .= $scheme;
 	$url .= "://";
@@ -57,6 +61,8 @@ public function setComponents(
 		$url .= "#";
 		$url .= $fragment;
 	}
+
+	$this->url = $url;
 }
 
 /**
@@ -285,7 +291,9 @@ public function getFragment() {
  * @throws \InvalidArgumentException for invalid or unsupported schemes.
  */
 public function withScheme($scheme) {
-	// TODO: Implement withScheme() method.
+	$new = clone $this;
+	$new->setComponents(["scheme" => $scheme]);
+	return $new;
 }
 
 /**
@@ -303,7 +311,16 @@ public function withScheme($scheme) {
  * @return static A new instance with the specified user information.
  */
 public function withUserInfo($user, $password = null) {
-	// TODO: Implement withUserInfo() method.
+	$userInfo = $user;
+
+	if(!is_null($password)) {
+		$userInfo .= ":";
+		$userInfo .= $password;
+	}
+
+	$new = clone $this;
+	$new->setComponents(["userInfo" => $userInfo]);
+	return $new;
 }
 
 /**
@@ -319,7 +336,9 @@ public function withUserInfo($user, $password = null) {
  * @throws \InvalidArgumentException for invalid hostnames.
  */
 public function withHost($host) {
-	// TODO: Implement withHost() method.
+	$new = clone $this;
+	$new->setComponents(["host" => $host]);
+	return $new;
 }
 
 /**
@@ -340,7 +359,8 @@ public function withHost($host) {
  * @throws \InvalidArgumentException for invalid ports.
  */
 public function withPort($port) {
-	// TODO: Implement withPort() method.
+	$new = clone $this;
+	$new->setComponents(["port" => $port]);
 }
 
 /**
@@ -366,7 +386,9 @@ public function withPort($port) {
  * @throws \InvalidArgumentException for invalid paths.
  */
 public function withPath($path) {
-	// TODO: Implement withPath() method.
+	$new = clone $this;
+	$new->setComponents(["path" => $path]);
+	return $new;
 }
 
 /**
@@ -385,7 +407,9 @@ public function withPath($path) {
  * @throws \InvalidArgumentException for invalid query strings.
  */
 public function withQuery($query) {
-	// TODO: Implement withQuery() method.
+	$new = clone $this;
+	$new->setComponents(["query" => $query]);
+	return $new;
 }
 
 /**
@@ -403,7 +427,9 @@ public function withQuery($query) {
  * @return static A new instance with the specified fragment.
  */
 public function withFragment($fragment) {
-	// TODO: Implement withFragment() method.
+	$new = clone $this;
+	$new->setComponents(["fragment" => $fragment]);
+	return $new;
 }
 
 /**
@@ -430,7 +456,7 @@ public function withFragment($fragment) {
  * @return string
  */
 public function __toString() {
-	// TODO: Implement __toString() method.
+	return $this->url;
 }
 
 }#
