@@ -69,4 +69,12 @@ public function testWithPath() {
 	$this->assertEquals("fake://php.gt/webengine", (string)$newUri);
 }
 
+public function testWithQuery() {
+	$uri = new Uri(test\Helper::URI_SIMPLE);
+	$newUri = $uri->withQuery("name=Scarlett");
+
+	$this->assertEquals("name=Scarlett", $newUri->getQuery());
+	$this->assertEquals("fake://php.gt/fetch?name=Scarlett", (string)$newUri);
+}
+
 }#
