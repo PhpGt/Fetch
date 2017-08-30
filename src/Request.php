@@ -80,7 +80,7 @@ string $curlClass = "\PHPCurl\CurlWrapper\Curl") {
 	}
 
 	if(!empty($init["body"])) {
-		if(($method !== self::METHOD_GET || $method !== self::METHOD_HEAD)) {
+		if(($method === self::METHOD_GET || $method === self::METHOD_HEAD)) {
 			throw new HttpInitException("body");
 		}
 
