@@ -7,7 +7,7 @@
         "php": ">=7.0.0",
         "react/event-loop": "^0.4.2",
         "react/promise": "^2.4",
-        "phpcurl/curlwrapper": "^1.0",
+        "phpcurl/curlwrapper": "^2.1",
         "react/stream": "^0.4.4"
     },
     "require-dev": {
