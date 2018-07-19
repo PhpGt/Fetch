@@ -1,6 +1,6 @@
 {
     "name": "phpgt/fetch",
-    "description": "Asynchronous HTTP client with promises for PHP 7 applications.",
+    "description": "Asynchronous HTTP client with promises.",
     "type": "library",
 
     "require": {
