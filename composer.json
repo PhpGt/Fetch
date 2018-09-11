@@ -4,6 +4,8 @@
 	"type": "library",
 	"license": "MIT",
 
+	"minimum-stability": "dev",
+
 	"require": {
 		"php": ">=7.1.0",
 		"ext-curl": "*",
@@ -13,6 +15,8 @@
 		"react/event-loop": "^1.0.0",
 		"react/stream": "^1.0.0",
 		"react/promise": "^2.7.0",
+		"react/http-client": "v0.5.9",
+		"phpgt/http": "dev-master",
 		"phpgt/curl": "dev-master"
 	},
 	"require-dev": {
