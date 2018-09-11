@@ -48,5 +48,4 @@ abstract class GlobalFetchHelper implements GlobalFetch {
 
 		return call_user_func_array([$this, "fetch"], $args);
 	}
-
 }

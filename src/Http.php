@@ -7,27 +7,31 @@ use Psr\Http\Message\UriInterface;
 use React\EventLoop\StreamSelectLoop;
 use React\Promise\Deferred;
 use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use React\EventLoop\Factory as EventLoopFactory;
+use React\Promise\PromiseInterface;
 
 class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 
 	const REFERRER = "PhpGt/Fetch";
 
 	/** @var float */
-	private $interval;
+	protected $interval;
 	/** @var StreamSelectLoop */
-	private $loop;
+	protected $loop;
 	/** @var RequestResolver */
-	private $requestResolver;
+	protected $requestResolver;
 	/** @var array cURL options */
-	private $options = [
+	protected $options = [
 		CURLOPT_CUSTOMREQUEST => "GET",
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_REFERER => self::REFERRER,
 	];
+	protected $timer;
 
-	public function __construct(array $options = [], float $interval = 0.01) {
+	public function __construct(
+		array $options = [],
+		float $interval = 0.01
+	) {
 		$this->options = $options + $this->options;
 		$this->interval = $interval;
 
@@ -41,13 +45,13 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 *
 	 * Long-hand for the GlobalFetchHelper get, head, post, etc.
 	 *
-	 * @param string|RequestInterface $input
+	 * @param string|UriInterface $input
 	 * @param array $init
-	 * @return Promise
+	 * @return PromiseInterface
 	 */
-	public function fetch($input, array $init = []): Promise {
+	public function fetch($input, array $init = []):PromiseInterface {
 		$deferred = new Deferred();
-		$promise = new Promise($deferred->promise());
+		$promise = $deferred->promise();
 
 		$uri = $this->ensureStringUri($input);
 
@@ -55,16 +59,16 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 		return $promise;
 	}
 
-	public function getOptions(): array {
+	public function getOptions():array {
 		return $this->options;
 	}
 
 	/**
-	 * @param string|RequestInterface $uri
+	 * @param string|UriInterface $uri
 	 * @return string
 	 */
-	public function ensureStringUri($uri): string {
-		if($uri instanceof RequestInterface) {
+	public function ensureStringUri($uri):string {
+		if($uri instanceof UriInterface) {
 			$uri = (string)$uri;
 		}
 
@@ -87,42 +91,20 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 * Begins execution of all promises, returning its own Promise that will
 	 * resolve when the last HTTP request is fully resolved.
 	 */
-	public function all(): Promise {
+	public function all():PromiseInterface {
 		$deferred = new Deferred();
-		$promise = new Promise($deferred);
+		$promise = $deferred->promise();
 		$this->wait();
 
 		$deferred->resolve(true);
 		return $promise;
 	}
 
-	/**
-	 * Sends a PSR-7 request.
-	 *
-	 * @param RequestInterface $request
-	 *
-	 * @return ResponseInterface
-	 *
-	 * @throws \Http\Client\Exception If an error happens during processing the request.
-	 * @throws \Exception             If processing the request is impossible (eg. bad configuration).
-	 */
-	public function sendRequest(RequestInterface $request) {
-		// TODO: Implement sendRequest() method.
-	}
-
-	/**
-	 * Sends a PSR-7 request in an asynchronous way.
-	 *
-	 * Exceptions related to processing the request are available from the returned Promise.
-	 *
-	 * @param RequestInterface $request
-	 *
-	 * @return Promise Resolves a PSR-7 Response or fails with an Http\Client\Exception.
-	 *
-	 * @throws \Exception If processing the request is impossible (eg. bad configuration).
-	 */
 	public function sendAsyncRequest(RequestInterface $request) {
 		// TODO: Implement sendAsyncRequest() method.
 	}
 
+	public function sendRequest(RequestInterface $request) {
+		// TODO: Implement sendRequest() method.
+	}
 }
