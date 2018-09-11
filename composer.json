@@ -6,6 +6,7 @@
 
 	"require": {
 		"php": ">=7.1.0",
+		"ext-curl": "*",
 		"psr/http-message": "^1.0",
 		"php-http/promise": "^1.0.0",
 		"react/event-loop": "^1.0.0",
