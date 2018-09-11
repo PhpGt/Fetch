@@ -78,11 +78,12 @@ class Http extends GlobalFetchHelper {
 	 * have been fulfilled.
 	 */
 	public function wait() {
-		$this->timer = $this->loop->addPeriodicTimer(
-			$this->interval,
-			[$this->requestResolver, "tick"]
-		);
-		$this->loop->run();
+//		$this->timer = $this->loop->addPeriodicTimer(
+//			$this->interval,
+//			[$this->requestResolver, "tick"]
+//		);
+//		$this->loop->run();
+		$this->requestResolver->temporaryThing();
 	}
 
 	/**

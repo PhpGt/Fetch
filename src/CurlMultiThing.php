@@ -4,7 +4,7 @@ namespace Gt\Fetch;
 use Psr\Http\Message\UriInterface;
 use React\Promise\Deferred;
 
-class DeferredUri {
+class CurlMultiThing {
 	protected $uri;
 	protected $deferred;
 
