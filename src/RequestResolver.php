@@ -7,19 +7,18 @@ use React\Promise\Deferred;
 
 class RequestResolver {
 
-private $loop;
-private $curlMulti;
+	private $loop;
+	private $curlMulti;
 
-public function __construct(
-	LoopInterface $loop,
-	string $curlMultiClass = CurlMulti::class
-) {
-	$this->loop = $loop;
-	$this->curlMulti = new $curlMultiClass();
-}
+	public function __construct(
+		LoopInterface $loop,
+		string $curlMultiClass = CurlMulti::class
+	) {
+		$this->loop = $loop;
+		$this->curlMulti = new $curlMultiClass();
+	}
 
-public function add(string $uri, Deferred $deferred) {
+	public function add(string $uri, Deferred $deferred) {
 
-}
-
+	}
 }

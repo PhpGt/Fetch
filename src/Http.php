@@ -12,117 +12,117 @@ use React\EventLoop\Factory as EventLoopFactory;
 
 class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 
-const REFERRER = "PhpGt/Fetch";
+	const REFERRER = "PhpGt/Fetch";
 
-/** @var float */
-private $interval;
-/** @var StreamSelectLoop  */
-private $loop;
-/** @var RequestResolver */
-private $requestResolver;
-/** @var array cURL options */
-private $options = [
-	CURLOPT_CUSTOMREQUEST => "GET",
-	CURLOPT_FOLLOWLOCATION => true,
-	CURLOPT_REFERER => self::REFERRER,
-];
+	/** @var float */
+	private $interval;
+	/** @var StreamSelectLoop */
+	private $loop;
+	/** @var RequestResolver */
+	private $requestResolver;
+	/** @var array cURL options */
+	private $options = [
+		CURLOPT_CUSTOMREQUEST => "GET",
+		CURLOPT_FOLLOWLOCATION => true,
+		CURLOPT_REFERER => self::REFERRER,
+	];
 
-public function __construct(array $options = [], float $interval = 0.01) {
-	$this->options = $options + $this->options;
-	$this->interval = $interval;
+	public function __construct(array $options = [], float $interval = 0.01) {
+		$this->options = $options + $this->options;
+		$this->interval = $interval;
 
-	$this->loop = EventLoopFactory::create();
-	$this->requestResolver = new RequestResolver($this->loop);
-}
-
-/**
- * Creates a new Deferred object to perform the resolution of the request and
- * returns a PSR-7 compatible promise that represents the result of the response
- *
- * Long-hand for the GlobalFetchHelper get, head, post, etc.
- *
- * @param string|RequestInterface $input
- * @param array $init
- * @return Promise
- */
-public function fetch($input, array $init = []):Promise {
-	$deferred = new Deferred();
-	$promise = new Promise($deferred->promise());
-
-	$uri = $this->ensureStringUri($input);
-
-	$this->requestResolver->add($uri, $deferred);
-	return $promise;
-}
-
-public function getOptions():array {
-	return $this->options;
-}
-
-/**
- * @param string|RequestInterface $uri
- * @return string
- */
-public function ensureStringUri($uri):string {
-	if($uri instanceof RequestInterface) {
-		$uri = (string)$uri;
+		$this->loop = EventLoopFactory::create();
+		$this->requestResolver = new RequestResolver($this->loop);
 	}
 
-	return $uri;
+	/**
+	 * Creates a new Deferred object to perform the resolution of the request and
+	 * returns a PSR-7 compatible promise that represents the result of the response
+	 *
+	 * Long-hand for the GlobalFetchHelper get, head, post, etc.
+	 *
+	 * @param string|RequestInterface $input
+	 * @param array $init
+	 * @return Promise
+	 */
+	public function fetch($input, array $init = []): Promise {
+		$deferred = new Deferred();
+		$promise = new Promise($deferred->promise());
+
+		$uri = $this->ensureStringUri($input);
+
+		$this->requestResolver->add($uri, $deferred);
+		return $promise;
+	}
+
+	public function getOptions(): array {
+		return $this->options;
+	}
+
+	/**
+	 * @param string|RequestInterface $uri
+	 * @return string
+	 */
+	public function ensureStringUri($uri): string {
+		if($uri instanceof RequestInterface) {
+			$uri = (string)$uri;
+		}
+
+		return $uri;
+	}
+
+	/**
+	 * Executes all promises in parallel, returning only when all promises
+	 * have been fulfilled.
+	 */
+	public function wait() {
+		$this->timer = $this->loop->addPeriodicTimer(
+			$this->interval,
+			[$this->requestResolver, "tick"]
+		);
+		$this->loop->run();
+	}
+
+	/**
+	 * Begins execution of all promises, returning its own Promise that will
+	 * resolve when the last HTTP request is fully resolved.
+	 */
+	public function all(): Promise {
+		$deferred = new Deferred();
+		$promise = new Promise($deferred);
+		$this->wait();
+
+		$deferred->resolve(true);
+		return $promise;
+	}
+
+	/**
+	 * Sends a PSR-7 request.
+	 *
+	 * @param RequestInterface $request
+	 *
+	 * @return ResponseInterface
+	 *
+	 * @throws \Http\Client\Exception If an error happens during processing the request.
+	 * @throws \Exception             If processing the request is impossible (eg. bad configuration).
+	 */
+	public function sendRequest(RequestInterface $request) {
+		// TODO: Implement sendRequest() method.
+	}
+
+	/**
+	 * Sends a PSR-7 request in an asynchronous way.
+	 *
+	 * Exceptions related to processing the request are available from the returned Promise.
+	 *
+	 * @param RequestInterface $request
+	 *
+	 * @return Promise Resolves a PSR-7 Response or fails with an Http\Client\Exception.
+	 *
+	 * @throws \Exception If processing the request is impossible (eg. bad configuration).
+	 */
+	public function sendAsyncRequest(RequestInterface $request) {
+		// TODO: Implement sendAsyncRequest() method.
+	}
+
 }
-
-/**
- * Executes all promises in parallel, returning only when all promises
- * have been fulfilled.
- */
-public function wait() {
-	$this->timer = $this->loop->addPeriodicTimer(
-		$this->interval,
-		[$this->requestResolver, "tick"]
-	);
-	$this->loop->run();
-}
-
-/**
- * Begins execution of all promises, returning its own Promise that will
- * resolve when the last HTTP request is fully resolved.
- */
-public function all():Promise {
-	$deferred = new Deferred();
-	$promise = new Promise($deferred);
-	$this->wait();
-
-	$deferred->resolve(true);
-	return $promise;
-}
-
-/**
- * Sends a PSR-7 request.
- *
- * @param RequestInterface $request
- *
- * @return ResponseInterface
- *
- * @throws \Http\Client\Exception If an error happens during processing the request.
- * @throws \Exception             If processing the request is impossible (eg. bad configuration).
- */
-public function sendRequest(RequestInterface $request) {
-	// TODO: Implement sendRequest() method.
-}
-
-/**
- * Sends a PSR-7 request in an asynchronous way.
- *
- * Exceptions related to processing the request are available from the returned Promise.
- *
- * @param RequestInterface $request
- *
- * @return Promise Resolves a PSR-7 Response or fails with an Http\Client\Exception.
- *
- * @throws \Exception If processing the request is impossible (eg. bad configuration).
- */
-public function sendAsyncRequest(RequestInterface $request) {
-	// TODO: Implement sendAsyncRequest() method.
-}
-
-}#
