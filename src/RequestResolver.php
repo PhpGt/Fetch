@@ -2,12 +2,15 @@
 namespace Gt\Fetch;
 
 use Gt\Curl\CurlMulti;
+use Psr\Http\Message\UriInterface;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
 
 class RequestResolver {
-	private $loop;
-	private $curlMulti;
+	protected $loop;
+	protected $curlMulti;
+	/** @var DeferredUri[] */
+	protected $deferredUrlList;
 
 	public function __construct(
 		LoopInterface $loop,
@@ -15,13 +18,17 @@ class RequestResolver {
 	) {
 		$this->loop = $loop;
 		$this->curlMulti = new $curlMultiClass();
+		$this->deferredUrlList = [];
 	}
 
-	public function add(string $uri, Deferred $deferred) {
-
+	public function add(UriInterface $uri, Deferred $deferred):void {
+		$this->deferredUrlList []= new DeferredUri(
+			$uri,
+			$deferred
+		);
 	}
 
-	public function tick() {
+	public function tick():void {
 
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch;
 
+use Gt\Http\Uri;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\StreamSelectLoop;
 use React\Promise\Deferred;
@@ -50,7 +51,7 @@ class Http extends GlobalFetchHelper {
 		$deferred = new Deferred();
 		$promise = $deferred->promise();
 
-		$uri = $this->ensureStringUri($input);
+		$uri = $this->ensureUriInterface($input);
 
 		$this->requestResolver->add($uri, $deferred);
 		return $promise;
@@ -64,9 +65,9 @@ class Http extends GlobalFetchHelper {
 	 * @param string|UriInterface $uri
 	 * @return string
 	 */
-	public function ensureStringUri($uri):string {
-		if($uri instanceof UriInterface) {
-			$uri = (string)$uri;
+	public function ensureUriInterface($uri):UriInterface {
+		if(is_string($uri)) {
+			$uri = new Uri($uri);
 		}
 
 		return $uri;

@@ -33,8 +33,8 @@ class HttpTest extends TestCase {
 		$uriToUse = Helper::URI_SIMPLE;
 		$request = new Request("GET", $uriToUse);
 
-		$this->assertEquals($uriToUse, $http->ensureStringUri($request));
-		$this->assertEquals($uriToUse, $http->ensureStringUri($uriToUse));
+		$this->assertEquals($uriToUse, $http->ensureUriInterface($request));
+		$this->assertEquals($uriToUse, $http->ensureUriInterface($uriToUse));
 	}
 
 }
