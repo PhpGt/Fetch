@@ -6,7 +6,6 @@ use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
 
 class RequestResolver {
-
 	private $loop;
 	private $curlMulti;
 
@@ -19,6 +18,10 @@ class RequestResolver {
 	}
 
 	public function add(string $uri, Deferred $deferred) {
+
+	}
+
+	public function tick() {
 
 	}
 }

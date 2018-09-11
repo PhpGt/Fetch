@@ -1,16 +1,13 @@
 <?php
 namespace Gt\Fetch;
 
-use Http\Client\HttpClient;
-use Http\Client\HttpAsyncClient;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\StreamSelectLoop;
 use React\Promise\Deferred;
-use Psr\Http\Message\RequestInterface;
 use React\EventLoop\Factory as EventLoopFactory;
 use React\Promise\PromiseInterface;
 
-class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
+class Http extends GlobalFetchHelper {
 
 	const REFERRER = "PhpGt/Fetch";
 
@@ -98,13 +95,5 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 
 		$deferred->resolve(true);
 		return $promise;
-	}
-
-	public function sendAsyncRequest(RequestInterface $request) {
-		// TODO: Implement sendAsyncRequest() method.
-	}
-
-	public function sendRequest(RequestInterface $request) {
-		// TODO: Implement sendRequest() method.
 	}
 }
