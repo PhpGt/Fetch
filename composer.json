@@ -6,26 +6,36 @@
 
 	"minimum-stability": "dev",
 
+	"provide": {
+		"php-http/client-implementation": "1.0",
+		"php-http/async-client-implementation": "1.0"
+	},
+
 	"require": {
 		"php": ">=7.1.0",
 		"ext-curl": "*",
-		"psr/http-message": "^1.0",
+		"ext-json": "*",
+		"phpgt/http": "dev-master",
+		"phpgt/curl": "dev-master",
+
 		"php-http/httplug": "^1.1",
 		"php-http/promise": "^1.0.0",
+
 		"react/event-loop": "^1.0.0",
 		"react/stream": "^1.0.0",
-		"react/promise": "^2.7.0",
-		"phpgt/http": "dev-master",
-		"phpgt/curl": "dev-master"
+		"react/promise": "^2.7.0"
 	},
+
 	"require-dev": {
-		"phpunit/phpunit": "7.3.*"
+		"phpunit/phpunit": "7.*"
 	},
+
 	"autoload": {
 		"psr-4": {
 			"Gt\\Fetch\\": "./src"
 		}
 	},
+
 	"autoload-dev": {
 		"psr-4": {
 			"Gt\\Fetch\\Test\\": "./test/unit"
