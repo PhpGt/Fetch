@@ -2,14 +2,26 @@
 namespace Gt\Fetch;
 
 use Gt\Curl\Curl;
+use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMulti;
+use Gt\Curl\CurlMultiInterface;
+use Gt\Http\Header\Parser;
+use Gt\Http\Response;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
 
 class RequestResolver {
 	protected $loop;
-	/** @var CurlMulti */
+
+	/** @var CurlInterface[] */
+	protected $curlReferenceList;
+	/** @var Deferred[] */
+	protected $deferredReferenceList;
+	/** @var Response[] */
+	protected $responseReferenceList;
+
+	/** @var CurlMultiInterface */
 	protected $curlMulti;
 
 	public function __construct(
@@ -17,37 +29,86 @@ class RequestResolver {
 		string $curlMultiClass = CurlMulti::class
 	) {
 		$this->loop = $loop;
-		$this->curlMulti = new CurlMulti();
-
-$this->handle = curl_multi_init();
-
+		$this->curlReferenceList = [];
+		$this->deferredReferenceList = [];
+		$this->curlMulti = new $curlMultiClass();
 	}
 
-	public function add(UriInterface $uri, Deferred $deferred):void {
-		$this->curlMulti->add(new Curl($uri));
+	public function add(
+		UriInterface $uri,
+		array $init,
+		Deferred $deferred
+	):void {
+		$curl = new Curl($uri);
 
-curl_multi_add_handle($this->handle, curl_init($uri));
+		if(!empty($init["curlopt"])) {
+			$curl->setOptArray($init["curlopt"]);
+		}
+
+		$curl->setOpt(CURLOPT_RETURNTRANSFER, true);
+		$curl->setOpt(CURLOPT_HEADER, true);
+
+		$this->curlMulti->add($curl);
+		$this->curlReferenceList []= $curl;
+		$this->deferredReferenceList []= $deferred;
+		$this->responseReferenceList []= new Response();
 	}
 
 	public function tick():void {
+		$active = 0;
 
-	}
+		ob_start();
+		$curlMultiCode = $this->curlMulti->exec($active);
+		ob_end_clean();
 
-	public function temporaryThing() {
+		while($state = $this->curlMulti->infoRead()) {
+			foreach($this->curlReferenceList as $i => $ch) {
+				if($state->getHandle() !== $ch) {
+					continue;
+				}
+
+				$content = $this->curlMulti->getContent(
+					$ch
+				);
+				$response = $this->responseReferenceList[$i];
+				if($response->getStatusCode()) {
+					$body = $response->getBody();
+					$body->write($content);
+
+					break;
+				}
+
+				list(
+					$headerString,
+					$bodyString
+				) = explode(
+					"\r\n\r\n",
+					$content
+				);
 
 
-		do {
-			$mrc = curl_multi_exec($this->handle, $active);
+				$headerParser = new Parser($headerString);
+				$response = $response->withProtocolVersion(
+					$headerParser->getProtocolVersion()
+				);
+				$response = $response->withStatus(
+					$headerParser->getStatusCode()
+				);
 
-			if ($state = curl_multi_info_read($this->handle)) {
-				print_r($state);
-				$info = curl_getinfo($state['handle']);
-				print_r($info);
-//				$callback(curl_multi_getcontent($state['handle']), $info);
-				curl_multi_remove_handle($this->handle, $state['handle']);
+				foreach($headerParser->getKeyValues() as $key => $value) {
+					$response = $response->withAddedHeader(
+						$key,
+						$value
+					);
+				}
+
+				$body = $response->getBody();
+				$body->write($bodyString);
+
+				$this->deferredReferenceList[$i]->resolve(
+					BodyResponseFactory::fromResponse($response)
+				);
 			}
-			usleep(10000); // stop wasting CPU cycles and rest for a couple ms
-
-		} while ($mrc == CURLM_CALL_MULTI_PERFORM || $active);
+		}
 	}
 }

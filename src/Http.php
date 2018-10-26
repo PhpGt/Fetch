@@ -2,14 +2,18 @@
 namespace Gt\Fetch;
 
 use Gt\Http\Uri;
+use Http\Client\HttpClient;
+use Http\Client\HttpAsyncClient;
+use Http\Promise\Promise;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\StreamSelectLoop;
 use React\Promise\Deferred;
 use React\EventLoop\Factory as EventLoopFactory;
 use React\Promise\PromiseInterface;
 
-class Http extends GlobalFetchHelper {
-
+class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	const REFERRER = "PhpGt/Fetch";
 
 	/** @var float */
@@ -38,6 +42,24 @@ class Http extends GlobalFetchHelper {
 	}
 
 	/**
+	 * @interface HttpClient
+	 */
+	public function sendRequest(
+		RequestInterface $request
+	):ResponseInterface {
+		// TODO: Implement sendRequest() method.
+	}
+
+	/**
+	 * @interface HttpAsyncClient
+	 */
+	public function sendAsyncRequest(
+		RequestInterface $request
+	):Promise {
+		// TODO: Implement sendAsyncRequest() method.
+	}
+
+	/**
 	 * Creates a new Deferred object to perform the resolution of the request and
 	 * returns a PSR-7 compatible promise that represents the result of the response
 	 *
@@ -53,7 +75,11 @@ class Http extends GlobalFetchHelper {
 
 		$uri = $this->ensureUriInterface($input);
 
-		$this->requestResolver->add($uri, $deferred);
+		$this->requestResolver->add(
+			$uri,
+			$init,
+			$deferred
+		);
 		return $promise;
 	}
 
@@ -78,12 +104,12 @@ class Http extends GlobalFetchHelper {
 	 * have been fulfilled.
 	 */
 	public function wait() {
-//		$this->timer = $this->loop->addPeriodicTimer(
-//			$this->interval,
-//			[$this->requestResolver, "tick"]
-//		);
-//		$this->loop->run();
-		$this->requestResolver->temporaryThing();
+		$this->timer = $this->loop->addPeriodicTimer(
+			$this->interval,
+			[$this->requestResolver, "tick"]
+		);
+		$this->loop->run();
+//		$this->requestResolver->temporaryThing();
 	}
 
 	/**
