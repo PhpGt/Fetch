@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch;
 
+use Gt\Http\Uri;
 use Http\Promise\Promise;
 
 /**
