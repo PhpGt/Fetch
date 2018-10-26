@@ -1,118 +1,114 @@
 <?php
 namespace Gt\Fetch;
 
-use React\Promise\Deferred;
+use Gt\Curl\Curl;
+use Gt\Curl\CurlInterface;
+use Gt\Curl\CurlMulti;
+use Gt\Curl\CurlMultiInterface;
+use Gt\Http\Header\Parser;
+use Gt\Http\Response;
+use Psr\Http\Message\UriInterface;
 use React\EventLoop\LoopInterface;
+use React\Promise\Deferred;
 
-/**
- * Contains multiple requests and their promises.
- */
 class RequestResolver {
+	protected $loop;
 
-/** @var \React\EventLoop\LoopInterface */
-private $loop;
-/** @var \PHPCurl\CurlWrapper\CurlMulti */
-private $curlMulti;
+	/** @var CurlInterface[] */
+	protected $curlReferenceList;
+	/** @var Deferred[] */
+	protected $deferredReferenceList;
+	/** @var Response[] */
+	protected $responseReferenceList;
 
-// TODO: Should these be refactored out into objects?
-/** @var Deferred[] */
-private $deferredArray = [];
-/** @var Response[] */
-private $responseArray = [];
-/** @var Request[] */
-private $requestArray = [];
-/** @var int  */
-private $openConnectionCount = null;
+	/** @var CurlMultiInterface */
+	protected $curlMulti;
 
-public function __construct(LoopInterface $loop,
-string $curlMultiClass = "\\PHPCurl\\CurlWrapper\\CurlMulti") {
-	$this->loop = $loop;
-	$this->curlMulti = new $curlMultiClass();
-}
-
-public function add(Request $request, Deferred $deferred) {
-	$this->requestArray []= $request;
-	$this->deferredArray []= $deferred;
-}
-
-/**
- * Called from an event loop. This function periodically checks the status of
- * the requests within requestArray, resolving corresponding Deferred objects
- * as requests complete.
- */
-public function tick() {
-	if(is_null($this->openConnectionCount)) {
-		$this->start();
+	public function __construct(
+		LoopInterface $loop,
+		string $curlMultiClass = CurlMulti::class
+	) {
+		$this->loop = $loop;
+		$this->curlReferenceList = [];
+		$this->deferredReferenceList = [];
+		$this->curlMulti = new $curlMultiClass();
 	}
 
-// Set by the curlMulti->infoRead (passed by reference).  Note this is not
-// the same as the number of requests or responses that are open.
-	$messagesInQueue = 0;
+	public function add(
+		UriInterface $uri,
+		array $init,
+		Deferred $deferred
+	):void {
+		$curl = new Curl($uri);
 
-	do {
-// always returns false until at least one curl handle has response headers
-// ready to read.  (The body might not be there yet though.)
-		$info = $this->curlMulti->infoRead($messagesInQueue);
-
-		if($info === false) {
-			break;
+		if(!empty($init["curlopt"])) {
+			$curl->setOptArray($init["curlopt"]);
 		}
 
-		$request = $this->matchRequest($info["handle"]);
-        $requestIndex = array_search($request, $this->requestArray);
-        $httpStatusCode = $request->getResponseCode();
-        $this->responseArray[$requestIndex]->complete($httpStatusCode);
+		$curl->setOpt(CURLOPT_RETURNTRANSFER, true);
+		$curl->setOpt(CURLOPT_HEADER, true);
 
-	} while($messagesInQueue > 0);
-
-	if($this->openConnectionCount === 0) {
-// TODO: Do we need to do anything else here?
-		$this->loop->stop();
+		$this->curlMulti->add($curl);
+		$this->curlReferenceList []= $curl;
+		$this->deferredReferenceList []= $deferred;
+		$this->responseReferenceList []= new Response();
 	}
 
-// Wait for activity on any of the handles.
-	$this->curlMulti->select();
+	public function tick():void {
+		$active = 0;
 
-// Execute the multi handle for processing next tick.
-// openConnectionCount is passed by reference and updated by this call in each tick
-	$status = $this->curlMulti->exec($this->openConnectionCount);
-	if($status !== CURLM_OK) {
-		throw new CurlMultiException($status);
-	}
-}
+		ob_start();
+		$curlMultiCode = $this->curlMulti->exec($active);
+		ob_end_clean();
 
-/**
- * Adds each request's curl handle to the multi stack.
- */
-private function start() {
-	foreach($this->requestArray as $i => $request) {
-		$response = new Response($this->deferredArray[$i], $this->loop);
-		$this->responseArray []= $response;
-		$request->setStream([$response, "stream"]);
+		while($state = $this->curlMulti->infoRead()) {
+			foreach($this->curlReferenceList as $i => $ch) {
+				if($state->getHandle() !== $ch) {
+					continue;
+				}
 
-        $successCode = $this->curlMulti->add($request->getCurlHandle());
-		if($successCode !== 0) {
-			throw new CurlMultiException($successCode);
+				$content = $this->curlMulti->getContent(
+					$ch
+				);
+				$response = $this->responseReferenceList[$i];
+				if($response->getStatusCode()) {
+					$body = $response->getBody();
+					$body->write($content);
+
+					break;
+				}
+
+				list(
+					$headerString,
+					$bodyString
+				) = explode(
+					"\r\n\r\n",
+					$content
+				);
+
+
+				$headerParser = new Parser($headerString);
+				$response = $response->withProtocolVersion(
+					$headerParser->getProtocolVersion()
+				);
+				$response = $response->withStatus(
+					$headerParser->getStatusCode()
+				);
+
+				foreach($headerParser->getKeyValues() as $key => $value) {
+					$response = $response->withAddedHeader(
+						$key,
+						$value
+					);
+				}
+
+				$body = $response->getBody();
+				$body->write($bodyString);
+
+				$this->deferredReferenceList[$i]->resolve(
+					BodyResponseFactory::fromResponse($response)
+				);
+			}
 		}
 	}
 }
-
-/**
- * Matches and returns the Request object containing the provided curl handle.
- *
- * @param   $ch  mixed   Underlying lib-curl resource
- *
- * @return Request
- * @throws CurlHandleMissingException
- */
-private function matchRequest($ch) {
-	foreach($this->requestArray as $request) {
-		if($request->getCurlHandle()->getHandle() === $ch) {
-			return $request;
-		}
-	}
-
-	throw new CurlHandleMissingException($ch);
-}
-
-}#

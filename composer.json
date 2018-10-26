@@ -1,44 +1,64 @@
 {
-    "name": "phpgt/fetch",
-    "description": "Asynchronous HTTP client with promises.",
-    "type": "library",
+	"name": "phpgt/fetch",
+	"description": "Asynchronous HTTP client with promises for PHP 7 applications.",
+	"type": "library",
+	"license": "MIT",
 
-    "require": {
-        "php": ">=7.1",
-        "react/event-loop": "^1.0.0",
-        "react/promise": "^2.4",
-        "phpcurl/curlwrapper": "^2.1",
-        "react/stream": "^0.4.4"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "5.*|7.*"
-    },
+	"minimum-stability": "dev",
 
-    "license": "MIT",
+	"provide": {
+		"php-http/client-implementation": "1.0",
+		"php-http/async-client-implementation": "1.0"
+	},
 
-    "authors": [
-        {
-            "name": "Greg Bowler",
-            "email": "greg.bowler@g105b.com"
-        }
-    ],
+	"require": {
+		"php": ">=7.1.0",
+		"ext-curl": "*",
+		"ext-json": "*",
+		"phpgt/http": "dev-master",
+		"phpgt/curl": "dev-master",
 
-    "autoload": {
-        "psr-4": {
-            "Gt\\Fetch\\": "./src"
-        }
-    },
+		"php-http/httplug": "^1.1",
+		"php-http/promise": "^1.0.0",
 
-    "keywords": [
-        "http",
-        "fetch",
-        "async",
-        "asynchronous",
-        "xmlhttprequest",
-        "ajax",
-        "get",
-        "post",
-        "curl",
-        "curl_multi"
-    ]
+		"react/event-loop": "^1.0.0",
+		"react/stream": "^1.0.0",
+		"react/promise": "^2.7.0"
+	},
+
+	"require-dev": {
+		"phpunit/phpunit": "7.*"
+	},
+
+	"autoload": {
+		"psr-4": {
+			"Gt\\Fetch\\": "./src"
+		}
+	},
+
+	"autoload-dev": {
+		"psr-4": {
+			"Gt\\Fetch\\Test\\": "./test/unit"
+		}
+	},
+
+	"authors": [
+		{
+			"name": "Greg Bowler",
+			"email": "greg.bowler@g105b.com"
+		}
+	],
+
+	"keywords": [
+		"http",
+		"fetch",
+		"async",
+		"asynchronous",
+		"xmlhttprequest",
+		"ajax",
+		"get",
+		"post",
+		"curl",
+		"curl_multi"
+	]
 }

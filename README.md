@@ -7,16 +7,19 @@ See also, the [JavaScript implementation][fetch-js] that ships as standard in al
 ***
 
 <a href="https://circleci.com/gh/PhpGt/Fetch" target="_blank">
-    <img src="https://img.shields.io/circleci/project/PhpGt/Fetch/master.svg?style=flat-square" alt="Build status" />
+    <img src="https://badge.php.gt/fetch-build.svg" alt="Build status" />
 </a>
 <a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
-    <img src="https://img.shields.io/scrutinizer/g/PhpGt/Fetch/master.svg?style=flat-square" alt="Code quality" />
+    <img src="https://badge.php.gt/fetch-quality.svg" alt="Code quality" />
 </a>
 <a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
-    <img src="https://img.shields.io/scrutinizer/coverage/g/PhpGt/Fetch/master.svg?style=flat-square" alt="Code coverage" />
+    <img src="https://badge.php.gt/fetch-coverage.svg" alt="Code coverage" />
 </a>
 <a href="https://packagist.org/packages/PhpGt/Fetch" target="_blank">
-    <img src="https://img.shields.io/packagist/v/PhpGt/Fetch.svg?style=flat-square" alt="Current version" />
+    <img src="https://badge.php.gt/fetch-version.svg" alt="Current version" />
+</a>
+<a href="https://www.php.gt/fetch" target="_blank">
+    <img src="https://badge.php.gt/fetch-docs.svg" alt="PHP.Gt/Fetch documentation" />
 </a>
 
 ## Example usage: compute multiple HTTP requests in parallel.
