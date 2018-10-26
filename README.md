@@ -1,6 +1,6 @@
 # Asynchronous HTTP client with promises.
 
-[PSR-7 compatible][psr-7] implementation of the [Fetch Standard][fetch-standard] which defines requests, responses, and the process that binds them: fetching.
+Asynchronous HTTP client, [PSR-7 compatible][psr-7] implementation of the [Fetch Standard][fetch-standard] which defines requests, responses, and the process that binds them: _fetching_.
 
 See also, the [JavaScript implementation][fetch-js] that ships as standard in all modern browsers.
 
