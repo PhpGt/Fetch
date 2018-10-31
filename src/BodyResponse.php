@@ -43,10 +43,10 @@ class BodyResponse extends Response {
 	}
 
 	public function text():Promise {
-
-		var_dump($this->getBody()->read(100));die();
+		$value = $this->getBody();
+		var_dump($value->getContents());die();
 		$deferred = new Deferred();
-		$deferred->resolve((string)$this->getBody());
+		$deferred->resolve($value);
 		return $deferred->promise();
 	}
 }

@@ -59,11 +59,17 @@ class RequestResolver {
 
 		ob_start();
 		$curlMultiCode = $this->curlMulti->exec($active);
+		if($curlMultiCode !== CURLM_OK) {
+			// TODO: Throw exception.
+			die("ERROR!");
+		}
 		ob_end_clean();
 
-		while($state = $this->curlMulti->infoRead()) {
-			foreach($this->curlReferenceList as $i => $ch) {
-				if($state->getHandle() !== $ch) {
+		if($state = $this->curlMulti->infoRead()) {
+			$ch = $state->getHandle();
+
+			foreach($this->curlReferenceList as $i => $curlReference) {
+				if($ch !== $curlReference) {
 					continue;
 				}
 
@@ -71,12 +77,6 @@ class RequestResolver {
 					$ch
 				);
 				$response = $this->responseReferenceList[$i];
-				if($response->getStatusCode()) {
-					$body = $response->getBody();
-					$body->write($content);
-
-					break;
-				}
 
 				list(
 					$headerString,
@@ -102,8 +102,13 @@ class RequestResolver {
 					);
 				}
 
+// Note: Updating the original reference, as $response is immutable.
+				$this->responseReferenceList[$i] = $response;
 				$body = $response->getBody();
-				$body->write($bodyString);
+
+				if($response->getStatusCode()) {
+					$body->write($bodyString);
+				}
 
 				$this->deferredReferenceList[$i]->resolve(
 					BodyResponseFactory::fromResponse($response)
