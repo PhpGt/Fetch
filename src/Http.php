@@ -4,13 +4,12 @@ namespace Gt\Fetch;
 use Gt\Http\Uri;
 use Http\Client\HttpClient;
 use Http\Client\HttpAsyncClient;
-use Http\Promise\Promise;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use React\EventLoop\StreamSelectLoop;
+use React\EventLoop\Factory;
+use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
-use React\EventLoop\Factory as EventLoopFactory;
 use React\Promise\PromiseInterface;
 
 class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
@@ -18,7 +17,7 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 
 	/** @var float */
 	protected $interval;
-	/** @var StreamSelectLoop */
+	/** @var LoopInterface */
 	protected $loop;
 	/** @var RequestResolver */
 	protected $requestResolver;
@@ -37,7 +36,7 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 		$this->options = $options + $this->options;
 		$this->interval = $interval;
 
-		$this->loop = EventLoopFactory::create();
+		$this->loop = Factory::create();
 		$this->requestResolver = new RequestResolver($this->loop);
 	}
 
@@ -80,6 +79,7 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 			$init,
 			$deferred
 		);
+
 		return $promise;
 	}
 
@@ -103,13 +103,12 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 * Executes all promises in parallel, returning only when all promises
 	 * have been fulfilled.
 	 */
-	public function wait() {
-		$this->timer = $this->loop->addPeriodicTimer(
+	public function wait():void {
+		$timer = $this->loop->addPeriodicTimer(
 			$this->interval,
 			[$this->requestResolver, "tick"]
 		);
 		$this->loop->run();
-//		$this->requestResolver->temporaryThing();
 	}
 
 	/**
@@ -120,7 +119,6 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 		$deferred = new Deferred();
 		$promise = $deferred->promise();
 		$this->wait();
-
 		$deferred->resolve(true);
 		return $promise;
 	}

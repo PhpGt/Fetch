@@ -1,5 +1,4 @@
 <?php
-
 namespace Gt\Fetch;
 
 use React\Promise\PromiseInterface;
