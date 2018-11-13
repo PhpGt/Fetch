@@ -6,6 +6,7 @@ use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
 use Gt\Http\StatusCode;
 use Psr\Http\Message\UriInterface;
+use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
 use stdClass;
 
@@ -22,6 +23,9 @@ use stdClass;
 class BodyResponse extends Response {
 	/** @var Deferred */
 	protected $deferred;
+	protected $deferredStatus;
+	/** @var LoopInterface */
+	protected $loop;
 
 	public function arrayBuffer():Promise {
 	}
@@ -52,18 +56,22 @@ class BodyResponse extends Response {
 	}
 
 	public function text():Promise {
-		$promise = new Promise();
+		$newPromise = new Promise($this->loop);
 
 		$deferredPromise = $this->deferred->promise();
-		$deferredPromise->then(function($resolvedValue) use($promise) {
-			$promise->resolve($resolvedValue);
+		$deferredPromise->then(function(string $resolvedValue)
+		use($newPromise) {
+			$newPromise->resolve($resolvedValue);
 		});
 
-		return $promise;
+		return $newPromise;
 	}
 
-	public function startDeferredResponse() {
+	public function startDeferredResponse(LoopInterface $loop):Deferred {
+		$this->loop = $loop;
 		$this->deferred = new Deferred();
+		$this->deferredStatus = Promise::PENDING;
+		return $this->deferred;
 	}
 
 	public function endDeferredResponse():void {
@@ -71,7 +79,13 @@ class BodyResponse extends Response {
 		$this->stream->rewind();
 		$contents = $this->stream->getContents();
 		$this->stream->seek($position);
+
 		$this->deferred->resolve($contents);
+		$this->deferredStatus = Promise::FULFILLED;
+	}
+
+	public function deferredResponseStatus():string {
+		return $this->deferredStatus;
 	}
 
 	public function __get(string $name) {

@@ -9,7 +9,7 @@ use Gt\Http\Header\Parser;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
-use React\Promise\Promise;
+use React\Promise\Promise as ReactPromise;
 
 class RequestResolver {
 	/** @var LoopInterface */
@@ -19,7 +19,7 @@ class RequestResolver {
 	protected $curlMultiList;
 	/** @var CurlInterface[] */
 	protected $curlList;
-	/** @var Promise[] */
+	/** @var ReactPromise[] */
 	protected $deferredList;
 	/** @var BodyResponse[] */
 	protected $responseList;
@@ -57,7 +57,7 @@ class RequestResolver {
 		$this->curlMultiList []= $curlMulti;
 		$this->deferredList []= $deferred;
 		$bodyResponse = new BodyResponse();
-		$bodyResponse->startDeferredResponse();
+		$bodyResponse->startDeferredResponse($this->loop);
 		$this->responseList []= $bodyResponse;
 		$this->headerList []= "";
 	}

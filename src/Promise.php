@@ -19,10 +19,7 @@ class Promise implements HttpPromise {
 	/** @var Exception */
 	protected $exception;
 
-	public function __construct(LoopInterface $loop = null) {
-		if(is_null($loop)) {
-			$loop = LoopFactory::create();
-		}
+	public function __construct(LoopInterface $loop) {
 		$this->loop = $loop;
 		$this->state = self::PENDING;
 	}
