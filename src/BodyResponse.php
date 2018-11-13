@@ -7,7 +7,6 @@ use Gt\Http\Response;
 use Gt\Http\StatusCode;
 use Psr\Http\Message\UriInterface;
 use React\Promise\Deferred;
-use React\Promise\Promise;
 use stdClass;
 
 /**
@@ -24,16 +23,16 @@ class BodyResponse extends Response {
 	/** @var Deferred */
 	protected $deferred;
 
-	public function arrayBuffer():TODO {
+	public function arrayBuffer():Promise {
 	}
 
-	public function blob():TODO {
+	public function blob():Promise {
 	}
 
-	public function formData():TODO {
+	public function formData():Promise {
 	}
 
-	public function json(int $depth = 512, int $options = 0):StdClass {
+	public function json(int $depth = 512, int $options = 0):Promise {
 		$deferred = new Deferred();
 
 		$json = json_decode(
@@ -53,12 +52,21 @@ class BodyResponse extends Response {
 	}
 
 	public function text():Promise {
-		$this->deferred = new Deferred();
-		$promise = $this->deferred->promise();
+		$promise = new Promise();
+
+		$deferredPromise = $this->deferred->promise();
+		$deferredPromise->then(function($resolvedValue) use($promise) {
+			$promise->resolve($resolvedValue);
+		});
+
 		return $promise;
 	}
 
-	public function completeResponse():void {
+	public function startDeferredResponse() {
+		$this->deferred = new Deferred();
+	}
+
+	public function endDeferredResponse():void {
 		$position = $this->stream->tell();
 		$this->stream->rewind();
 		$contents = $this->stream->getContents();

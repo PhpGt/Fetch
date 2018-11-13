@@ -56,7 +56,9 @@ class RequestResolver {
 		$this->curlList []= $curl;
 		$this->curlMultiList []= $curlMulti;
 		$this->deferredList []= $deferred;
-		$this->responseList []= new BodyResponse();
+		$bodyResponse = new BodyResponse();
+		$bodyResponse->startDeferredResponse();
+		$this->responseList []= $bodyResponse;
 		$this->headerList []= "";
 	}
 
@@ -76,7 +78,6 @@ class RequestResolver {
 
 	public function writeHeader($ch, string $rawHeader) {
 		$i = $this->getIndex($ch);
-
 		$headerLine = trim($rawHeader);
 
 		if($headerLine === "") {
@@ -121,11 +122,11 @@ class RequestResolver {
 			$totalActive += $active;
 
 			if($active === 0) {
-				// TODO: Resolve body's complete promise.
-				$this->responseList[$i]->completeResponse();
+				if($this->responseList[$i]) {
+					$this->responseList[$i]->endDeferredResponse();
+					$this->responseList[$i] = null;
+				}
 			}
-
-
 		}
 
 		if($totalActive === 0) {
