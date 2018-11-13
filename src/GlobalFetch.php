@@ -1,8 +1,8 @@
 <?php
 namespace Gt\Fetch;
 
-use React\Promise\PromiseInterface;
+use Http\Promise\Promise as HttpPromise;
 
 interface GlobalFetch {
-	public function fetch($input, array $init = []):PromiseInterface;
+	public function fetch($input, array $init = []):HttpPromise;
 }

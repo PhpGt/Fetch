@@ -3,7 +3,7 @@ namespace Gt\Fetch;
 
 use Exception;
 use Http\Promise\Promise as HttpPromise;
-use Psr\Http\Message\ResponseInterface;
+use React\EventLoop\Factory as LoopFactory;
 use React\EventLoop\LoopInterface;
 use RuntimeException;
 
@@ -15,33 +15,24 @@ class Promise implements HttpPromise {
 	protected $onFulfilled;
 	/** @var callable */
 	protected $onRejected;
-	/** @var ResponseInterface */
-	protected $response;
+	protected $resolvedValue;
 	/** @var Exception */
 	protected $exception;
 
-	public function __construct(LoopInterface $loop) {
+	public function __construct(LoopInterface $loop = null) {
+		if(is_null($loop)) {
+			$loop = LoopFactory::create();
+		}
 		$this->loop = $loop;
 		$this->state = self::PENDING;
 	}
 
-	/**
-	 * Adds behavior for when the promise is resolved or rejected (response will be available, or error happens).
-	 *
-	 * If you do not care about one of the cases, you can set the corresponding callable to null
-	 * The callback will be called when the value arrived and never more than once.
-	 *
-	 * @param callable $onFulfilled called when a response will be available
-	 * @param callable $onRejected called when an exception occurs
-	 *
-	 * @return HttpPromise a new resolved promise with value of the executed callback (onFulfilled / onRejected)
-	 */
-	public function then(callable $onFulfilled = null, callable $onRejected = null) {
+	public function then(callable $onFulfilled = null, callable $onRejected = null):self {
 		$newPromise = new self($this->loop);
 
 		if(is_null($onFulfilled)) {
-			$onFulfilled = function(ResponseInterface $response) {
-				return $response;
+			$onFulfilled = function($resolvedValue) {
+				return $resolvedValue;
 			};
 		}
 		if(is_null($onRejected)) {
@@ -50,11 +41,11 @@ class Promise implements HttpPromise {
 			};
 		}
 
-		$this->onFulfilled = function(ResponseInterface $response)
+		$this->onFulfilled = function($resolvedValue)
 		use($onFulfilled, $newPromise) {
 			try {
-				$return = $onFulfilled($response);
-				$newPromise->resolve($return ?? $response);
+				$return = $onFulfilled($resolvedValue);
+				$newPromise->resolve($return ?? $resolvedValue);
 			}
 			catch(Exception $exception) {
 				$newPromise->reject($exception);
@@ -72,7 +63,7 @@ class Promise implements HttpPromise {
 		};
 
 		if($this->getState() === self::FULFILLED) {
-			$this->doResolve($this->response);
+			$this->doResolve($this->resolvedValue);
 		}
 
 		if($this->getState() === self::REJECTED) {
@@ -91,21 +82,6 @@ class Promise implements HttpPromise {
 		return $this->state;
 	}
 
-	/**
-	 * Wait for the promise to be fulfilled or rejected.
-	 *
-	 * When this method returns, the request has been resolved and if callables have been
-	 * specified, the appropriate one has terminated.
-	 *
-	 * When $unwrap is true (the default), the response is returned, or the exception thrown
-	 * on failure. Otherwise, nothing is returned or thrown.
-	 *
-	 * @param bool $unwrap Whether to return resolved value / throw reason or not
-	 *
-	 * @return mixed Resolved value, null if $unwrap is set to false
-	 *
-	 * @throws \Exception the rejection reason if $unwrap is set to true and the request failed
-	 */
 	public function wait($unwrap = true) {
 		$loop = $this->loop;
 		$state = $this->getState();
@@ -123,20 +99,20 @@ class Promise implements HttpPromise {
 				throw $this->exception;
 			}
 
-			return $this->response;
+			return $this->resolvedValue;
 		}
 
 		return null;
 	}
 
-	public function resolve(ResponseInterface $response):void {
+	public function resolve($resolvedValue):void {
 		if($this->getState() !== self::PENDING) {
 			throw new RuntimeException("Promise is already resolved");
 		}
 
 		$this->state = self::FULFILLED;
-		$this->response = $response;
-		$this->doResolve($response);
+		$this->resolvedValue = $resolvedValue;
+		$this->doResolve($resolvedValue);
 	}
 
 	public function reject(Exception $exception) {
@@ -149,11 +125,11 @@ class Promise implements HttpPromise {
 		$this->doReject($exception);
 	}
 
-	protected function doResolve(ResponseInterface $response):void {
+	protected function doResolve($resolvedValue):void {
 		$onFulfilled = $this->onFulfilled;
 
 		if(!is_null($this->onFulfilled)) {
-			$onFulfilled($response);
+			$onFulfilled($resolvedValue);
 		}
 	}
 

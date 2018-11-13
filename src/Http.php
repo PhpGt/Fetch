@@ -2,13 +2,15 @@
 namespace Gt\Fetch;
 
 use Gt\Http\Uri;
+use Http\Promise\Promise as HttpPromise;
 use Http\Client\HttpClient;
 use Http\Client\HttpAsyncClient;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use React\EventLoop\Factory;
+use React\EventLoop\Factory as LoopFactory;
 use React\EventLoop\LoopInterface;
+use React\EventLoop\TimerInterface;
 use React\Promise\Deferred;
 use React\Promise\PromiseInterface;
 
@@ -17,8 +19,6 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 
 	/** @var float */
 	protected $interval;
-	/** @var LoopInterface */
-	protected $loop;
 	/** @var RequestResolver */
 	protected $requestResolver;
 	/** @var array cURL options */
@@ -27,6 +27,9 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_REFERER => self::REFERRER,
 	];
+	/** @var LoopInterface */
+	protected $loop;
+	/** @var TimerInterface */
 	protected $timer;
 
 	public function __construct(
@@ -36,8 +39,12 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 		$this->options = $options + $this->options;
 		$this->interval = $interval;
 
-		$this->loop = Factory::create();
+		$this->loop = LoopFactory::create();
 		$this->requestResolver = new RequestResolver($this->loop);
+		$this->timer = $this->loop->addPeriodicTimer(
+			$this->interval,
+			[$this->requestResolver, "tick"]
+		);
 	}
 
 	/**
@@ -46,7 +53,17 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	public function sendRequest(
 		RequestInterface $request
 	):ResponseInterface {
-		// TODO: Implement sendRequest() method.
+		$returnValue = null;
+
+		$this->fetch($request)
+		->then(function(BodyResponse $response) use(&$returnValue) {
+			$returnValue = $response;
+		});
+
+		$this->wait();
+
+		/** @var BodyResponse $returnValue */
+		return $returnValue;
 	}
 
 	/**
@@ -54,8 +71,8 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 */
 	public function sendAsyncRequest(
 		RequestInterface $request
-	):Promise {
-		// TODO: Implement sendAsyncRequest() method.
+	):HttpPromise {
+		return $this->fetch($request);
 	}
 
 	/**
@@ -64,15 +81,19 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 *
 	 * Long-hand for the GlobalFetchHelper get, head, post, etc.
 	 *
-	 * @param string|UriInterface $input
+	 * @param string|UriInterface|RequestInterface $input
 	 * @param array $init
 	 * @return PromiseInterface
 	 */
-	public function fetch($input, array $init = []):PromiseInterface {
+	public function fetch($input, array $init = []):HttpPromise {
 		$deferred = new Deferred();
-		$promise = $deferred->promise();
+		$deferredPromise = $deferred->promise();
 
 		$uri = $this->ensureUriInterface($input);
+
+		if($input instanceof RequestInterface) {
+// TODO: Set init keys from RequestInterface here.
+		}
 
 		$this->requestResolver->add(
 			$uri,
@@ -80,7 +101,14 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 			$deferred
 		);
 
-		return $promise;
+		$newPromise = new Promise($this->loop);
+
+		$deferredPromise->then(function(ResponseInterface $response)
+		use($newPromise) {
+			$newPromise->resolve($response);
+		});
+
+		return $newPromise;
 	}
 
 	public function getOptions():array {
@@ -104,10 +132,6 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 * have been fulfilled.
 	 */
 	public function wait():void {
-		$timer = $this->loop->addPeriodicTimer(
-			$this->interval,
-			[$this->requestResolver, "tick"]
-		);
 		$this->loop->run();
 	}
 
@@ -115,11 +139,8 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 * Begins execution of all promises, returning its own Promise that will
 	 * resolve when the last HTTP request is fully resolved.
 	 */
-	public function all():PromiseInterface {
-		$deferred = new Deferred();
-		$promise = $deferred->promise();
+	public function all():HttpPromise {
 		$this->wait();
-		$deferred->resolve(true);
-		return $promise;
+		return new Promise($this->loop);
 	}
 }
