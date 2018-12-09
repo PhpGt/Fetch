@@ -36,6 +36,35 @@ class HttpTest extends TestCase {
 		self::assertEquals(999, $fakeStatus);
 	}
 
+	public function testFetchBodyResponsePromiseResolves() {
+		$expectedHtml = "<!doctype html><h1>Hello, Fetch!</h1>";
+		ResponseSimulator::setExpectedBody($expectedHtml);
+		$http = new Http(
+			[],
+			0.01,
+			TestCurl::class,
+			TestCurlMulti::class
+		);
+
+		$actualResponse = null;
+
+		$http->fetch("test://should-return")
+		->then(function(BodyResponse $response)use(&$fakeStatus) {
+			return $response->text();
+		})
+		->then(function(string $text)use(&$actualResponse) {
+			$actualResponse = $text;
+		});
+
+//		$finalPromiseResolved = false;
+
+		$http->wait();
+
+//		self::assertTrue($finalPromiseResolved);
+		self::assertEquals($expectedHtml, $actualResponse);
+
+	}
+
 	/** @runInSeparateProcess */
 	public function testSendRequest() {
 		$htmlHelloFetch = "<!doctype html><h1>Hello, Fetch!</h1>";
