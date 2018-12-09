@@ -1,7 +1,6 @@
 <?php
 namespace Gt\Fetch;
 
-use PHPUnit\Framework\Error\Error;
 use PHPUnit\Framework\TestCase;
 
 class GlobalFetchHelperTest extends TestCase {

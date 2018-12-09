@@ -31,16 +31,9 @@ abstract class GlobalFetchHelper implements GlobalFetch {
 
 	public function __call($name, $args) {
 		$method = strtoupper($name);
+
 		if(!in_array($method, self::HTTP_METHODS)) {
-			trigger_error(
-				"Call to undefined method "
-				. __CLASS__
-				. "::"
-				. $name
-				. "()"
-				,
-				E_USER_ERROR
-			);
+			throw new InvalidHttpMethodException($method);
 		}
 
 		$init = $args[1] ?? [];
