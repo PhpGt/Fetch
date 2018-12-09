@@ -149,6 +149,10 @@ class RequestResolver {
 					$this->responseList[$i]->endDeferredResponse();
 					$this->responseList[$i] = null;
 				}
+				if($this->deferredList[$i]) {
+					$this->deferredList[$i]->resolve($this->responseList[$i]);
+					$this->deferredList[$i] = null;
+				}
 			}
 		}
 
