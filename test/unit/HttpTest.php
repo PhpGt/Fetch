@@ -14,7 +14,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class HttpTest extends TestCase {
-	public function testFetch() {
+	public function testFetchBodyResponsePromise() {
 		$fakeStatus = null;
 
 		$http = new Http(
