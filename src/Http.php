@@ -149,7 +149,12 @@ class Http implements HttpClient, HttpAsyncClient {
 	 * resolve when the last HTTP request is fully resolved.
 	 */
 	public function all():HttpPromise {
+		$start = microtime(true);
 		$this->wait();
-		return new Promise($this->loop);
+		$end = microtime(true);
+
+		$promise = new Promise($this->loop);
+		$promise->resolve($end - $start);
+		return $promise;
 	}
 }

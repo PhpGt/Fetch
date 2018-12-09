@@ -152,4 +152,33 @@ class HttpTest extends TestCase {
 
 		self::assertGreaterThan(count($options), count($actualOptions));
 	}
+
+	public function testAll() {
+		$http = new Http(
+			[],
+			0.01,
+			TestCurl::class,
+			TestCurlMulti::class
+		);
+
+		$actualResponse = null;
+
+		$http->fetch("test://should-return")
+			->then(function(BodyResponse $response)use(&$fakeStatus) {
+				return $response->text();
+			})
+			->then(function(string $text)use(&$actualResponse) {
+				$actualResponse = $text;
+			});
+
+		$finalPromiseResolved = false;
+
+		$http->all()
+		->then(function() use(&$finalPromiseResolved) {
+			$finalPromiseResolved = true;
+		});
+
+		self::assertTrue($finalPromiseResolved);
+
+	}
 }
