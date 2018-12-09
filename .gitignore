@@ -1,3 +1,3 @@
 /vendor
-/test/unit/report
+/test/unit/_coverage
 /.idea
