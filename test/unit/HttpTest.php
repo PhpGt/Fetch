@@ -105,4 +105,22 @@ class HttpTest extends TestCase {
 			$fakeStatus
 		);
 	}
+
+	public function testGetOptions() {
+		$options = [
+			uniqid() => uniqid(),
+			uniqid() => uniqid(),
+			uniqid() => uniqid(),
+			uniqid() => uniqid(),
+			uniqid() => uniqid(),
+		];
+		$http = new Http($options);
+		$actualOptions = $http->getoptions();
+
+		foreach($options as $key => $value) {
+			self::assertEquals($value, $actualOptions[$key]);
+		}
+
+		self::assertGreaterThan(count($options), count($actualOptions));
+	}
 }
