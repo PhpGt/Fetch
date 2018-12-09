@@ -26,12 +26,22 @@ class RequestResolver {
 	/** @var string[] */
 	protected $headerList;
 
-	public function __construct(LoopInterface $loop) {
+	protected $curlClass;
+	protected $curlMultiClass;
+
+	public function __construct(
+		LoopInterface $loop,
+		string $curlClass,
+		string $curlMultiClass
+	) {
 		$this->loop = $loop;
 		$this->curlList = [];
 		$this->curlMultiList = [];
 		$this->deferredList = [];
 		$this->headerList = [];
+
+		$this->curlClass = $curlClass;
+		$this->curlMultiClass = $curlMultiClass;
 	}
 
 	public function add(
@@ -39,7 +49,8 @@ class RequestResolver {
 		array $init,
 		Deferred $deferred
 	):void {
-		$curl = new Curl($uri);
+		/** @var CurlInterface $curl */
+		$curl = new $this->curlClass($uri);
 
 		if(!empty($init["curlopt"])) {
 			$curl->setOptArray($init["curlopt"]);
@@ -50,7 +61,8 @@ class RequestResolver {
 		$curl->setOpt(CURLOPT_HEADERFUNCTION, [$this, "writeHeader"]);
 		$curl->setOpt(CURLOPT_WRITEFUNCTION, [$this, "writeBody"]);
 
-		$curlMulti = new CurlMulti();
+		/** @var CurlMultiInterface $curlMulti */
+		$curlMulti = new $this->curlMultiClass();
 		$curlMulti->add($curl);
 
 		$this->curlList []= $curl;

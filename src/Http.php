@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Fetch;
 
+use Gt\Curl\Curl;
+use Gt\Curl\CurlMulti;
 use Gt\Http\Uri;
 use Http\Promise\Promise as HttpPromise;
 use Http\Client\HttpClient;
@@ -33,13 +35,19 @@ class Http implements HttpClient, HttpAsyncClient {
 
 	public function __construct(
 		array $options = [],
-		float $interval = 0.01
+		float $interval = 0.01,
+		string $curlClass = Curl::class,
+		string $curlMultiClass = CurlMulti::class
 	) {
 		$this->options = $options + $this->options;
 		$this->interval = $interval;
 
 		$this->loop = LoopFactory::create();
-		$this->requestResolver = new RequestResolver($this->loop);
+		$this->requestResolver = new RequestResolver(
+			$this->loop,
+			$curlClass,
+			$curlMultiClass
+		);
 		$this->timer = $this->loop->addPeriodicTimer(
 			$this->interval,
 			[$this->requestResolver, "tick"]
@@ -114,12 +122,15 @@ class Http implements HttpClient, HttpAsyncClient {
 	}
 
 	/**
-	 * @param string|UriInterface $uri
+	 * @param string|UriInterface $input
 	 * @return string
 	 */
-	public function ensureUriInterface($uri):UriInterface {
-		if(is_string($uri)) {
-			$uri = new Uri($uri);
+	public function ensureUriInterface($input):UriInterface {
+		if($input instanceof RequestInterface) {
+			$uri = $input->getUri();
+		}
+		else {
+			$uri = new Uri($input);
 		}
 
 		return $uri;
