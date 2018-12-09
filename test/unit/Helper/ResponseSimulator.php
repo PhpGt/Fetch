@@ -19,11 +19,11 @@ class ResponseSimulator {
 
 	static public function start() {
 		self::$started = true;
-		self::$headerBuffer = self::generateRandomHeaders();
-		self::$bodyBuffer = self::generateRandomBody();
+		self::$headerBuffer = self::generateHeaders();
+		self::$bodyBuffer = self::generateBody();
 	}
 
-	static protected function generateRandomHeaders():array {
+	static protected function generateHeaders():array {
 		$headers = [];
 
 		$headers []= "HTTP/0.0 999 OK";
@@ -47,7 +47,11 @@ class ResponseSimulator {
 		return $headers;
 	}
 
-	static protected function generateRandomBody():string {
+	static protected function generateBody():string {
+		if(strlen(self::$bodyBuffer) > 0) {
+			return self::$bodyBuffer;
+		}
+
 		$body = "";
 		$length = rand(10, 100);
 		for($i = 0; $i < $length; $i++) {
@@ -90,5 +94,9 @@ class ResponseSimulator {
 		else {
 			return 0;
 		}
+	}
+
+	static public function setExpectedBody(string $body) {
+		self::$bodyBuffer = $body;
 	}
 }
