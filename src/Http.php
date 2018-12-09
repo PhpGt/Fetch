@@ -13,7 +13,7 @@ use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 use React\Promise\Deferred;
 
-class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
+class Http implements HttpClient, HttpAsyncClient {
 	const REFERRER = "PhpGt/Fetch";
 
 	/** @var float */
