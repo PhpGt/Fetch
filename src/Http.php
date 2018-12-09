@@ -12,7 +12,6 @@ use React\EventLoop\Factory as LoopFactory;
 use React\EventLoop\LoopInterface;
 use React\EventLoop\TimerInterface;
 use React\Promise\Deferred;
-use React\Promise\PromiseInterface;
 
 class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	const REFERRER = "PhpGt/Fetch";
@@ -83,7 +82,6 @@ class Http extends GlobalFetchHelper implements HttpClient, HttpAsyncClient {
 	 *
 	 * @param string|UriInterface|RequestInterface $input
 	 * @param array $init
-	 * @return PromiseInterface
 	 */
 	public function fetch($input, array $init = []):HttpPromise {
 		$deferred = new Deferred();

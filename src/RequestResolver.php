@@ -48,7 +48,7 @@ class RequestResolver {
 		$curl->setOpt(CURLOPT_RETURNTRANSFER, false);
 		$curl->setOpt(CURLOPT_HEADER, false);
 		$curl->setOpt(CURLOPT_HEADERFUNCTION, [$this, "writeHeader"]);
-		$curl->setOpt(CURLOPT_WRITEFUNCTION, [$this, "write"]);
+		$curl->setOpt(CURLOPT_WRITEFUNCTION, [$this, "writeBody"]);
 
 		$curlMulti = new CurlMulti();
 		$curlMulti->add($curl);
@@ -62,7 +62,42 @@ class RequestResolver {
 		$this->headerList []= "";
 	}
 
-	public function write($ch, $content):int {
+	public function writeHeader($ch, string $rawHeader) {
+		$i = $this->getIndex($ch);
+		$headerLine = trim($rawHeader);
+
+// If $headerLine is empty, it represents the last line before the body starts.
+// HTTP headers always end on an empty line. See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html
+		if($headerLine === "") {
+			$parser = new Parser($this->headerList[$i]);
+			$this->responseList[$i] = $this->responseList[$i]->withProtocolVersion(
+				$parser->getProtocolVersion()
+			);
+			$this->responseList[$i] = $this->responseList[$i]->withStatus(
+				$parser->getStatusCode()
+			);
+
+			foreach($parser->getKeyValues() as $key => $value) {
+				if(empty($key)) {
+					continue;
+				}
+
+				$this->responseList[$i] = $this->responseList[$i]->withAddedHeader(
+					$key,
+					$value
+				);
+			}
+		}
+
+		$this->headerList[$i] .= $rawHeader;
+
+// To indiciate that this function has successfully run, cURL expects it to
+// return the number of bytes read. If this does not match the same number
+// that cURL sees, cURL will drop the connection.
+		return strlen($rawHeader);
+	}
+
+	public function writeBody($ch, $content):int {
 		$i = $this->getIndex($ch);
 
 		$body = $this->responseList[$i]->getBody();
@@ -73,34 +108,10 @@ class RequestResolver {
 			$this->deferredList[$i] = null;
 		}
 
+// To indiciate that this function has successfully run, cURL expects it to
+// return the number of bytes read. If this does not match the same number
+// that cURL sees, cURL will drop the connection.
 		return strlen($content);
-	}
-
-	public function writeHeader($ch, string $rawHeader) {
-		$i = $this->getIndex($ch);
-		$headerLine = trim($rawHeader);
-
-		if($headerLine === "") {
-			$parser = new Parser($this->headerList[$i]);
-			$this->responseList[$i] = $this->responseList[$i]->withProtocolVersion(
-				$parser->getProtocolVersion()
-			);
-			$this->responseList[$i] = $this->responseList[$i]->withStatus(
-				$parser->getStatusCode()
-			);
-			foreach($parser->getKeyValues() as $key => $value) {
-				if(empty($key)) {
-					continue;
-				}
-				$this->responseList[$i] = $this->responseList[$i]->withAddedHeader(
-					$key,
-					$value
-				);
-			}
-		}
-
-		$this->headerList[$i] .= $rawHeader;
-		return strlen($rawHeader);
 	}
 
 	public function tick():void {
@@ -136,6 +147,7 @@ class RequestResolver {
 	}
 
 	protected function getIndex($chIncoming):int {
+		$i = -1;
 		$match = false;
 		foreach($this->curlList as $i => $curl) {
 			if($chIncoming === $curl->getHandle()) {
