@@ -3,7 +3,6 @@ namespace Gt\Fetch;
 
 use Exception;
 use Http\Promise\Promise as HttpPromise;
-use React\EventLoop\Factory as LoopFactory;
 use React\EventLoop\LoopInterface;
 use RuntimeException;
 
@@ -24,7 +23,10 @@ class Promise implements HttpPromise {
 		$this->state = self::PENDING;
 	}
 
-	public function then(callable $onFulfilled = null, callable $onRejected = null):self {
+	public function then(
+		callable $onFulfilled = null,
+		callable $onRejected = null
+	):self {
 		$newPromise = new self($this->loop);
 
 		if(is_null($onFulfilled)) {
@@ -42,7 +44,15 @@ class Promise implements HttpPromise {
 		use($onFulfilled, $newPromise) {
 			try {
 				$return = $onFulfilled($resolvedValue);
-				$newPromise->resolve($return ?? $resolvedValue);
+
+				if($return instanceof HttpPromise) {
+					$return->then(function($innerResolvedValue) use($newPromise) {
+						$newPromise->resolve($innerResolvedValue);
+					});
+				}
+				else {
+					$newPromise->resolve($return ?? $resolvedValue);
+				}
 			}
 			catch(Exception $exception) {
 				$newPromise->reject($exception);
@@ -51,12 +61,8 @@ class Promise implements HttpPromise {
 
 		$this->onRejected = function(Exception $exception)
 		use($onRejected, $newPromise) {
-			try {
-				$newPromise->resolve($onRejected($exception));
-			}
-			catch(Exception $exception) {
-				$newPromise->reject($exception);
-			}
+			$return = $onRejected($exception);
+			$newPromise->reject($return);
 		};
 
 		if($this->getState() === self::FULFILLED) {
