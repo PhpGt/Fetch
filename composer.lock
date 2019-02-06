@@ -8,22 +8,21 @@
     "packages": [
         {
             "name": "php-http/httplug",
-            "version": "dev-master",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/httplug.git",
-                "reference": "7e296052447a8c8c391c619ba2058284e578e033"
+                "reference": "1c6381726c18579c4ca2ef1ec1498fdae8bdf018"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/httplug/zipball/7e296052447a8c8c391c619ba2058284e578e033",
-                "reference": "7e296052447a8c8c391c619ba2058284e578e033",
+                "url": "https://api.github.com/repos/php-http/httplug/zipball/1c6381726c18579c4ca2ef1ec1498fdae8bdf018",
+                "reference": "1c6381726c18579c4ca2ef1ec1498fdae8bdf018",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.0",
+                "php": ">=5.4",
                 "php-http/promise": "^1.0",
-                "psr/http-client": "^1.0",
                 "psr/http-message": "^1.0"
             },
             "require-dev": {
@@ -33,7 +32,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.2-dev"
+                    "dev-master": "1.1-dev"
                 }
             },
             "autoload": {
@@ -61,7 +60,7 @@
                 "client",
                 "http"
             ],
-            "time": "2018-10-18T10:18:22+00:00"
+            "time": "2016-08-31T08:30:17+00:00"
         },
         {
             "name": "php-http/promise",
@@ -119,19 +118,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Cookie.git",
-                "reference": "815b81d1fa9bb918b2b4940c4b232cb64cc04f09"
+                "reference": "1591f69f5cc85b02926a959a31dba91f13c2d432"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Cookie/zipball/815b81d1fa9bb918b2b4940c4b232cb64cc04f09",
-                "reference": "815b81d1fa9bb918b2b4940c4b232cb64cc04f09",
+                "url": "https://api.github.com/repos/PhpGt/Cookie/zipball/1591f69f5cc85b02926a959a31dba91f13c2d432",
+                "reference": "1591f69f5cc85b02926a959a31dba91f13c2d432",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.*"
+                "phpunit/phpunit": "8.*"
             },
             "type": "library",
             "autoload": {
@@ -150,7 +149,7 @@
                 }
             ],
             "description": "Object oriented cookie handler.",
-            "time": "2019-01-25T17:12:42+00:00"
+            "time": "2019-02-04T08:51:30+00:00"
         },
         {
             "name": "phpgt/curl",
@@ -158,12 +157,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Curl.git",
-                "reference": "8744fb58928725f0ab57b630945d1227e5a12d7e"
+                "reference": "d9b87d294ca5994d9b7d9c4d04e6307285777216"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Curl/zipball/8744fb58928725f0ab57b630945d1227e5a12d7e",
-                "reference": "8744fb58928725f0ab57b630945d1227e5a12d7e",
+                "url": "https://api.github.com/repos/PhpGt/Curl/zipball/d9b87d294ca5994d9b7d9c4d04e6307285777216",
+                "reference": "d9b87d294ca5994d9b7d9c4d04e6307285777216",
                 "shasum": ""
             },
             "require": {
@@ -172,7 +171,7 @@
                 "php": ">=7.1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.5.2"
+                "phpunit/phpunit": "8.0.1"
             },
             "type": "library",
             "autoload": {
@@ -197,7 +196,7 @@
                 "http",
                 "interface"
             ],
-            "time": "2019-01-16T11:01:53+00:00"
+            "time": "2019-02-04T08:51:59+00:00"
         },
         {
             "name": "phpgt/http",
@@ -205,12 +204,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Http.git",
-                "reference": "b39715db2ec75af807d78ffe2aed315b2ba1ede8"
+                "reference": "97d2ff73a4ecb15d70461f146544c05625eedceb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/b39715db2ec75af807d78ffe2aed315b2ba1ede8",
-                "reference": "b39715db2ec75af807d78ffe2aed315b2ba1ede8",
+                "url": "https://api.github.com/repos/PhpGt/Http/zipball/97d2ff73a4ecb15d70461f146544c05625eedceb",
+                "reference": "97d2ff73a4ecb15d70461f146544c05625eedceb",
                 "shasum": ""
             },
             "require": {
@@ -234,7 +233,7 @@
                 "MIT"
             ],
             "description": "PSR-7 HTTP message implementation.",
-            "time": "2019-01-28T11:08:34+00:00"
+            "time": "2019-02-06T16:23:01+00:00"
         },
         {
             "name": "phpgt/input",
@@ -242,19 +241,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Input.git",
-                "reference": "8b0e755f5db4d4bf0478cf0439a104d219afacdb"
+                "reference": "bb222ed077457e012294d026ec225c7a2df1af6c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Input/zipball/8b0e755f5db4d4bf0478cf0439a104d219afacdb",
-                "reference": "8b0e755f5db4d4bf0478cf0439a104d219afacdb",
+                "url": "https://api.github.com/repos/PhpGt/Input/zipball/bb222ed077457e012294d026ec225c7a2df1af6c",
+                "reference": "bb222ed077457e012294d026ec225c7a2df1af6c",
                 "shasum": ""
             },
             "require": {
                 "phpgt/http": "dev-master"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.*"
+                "phpunit/phpunit": "8.*"
             },
             "type": "library",
             "autoload": {
@@ -267,56 +266,7 @@
                 "MIT"
             ],
             "description": "Encapsulated user input.",
-            "time": "2019-01-26T18:26:50+00:00"
-        },
-        {
-            "name": "psr/http-client",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/http-client.git",
-                "reference": "496a823ef742b632934724bf769560c2a5c7c44e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-client/zipball/496a823ef742b632934724bf769560c2a5c7c44e",
-                "reference": "496a823ef742b632934724bf769560c2a5c7c44e",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.0",
-                "psr/http-message": "^1.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Http\\Client\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for HTTP clients",
-            "homepage": "https://github.com/php-fig/http-client",
-            "keywords": [
-                "http",
-                "http-client",
-                "psr",
-                "psr-18"
-            ],
-            "time": "2018-10-30T23:29:13+00:00"
+            "time": "2019-02-04T08:52:15+00:00"
         },
         {
             "name": "psr/http-message",
@@ -1183,16 +1133,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "753a192050133fc649234de34d1993d87785b134"
+                "reference": "ae06eafd42900b5119f444fcb94a94d2db9d784a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/753a192050133fc649234de34d1993d87785b134",
-                "reference": "753a192050133fc649234de34d1993d87785b134",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/ae06eafd42900b5119f444fcb94a94d2db9d784a",
+                "reference": "ae06eafd42900b5119f444fcb94a94d2db9d784a",
                 "shasum": ""
             },
             "require": {
@@ -1235,7 +1185,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "8.0-dev"
+                    "dev-master": "8.1-dev"
                 }
             },
             "autoload": {
@@ -1261,7 +1211,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-02-03T17:34:56+00:00"
+            "time": "2019-02-05T15:56:00+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
@@ -1378,19 +1328,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/diff.git",
-                "reference": "6906fbe33455221909eab31d4b8b1517b94aba46"
+                "reference": "5e8092bab66f0e32d52b708750bda1c7d55e9198"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/6906fbe33455221909eab31d4b8b1517b94aba46",
-                "reference": "6906fbe33455221909eab31d4b8b1517b94aba46",
+                "url": "https://api.github.com/repos/sebastianbergmann/diff/zipball/5e8092bab66f0e32d52b708750bda1c7d55e9198",
+                "reference": "5e8092bab66f0e32d52b708750bda1c7d55e9198",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^7.0",
+                "phpunit/phpunit": "^7.5 || ^8.0",
                 "symfony/process": "^2 || ^3.3 || ^4"
             },
             "type": "library",
@@ -1426,7 +1376,7 @@
                 "unidiff",
                 "unified diff"
             ],
-            "time": "2018-10-30T05:42:15+00:00"
+            "time": "2019-02-04T09:27:48+00:00"
         },
         {
             "name": "sebastian/environment",
@@ -1834,16 +1784,16 @@
         },
         {
             "name": "symfony/polyfill-ctype",
-            "version": "v1.10.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
-                "reference": "e3d826245268269cd66f8326bd8bc066687b4a19"
+                "reference": "82ebae02209c21113908c229e9883c419720738a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/e3d826245268269cd66f8326bd8bc066687b4a19",
-                "reference": "e3d826245268269cd66f8326bd8bc066687b4a19",
+                "url": "https://api.github.com/repos/symfony/polyfill-ctype/zipball/82ebae02209c21113908c229e9883c419720738a",
+                "reference": "82ebae02209c21113908c229e9883c419720738a",
                 "shasum": ""
             },
             "require": {
@@ -1855,7 +1805,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.9-dev"
+                    "dev-master": "1.11-dev"
                 }
             },
             "autoload": {
@@ -1877,7 +1827,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
@@ -1888,7 +1838,7 @@
                 "polyfill",
                 "portable"
             ],
-            "time": "2018-08-06T14:22:27+00:00"
+            "time": "2019-02-06T07:57:58+00:00"
         },
         {
             "name": "theseer/tokenizer",
