@@ -18,7 +18,7 @@
 		"phpgt/http": "dev-master",
 		"phpgt/curl": "dev-master",
 
-		"php-http/httplug": "^1.1",
+		"php-http/httplug": "^1.1 || ^2.0",
 		"react/promise": "2.*",
 		"react/event-loop": "^1.0"
 	},
