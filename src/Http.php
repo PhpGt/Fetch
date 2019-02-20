@@ -101,9 +101,14 @@ class Http implements HttpClient, HttpAsyncClient {
 // TODO: Set init keys from RequestInterface here.
 		}
 
+		$curlOptArray = [];
+		foreach($init as $key => $value) {
+// TODO: Convert fetch init values to curlOpt values here.
+		}
+
 		$this->requestResolver->add(
 			$uri,
-			$init,
+			$curlOptArray,
 			$deferred
 		);
 
