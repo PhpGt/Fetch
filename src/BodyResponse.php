@@ -37,22 +37,28 @@ class BodyResponse extends Response {
 	}
 
 	public function json(int $depth = 512, int $options = 0):Promise {
-		$deferred = new Deferred();
+		$newPromise = new Promise($this->loop);
 
-		$json = json_decode(
-			$this->getBody(),
-			false,
-			$depth,
-			$options
-		);
-		if(is_null($json)) {
-			$errorMessage = json_last_error_msg();
-			throw new JsonDecodeException($errorMessage);
-		}
+		$deferredPromise = $this->deferred->promise();
+		$deferredPromise->then(function(string $resolvedValue)
+		use($newPromise, $depth, $options) {
+			$json = json_decode(
+				$resolvedValue,
+				false,
+				$depth,
+				$options
+			);
+			if(is_null($json)) {
+				$errorMessage = json_last_error_msg();
+				$exception = new JsonDecodeException($errorMessage);
+				$newPromise->reject($exception);
+				throw $exception;
+			}
 
-		$deferred->resolve($json);
+			$newPromise->resolve($json);
+		});
 
-		return $deferred->promise();
+		return $newPromise;
 	}
 
 	public function text():Promise {
