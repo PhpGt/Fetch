@@ -46,16 +46,21 @@ class RequestResolver {
 
 	public function add(
 		UriInterface $uri,
-		array $init,
+		array $curlOptArray,
 		Deferred $deferred
 	):void {
 		/** @var CurlInterface $curl */
 		$curl = new $this->curlClass($uri);
 
-		if(!empty($init["curlopt"])) {
-			$curl->setOptArray($init["curlopt"]);
+// curlopt1: Set the default curlopt values here:
+		$curl->setOpt(CURLOPT_USERAGENT, "PHP.Gt/Fetch");
+
+// curlopt2: Then override any curlopt values that are provided:
+		if(!empty($curlOptArray)) {
+			$curl->setOptArray($curlOptArray);
 		}
 
+// curlopt3: Finally, hard-code these curlopt settings:
 		$curl->setOpt(CURLOPT_RETURNTRANSFER, false);
 		$curl->setOpt(CURLOPT_HEADER, false);
 		$curl->setOpt(CURLOPT_HEADERFUNCTION, [$this, "writeHeader"]);
