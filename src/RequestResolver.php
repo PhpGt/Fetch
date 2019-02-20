@@ -53,7 +53,7 @@ class RequestResolver {
 		$curl = new $this->curlClass($uri);
 
 // curlopt1: Set the default curlopt values here:
-		$curl->setOpt(CURLOPT_USERAGENT, "PHP.Gt/Fetch");
+		$curl->setOpt(CURLOPT_USERAGENT, Http::REFERRER);
 
 // curlopt2: Then override any curlopt values that are provided:
 		if(!empty($curlOptArray)) {
