@@ -10,7 +10,7 @@ What do you need to know before you get started?
 
 Code within the PHP.Gt organisation is split over different repositories. The first thing to know is how the respositories are broken up and where your issue/idea/bug/feature/question is for.
 
-[WebEngine](https://php.gt/webengine) is the main project that is used to build web applications, and depends on all other PHP.Gt repositories. Core responsibilities of this project include the `gt` commands, web routing, the request/response lifecycle, Page Logic classes and the "go" functions.
+[WebEngine](https://php.gt/webengine) is the main project that is used to build web applications, and depends on all other PHP.Gt repositories. Core responsibilities of this project include web routing, the request/response lifecycle, Page Logic classes and the "go" functions.
 
 You may want to contribute on the components that make up the WebEngine. The main components include:
 
@@ -101,7 +101,7 @@ As with all wikis, the wiki is open to edit by any registered Github user. Chang
 
 ### Financial contributions
 
-PHP.Gt is open source and free, and always will be. If you feel like supporting the development of PHP.Gt financially, [please pledge a monthly donation via Patreon](https://www.patreon.com/phpgt).
+PHP.Gt is open source and free, and always will be. If you are interested in sponsoring the development of PHP.Gt, [please send an email to sponsors@php.gt](mailto:sponsors@php.gt) for more information.
 
 Coding style guide
 ------------------
@@ -115,7 +115,7 @@ TDD is a programming methodology where the developer writes the tests for their 
 
 All repositories within PHP.Gt aim to maintain tests that cover 100% of the codebase. Again, this should not be seen as a method of writing perfect code, but it too is useful practice.
 
-When contributing to PHP.Gt, please be conscious of the tests coverage you are affecting, and aim to write tests that cover any functionality you contribute to. Feel free to ask for help writing tests in the issue tracker and a contributor will do their best in assisting you.
+When contributing to PHP.Gt, please be conscious of the test coverage you are affecting, and aim to write tests that cover any functionality you contribute to. Feel free to ask for help writing tests in the issue tracker and a contributor will do their best in assisting you.
 
 [good-first-issues]: https://github.com/search?l=&q=org%3Aphpgt+type%3Aissue+is%3Aopen+label%3A%22good+first+issue%22&ref=advsearch&type=Issues&utf8=%E2%9C%93
 [help-wanted-issues]: https://github.com/search?l=&q=org%3Aphpgt+type%3Aissue+is%3Aopen+label%3A%22help-wanted%22&ref=advsearch&type=Issues&utf8=%E2%9C%93
