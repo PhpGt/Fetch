@@ -12,7 +12,7 @@ use Gt\Fetch\BodyResponse;
 $http = new Http();
 $http->fetch("https://api.github.com/orgs/phpgt/repos")
 ->then(function(BodyResponse $response) {
-	if($response->getStatusCode() !== 200) {
+	if(!$response->ok) {
 		echo "Error fetching Github's API.";
 		exit;
 	}

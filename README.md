@@ -36,9 +36,9 @@ $http->fetch("http://example.com/api/something.json")
 ->then(function(BodyResponse $response) {
 // The first Promise resolves as soon as a response is received, even before
 // the body's content has completed downloading.
-	if($response->status !== 200) {
+	if(!$response->ok) {
 		echo "Looks like there was a problem. Status code: "
-			. $response->status . PHP_EOL;
+			. $response->getStatusCode() . PHP_EOL;
 		return;
 	}
 
