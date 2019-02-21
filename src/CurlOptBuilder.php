@@ -2,17 +2,22 @@
 namespace Gt\Fetch;
 
 use Gt\Http\RequestMethod;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Converts a Fetch Init array to CURLOPT_* key-values.
  *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Syntax
  */
-class FetchInit {
+class CurlOptBuilder {
 	protected $curlOptArray;
 
-	public function __construct(array $init) {
+	public function __construct($input, array $init) {
 		$this->curlOptArray = [];
+
+		if($input instanceof RequestInterface) {
+			$this->setFromRequestObject($input);
+		}
 
 		foreach($init as $key => $value) {
 			$function = "set" . ucfirst($key);
@@ -27,6 +32,16 @@ class FetchInit {
 
 	public function asCurlOptArray():array {
 		return $this->curlOptArray;
+	}
+
+	protected function setFromRequestObject(RequestInterface $request) {
+		$this->curlOptArray[CURLOPT_URL] = (string)$request->getUri();
+
+		if($method = $request->getMethod()) {
+			$this->setMethod($method);
+		}
+
+		$this->setHeaders($request->getHeaders());
 	}
 
 	/**
@@ -45,7 +60,13 @@ class FetchInit {
 		$rawHeaders = [];
 
 		foreach($headers as $key => $value) {
-			$rawHeaders []= "$key: $value";
+			$headerLine = "$key: ";
+			if(!is_array($value)) {
+				$value = [$value];
+			}
+
+			$headerLine .= implode(", ", $value);
+			$rawHeaders []= $headerLine;
 		}
 
 		$this->curlOptArray[CURLOPT_HTTPHEADER] = $rawHeaders;
