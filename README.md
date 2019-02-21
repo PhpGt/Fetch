@@ -28,7 +28,7 @@ See also, the [JavaScript implementation][fetch-js] that ships as standard in al
 <?php
 $http = new Gt\Fetch\Http();
 
-$http->get("http://example.com/api/something.json")
+$http->fetch("http://example.com/api/something.json")
 ->then(function($response) {
 	if($response->status !== 200) {
 		echo "Looks like there was a problem. Status code: "
@@ -48,7 +48,7 @@ $http->get("http://example.com/api/something.json")
     	. PHP_EOL;
 });
 
-$http->get("http://example.com/something.jpg")
+$http->fetch("http://example.com/something.jpg")
 ->then(function($response) {
     return $response->blob();
 })
