@@ -96,6 +96,8 @@ $response = $http->sendRequest($fastRequest);
 $http->wait();
 ``` 
 
+For more extensive examples, check out the code in the [example directory](/example).
+
 [psr-7]: http://www.php-fig.org/psr/psr-7/
 [fetch-standard]: https://fetch.spec.whatwg.org/
 [fetch-js]: https://developer.mozilla.org/en/docs/Web/API/Fetch_API
