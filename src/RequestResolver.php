@@ -108,7 +108,7 @@ class RequestResolver {
 
 		$this->headerList[$i] .= $rawHeader;
 
-// To indiciate that this function has successfully run, cURL expects it to
+// To indicate that this function has successfully run, cURL expects it to
 // return the number of bytes read. If this does not match the same number
 // that cURL sees, cURL will drop the connection.
 		return strlen($rawHeader);
