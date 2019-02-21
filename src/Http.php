@@ -97,10 +97,6 @@ class Http implements HttpClient, HttpAsyncClient {
 
 		$uri = $this->ensureUriInterface($input);
 
-		if($input instanceof RequestInterface) {
-// TODO: Set init keys from RequestInterface here.
-		}
-
 		$curlOptBuilder = new CurlOptBuilder($input, $init);
 		$curlOptArray = $curlOptBuilder->asCurlOptArray();
 
