@@ -4,8 +4,6 @@
 	"type": "library",
 	"license": "MIT",
 
-	"minimum-stability": "dev",
-
 	"provide": {
 		"php-http/client-implementation": "1.0",
 		"php-http/async-client-implementation": "1.0"
@@ -15,8 +13,8 @@
 		"php": ">=7.2",
 		"ext-curl": "*",
 		"ext-json": "*",
-		"phpgt/http": "dev-master",
-		"phpgt/curl": "dev-master",
+		"phpgt/http": "dev-master@dev",
+		"phpgt/curl": "dev-master@dev",
 
 		"php-http/httplug": "^2.0",
 		"react/promise": "2.*",
