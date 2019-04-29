@@ -1,16 +1,12 @@
 <?php
 namespace Gt\Fetch;
 
-use Gt\Curl\Curl;
-use Gt\Curl\CurlInterface;
-use Gt\Curl\CurlMulti;
-use Gt\Curl\CurlMultiInterface;
 use Gt\Fetch\Test\Helper\ResponseSimulator;
 use Gt\Fetch\Test\Helper\TestCurl;
 use Gt\Fetch\Test\Helper\TestCurlMulti;
 use Gt\Http\Request;
 use Gt\Http\Uri;
-use Http\Promise\Promise as HttpPromise;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -56,11 +52,7 @@ class HttpTest extends TestCase {
 			$actualResponse = $text;
 		});
 
-//		$finalPromiseResolved = false;
-
 		$http->wait();
-
-//		self::assertTrue($finalPromiseResolved);
 		self::assertEquals($expectedHtml, $actualResponse);
 
 	}
@@ -179,6 +171,57 @@ class HttpTest extends TestCase {
 		});
 
 		self::assertTrue($finalPromiseResolved);
+	}
 
+	public function testPsrSendRequest() {
+		$http = new Http(
+			[],
+			0.01,
+			TestCurl::class,
+			TestCurlMulti::class
+		);
+		/** @var MockObject|Uri $uri */
+		$uri = self::createMock(Uri::class);
+		$uri->method("__toString")
+			->willReturn("test://test.from.phpunit");
+
+		/** @var MockObject|Request $request */
+		$request = self::createMock(Request::class);
+		$request->method("getUri")
+			->willReturn($uri);
+		$response = $http->sendRequest($request);
+
+		self::assertEquals(999, $response->getStatusCode());
+	}
+
+	public function testPsrSendAsyncRequest() {
+		$http = new Http(
+			[],
+			0.01,
+			TestCurl::class,
+			TestCurlMulti::class
+		);
+		/** @var MockObject|Uri $uri */
+		$uri = self::createMock(Uri::class);
+		$uri->method("__toString")
+			->willReturn("test://test.from.phpunit");
+
+		/** @var MockObject|Request $request */
+		$request = self::createMock(Request::class);
+		$request->method("getUri")
+			->willReturn($uri);
+
+		$responseCode = null;
+
+		$http->sendAsyncRequest($request)
+		->then(function(ResponseInterface $response)use(&$responseCode) {
+			$responseCode = $response->getStatusCode();
+		});
+
+		self::assertNull($responseCode);
+
+		$http->all();
+
+		self::assertEquals(999, $responseCode);
 	}
 }
