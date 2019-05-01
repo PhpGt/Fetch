@@ -37,6 +37,31 @@ class BodyResponseTest extends TestCase {
 		self::assertEquals($exampleContents, $sutOutput);
 	}
 
+	public function testBlob() {
+		$exampleContents = "Example stream contents";
+
+		/** @var MockObject|LoopInterface $loop */
+		$loop = self::createMock(LoopInterface::class);
+		/** @var MockObject|StreamInterface $stream */
+		$stream = self::createMock(StreamInterface::class);
+		$stream->method("tell")
+			->willReturn(0);
+		$stream->method("getContents")
+			->willReturn($exampleContents);
+
+		$sutOutput = null;
+		$sut = new BodyResponse();
+		$sut = $sut->withBody($stream);
+		$sut->startDeferredResponse($loop);
+		$promise = $sut->blob();
+		$promise->then(function(string $fulfilledValue)use(&$sutOutput) {
+			$sutOutput = $fulfilledValue;
+		});
+		$sut->endDeferredResponse();
+
+		self::assertEquals($exampleContents, $sutOutput);
+	}
+
 	public function testJson() {
 		$exampleObj = new StdClass();
 		$exampleObj->test = "Example";

@@ -47,6 +47,15 @@ class BodyResponse extends Response {
 	}
 
 	public function blob():Promise {
+		$newPromise = new Promise($this->loop);
+
+		$deferredPromise = $this->deferred->promise();
+		$deferredPromise->then(function(string $resolvedValue)
+		use($newPromise) {
+			$newPromise->resolve($resolvedValue);
+		});
+
+		return $newPromise;
 	}
 
 	public function formData():Promise {
