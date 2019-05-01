@@ -225,4 +225,15 @@ class BodyResponseTest extends TestCase {
 			$sut->deferredResponseStatus()
 		);
 	}
+
+	public function testGetHeaders() {
+		$sut = new BodyResponse();
+		$sut = $sut->withAddedHeader("X-Test-One", "Example1");
+		$sut = $sut->withAddedHeader("X-Test-Two", "Example2");
+
+		$headers = $sut->headers;
+		self::assertIsArray($headers);
+		self::assertEquals("Example1", $headers["X-Test-One"]);
+		self::assertEquals("Example2", $headers["X-Test-Two"]);
+	}
 }
