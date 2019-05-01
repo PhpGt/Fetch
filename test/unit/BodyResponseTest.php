@@ -1,10 +1,10 @@
 <?php
 namespace Gt\Fetch\Test;
 
+use Gt\Curl\Curl;
 use Gt\Curl\JsonDecodeException;
 use Gt\Fetch\BodyResponse;
 use Gt\Fetch\Promise;
-use Gt\Http\Header\ResponseHeaders;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
@@ -24,11 +24,13 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn($exampleContents);
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
 		$sut = new BodyResponse();
 		$sut = $sut->withBody($stream);
-		$sut->startDeferredResponse($loop);
+		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->text();
 		$promise->then(function(string $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
@@ -49,11 +51,13 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn($exampleContents);
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
 		$sut = new BodyResponse();
 		$sut = $sut->withBody($stream);
-		$sut->startDeferredResponse($loop);
+		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->blob();
 		$promise->then(function(string $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
@@ -76,11 +80,13 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn($jsonString);
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
 		$sut = new BodyResponse();
 		$sut = $sut->withBody($stream);
-		$sut->startDeferredResponse($loop);
+		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->json();
 		$promise->then(function(StdClass $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
@@ -101,12 +107,14 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn($jsonString);
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
 		$sutError = null;
 		$sut = new BodyResponse();
 		$sut = $sut->withBody($stream);
-		$sut->startDeferredResponse($loop);
+		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->json();
 		$promise->then(function($fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
@@ -136,11 +144,13 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn(pack("C*", ...$bytes));
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
 		$sut = new BodyResponse();
 		$sut = $sut->withBody($stream);
-		$sut->startDeferredResponse($loop);
+		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->arrayBuffer();
 		$promise->then(function(SplFixedArray $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
@@ -178,11 +188,13 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn(http_build_query($exampleKVP));
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
 		$sut = new BodyResponse();
 		$sut = $sut->withBody($stream);
-		$sut->startDeferredResponse($loop);
+		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->formData();
 		$promise->then(function(array $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
@@ -205,6 +217,8 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn($exampleContents);
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
 		$sut = new BodyResponse();
@@ -213,7 +227,7 @@ class BodyResponseTest extends TestCase {
 		self::assertNull(
 			$sut->deferredResponseStatus()
 		);
-		$sut->startDeferredResponse($loop);
+		$sut->startDeferredResponse($loop, $curl);
 		self::assertEquals(
 			Promise::PENDING,
 			$sut->deferredResponseStatus()
@@ -245,5 +259,19 @@ class BodyResponseTest extends TestCase {
 		$sut = new BodyResponse();
 		$sut = $sut->withStatus(404);
 		self::assertFalse($sut->ok);
+	}
+
+	public function testGetRedirected() {
+		/** @var MockObject|LoopInterface $loop */
+		$loop = self::createMock(LoopInterface::class);
+		/** @var MockObject|Curl $curl */
+		$curl = self::createMock(Curl::class);
+		$curl->method("getInfo")
+			->willReturn(0, 3);
+
+		$sut = new BodyResponse();
+		$sut->startDeferredResponse($loop, $curl);
+		self::assertFalse($sut->redirected);
+		self::assertTrue($sut->redirected);
 	}
 }

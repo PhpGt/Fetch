@@ -74,7 +74,7 @@ class RequestResolver {
 		$this->curlMultiList []= $curlMulti;
 		$this->deferredList []= $deferred;
 		$bodyResponse = new BodyResponse();
-		$bodyResponse->startDeferredResponse($this->loop);
+		$bodyResponse->startDeferredResponse($this->loop, $curl);
 		$this->responseList []= $bodyResponse;
 		$this->headerList []= "";
 	}

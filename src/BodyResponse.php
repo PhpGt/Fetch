@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch;
 
+use Gt\Curl\Curl;
 use Gt\Curl\JsonDecodeException;
 use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
@@ -27,6 +28,8 @@ class BodyResponse extends Response {
 	protected $deferredStatus;
 	/** @var LoopInterface */
 	protected $loop;
+	/** @var Curl */
+	protected $curl;
 
 	public function arrayBuffer():Promise {
 		$newPromise = new Promise($this->loop);
@@ -107,10 +110,14 @@ class BodyResponse extends Response {
 		return $newPromise;
 	}
 
-	public function startDeferredResponse(LoopInterface $loop):Deferred {
+	public function startDeferredResponse(
+		LoopInterface $loop,
+		Curl $curl
+	):Deferred {
 		$this->loop = $loop;
 		$this->deferred = new Deferred();
 		$this->deferredStatus = Promise::PENDING;
+		$this->curl = $curl;
 		return $this->deferred;
 	}
 
@@ -139,6 +146,10 @@ class BodyResponse extends Response {
 				&& $this->statusCode < 300);
 
 		case "redirected":
+			$redirectCount = $this->curl->getInfo(
+				CURLINFO_REDIRECT_COUNT
+			);
+			return $redirectCount > 0;
 			break;
 
 		case "status":
