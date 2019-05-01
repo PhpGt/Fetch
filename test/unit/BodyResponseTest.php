@@ -162,4 +162,34 @@ class BodyResponseTest extends TestCase {
 			$sutOutput->offsetGet(9)
 		);
 	}
+
+	public function testFormData() {
+		$exampleKVP = [
+			"organisation" => "phpgt",
+			"repository" => "fetch",
+		];
+
+		/** @var MockObject|LoopInterface $loop */
+		$loop = self::createMock(LoopInterface::class);
+		/** @var MockObject|StreamInterface $stream */
+		$stream = self::createMock(StreamInterface::class);
+		$stream->method("tell")
+			->willReturn(0);
+		$stream->method("getContents")
+			->willReturn(http_build_query($exampleKVP));
+
+		$sutOutput = null;
+		$sut = new BodyResponse();
+		$sut = $sut->withBody($stream);
+		$sut->startDeferredResponse($loop);
+		$promise = $sut->formData();
+		$promise->then(function(array $fulfilledValue)use(&$sutOutput) {
+			$sutOutput = $fulfilledValue;
+		});
+		$sut->endDeferredResponse();
+
+		self::assertIsArray($sutOutput);
+		self::assertEquals("phpgt", $sutOutput["organisation"]);
+		self::assertEquals("fetch", $sutOutput["repository"]);
+	}
 }

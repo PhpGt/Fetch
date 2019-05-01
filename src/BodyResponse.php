@@ -59,6 +59,16 @@ class BodyResponse extends Response {
 	}
 
 	public function formData():Promise {
+		$newPromise = new Promise($this->loop);
+
+		$deferredPromise = $this->deferred->promise();
+		$deferredPromise->then(function(string $resolvedValue)
+		use($newPromise) {
+			parse_str($resolvedValue, $bodyData);
+			$newPromise->resolve($bodyData);
+		});
+
+		return $newPromise;
 	}
 
 	public function json(int $depth = 512, int $options = 0):Promise {
