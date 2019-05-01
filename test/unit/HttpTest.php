@@ -10,6 +10,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 class HttpTest extends TestCase {
 	/** @runInSeparateProcess */
@@ -225,5 +226,20 @@ class HttpTest extends TestCase {
 		$http->all();
 
 		self::assertEquals(999, $responseCode);
+	}
+
+	public function testEnsureUriInterface() {
+		$sut = new Http();
+		$uri = $sut->ensureUriInterface("test://example");
+		self::assertInstanceOf(UriInterface::class, $uri);
+
+		$uriInterface = self::createMock(Uri::class);
+		$uriInterface->method("__toString")
+			->willReturn("test://example");
+		$request = self::createMock(Request::class);
+		$request->method("getUri")
+			->willReturn($uriInterface);
+		$uri = $sut->ensureUriInterface($request);
+		self::assertInstanceOf(UriInterface::class, $uri);
 	}
 }
