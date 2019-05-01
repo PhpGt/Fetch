@@ -52,7 +52,6 @@ class BodyResponse extends Response {
 				$errorMessage = json_last_error_msg();
 				$exception = new JsonDecodeException($errorMessage);
 				$newPromise->reject($exception);
-				throw $exception;
 			}
 
 			$newPromise->resolve($json);
