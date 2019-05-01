@@ -236,4 +236,14 @@ class BodyResponseTest extends TestCase {
 		self::assertEquals("Example1", $headers["X-Test-One"]);
 		self::assertEquals("Example2", $headers["X-Test-Two"]);
 	}
+
+	public function testGetOk() {
+		$sut = new BodyResponse();
+		$sut = $sut->withStatus(200);
+		self::assertTrue($sut->ok);
+
+		$sut = new BodyResponse();
+		$sut = $sut->withStatus(404);
+		self::assertFalse($sut->ok);
+	}
 }
