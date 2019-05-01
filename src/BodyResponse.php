@@ -8,6 +8,7 @@ use Gt\Http\StatusCode;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
+use SplFixedArray;
 use stdClass;
 
 /**
@@ -28,6 +29,21 @@ class BodyResponse extends Response {
 	protected $loop;
 
 	public function arrayBuffer():Promise {
+		$newPromise = new Promise($this->loop);
+
+		$deferredPromise = $this->deferred->promise();
+		$deferredPromise->then(function(string $resolvedValue)
+		use($newPromise) {
+			$bytes = strlen($resolvedValue);
+			$arrayBuffer = new SplFixedArray($bytes);
+			for($i = 0; $i < $bytes; $i++) {
+				$arrayBuffer->offsetSet($i, ord($resolvedValue[$i]));
+			}
+
+			$newPromise->resolve($arrayBuffer);
+		});
+
+		return $newPromise;
 	}
 
 	public function blob():Promise {
