@@ -173,6 +173,7 @@ class HttpTest extends TestCase {
 		self::assertTrue($finalPromiseResolved);
 	}
 
+	/** @runInSeparateProcess */
 	public function testPsrSendRequest() {
 		$http = new Http(
 			[],
@@ -194,6 +195,7 @@ class HttpTest extends TestCase {
 		self::assertEquals(999, $response->getStatusCode());
 	}
 
+	/** @runInSeparateProcess */
 	public function testPsrSendAsyncRequest() {
 		$http = new Http(
 			[],
