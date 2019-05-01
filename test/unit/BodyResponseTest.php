@@ -3,6 +3,7 @@ namespace Gt\Fetch\Test;
 
 use Gt\Curl\JsonDecodeException;
 use Gt\Fetch\BodyResponse;
+use Gt\Fetch\Promise;
 use Gt\Http\Header\ResponseHeaders;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -191,5 +192,37 @@ class BodyResponseTest extends TestCase {
 		self::assertIsArray($sutOutput);
 		self::assertEquals("phpgt", $sutOutput["organisation"]);
 		self::assertEquals("fetch", $sutOutput["repository"]);
+	}
+
+	public function testDeferredResponseStatus() {
+		$exampleContents = "Example stream contents";
+
+		/** @var MockObject|LoopInterface $loop */
+		$loop = self::createMock(LoopInterface::class);
+		/** @var MockObject|StreamInterface $stream */
+		$stream = self::createMock(StreamInterface::class);
+		$stream->method("tell")
+			->willReturn(0);
+		$stream->method("getContents")
+			->willReturn($exampleContents);
+
+		$sutOutput = null;
+		$sut = new BodyResponse();
+		$sut = $sut->withBody($stream);
+
+		self::assertNull(
+			$sut->deferredResponseStatus()
+		);
+		$sut->startDeferredResponse($loop);
+		self::assertEquals(
+			Promise::PENDING,
+			$sut->deferredResponseStatus()
+		);
+
+		$sut->endDeferredResponse();
+		self::assertEquals(
+			Promise::FULFILLED,
+			$sut->deferredResponseStatus()
+		);
 	}
 }

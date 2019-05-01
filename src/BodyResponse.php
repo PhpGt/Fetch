@@ -124,7 +124,7 @@ class BodyResponse extends Response {
 		$this->deferredStatus = Promise::FULFILLED;
 	}
 
-	public function deferredResponseStatus():string {
+	public function deferredResponseStatus():?string {
 		return $this->deferredStatus;
 	}
 
