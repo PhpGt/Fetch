@@ -12,7 +12,7 @@ use Psr\Http\Message\RequestInterface;
 class CurlOptBuilder {
 	protected $curlOptArray;
 
-	public function __construct($input, array $init) {
+	public function __construct($input, array $init = []) {
 		$this->curlOptArray = [];
 
 		if($input instanceof RequestInterface) {
@@ -25,7 +25,7 @@ class CurlOptBuilder {
 				call_user_func([$this, $function], $value);
 			}
 			else {
-// TODO: Throw exception - unknown key.
+				throw new UnknownCurlOptException($key);
 			}
 		}
 	}
