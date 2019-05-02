@@ -9,6 +9,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use React\EventLoop\LoopInterface;
+use RuntimeException;
 use SplFixedArray;
 use stdClass;
 
@@ -298,5 +299,13 @@ class BodyResponseTest extends TestCase {
 		self::assertEquals("/", $sut->url);
 		self::assertEquals("/test", $sut->url);
 		self::assertEquals("/test/123", $sut->url);
+	}
+
+	public function testUndefinedProperty() {
+		$sut = new BodyResponse();
+		self::expectException(RuntimeException::class);
+		self::expectExceptionMessage("Undefined property: test123");
+
+		$sut->test123;
 	}
 }

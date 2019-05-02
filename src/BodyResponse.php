@@ -9,8 +9,8 @@ use Gt\Http\StatusCode;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\LoopInterface;
 use React\Promise\Deferred;
+use RuntimeException;
 use SplFixedArray;
-use stdClass;
 
 /**
  * @property-read ResponseHeaders $headers
@@ -144,6 +144,7 @@ class BodyResponse extends Response {
 		case "ok":
 			return ($this->statusCode >= 200
 				&& $this->statusCode < 300);
+			break;
 
 		case "redirected":
 			$redirectCount = $this->curl->getInfo(
@@ -154,12 +155,10 @@ class BodyResponse extends Response {
 
 		case "status":
 			return $this->getStatusCode();
+			break;
 
 		case "statusText":
 			return StatusCode::REASON_PHRASE[$this->status] ?? null;
-
-		case "type":
-			// TODO: What exactly is this property for?
 			break;
 
 		case "uri":
@@ -167,5 +166,7 @@ class BodyResponse extends Response {
 			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
 			break;
 		}
+
+		throw new RuntimeException("Undefined property: $name");
 	}
 }
