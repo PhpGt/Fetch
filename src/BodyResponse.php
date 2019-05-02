@@ -164,7 +164,7 @@ class BodyResponse extends Response {
 
 		case "uri":
 		case "url":
-			// TODO: How do we get the URI from the request?
+			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
 			break;
 		}
 	}

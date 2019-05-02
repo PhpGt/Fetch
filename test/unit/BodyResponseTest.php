@@ -285,4 +285,18 @@ class BodyResponseTest extends TestCase {
 		$sut = new BodyResponse(303);
 		self::assertEquals("See Other", $sut->statusText);
 	}
+
+	public function testGetUrl() {
+		/** @var MockObject|LoopInterface $loop */
+		$loop = self::createMock(LoopInterface::class);
+		/** @var MockObject|Curl $loop */
+		$curl = self::createMock(Curl::class);
+		$curl->method("getInfo")
+			->willReturn("/", "/test", "/test/123");
+		$sut = new BodyResponse();
+		$sut->startDeferredResponse($loop, $curl);
+		self::assertEquals("/", $sut->url);
+		self::assertEquals("/test", $sut->url);
+		self::assertEquals("/test/123", $sut->url);
+	}
 }
