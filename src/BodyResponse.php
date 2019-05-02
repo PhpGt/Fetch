@@ -156,7 +156,7 @@ class BodyResponse extends Response {
 			return $this->getStatusCode();
 
 		case "statusText":
-			return StatusCode::REASON_PHRASE[$this->status];
+			return StatusCode::REASON_PHRASE[$this->status] ?? null;
 
 		case "type":
 			// TODO: What exactly is this property for?

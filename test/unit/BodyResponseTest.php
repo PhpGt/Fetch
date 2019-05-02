@@ -274,4 +274,15 @@ class BodyResponseTest extends TestCase {
 		self::assertFalse($sut->redirected);
 		self::assertTrue($sut->redirected);
 	}
+
+	public function testGetStatusText() {
+		$sut = new BodyResponse(200);
+		self::assertEquals("OK", $sut->statusText);
+
+		$sut = new BodyResponse(404);
+		self::assertEquals("Not Found", $sut->statusText);
+
+		$sut = new BodyResponse(303);
+		self::assertEquals("See Other", $sut->statusText);
+	}
 }
