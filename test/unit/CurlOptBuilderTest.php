@@ -102,5 +102,13 @@ class CurlOptBuilderTest extends TestCase {
 			"here",
 			$sut->asCurlOptArray()[CURLOPT_REFERER]
 		);
+
+		$sut = new CurlOptBuilder(null, [
+			"referrer" => "no-referrer",
+		]);
+		self::assertEquals(
+			"",
+			$sut->asCurlOptArray()[CURLOPT_REFERER]
+		);
 	}
 }
