@@ -27,4 +27,24 @@ class CurlOptBuilderTest extends TestCase {
 			CURLOPT_CUSTOMREQUEST => "POST",
 		], $sut->asCurlOptArray());
 	}
+
+	public function testSetHeaders() {
+		$headersArray = [
+			"User-Agent" => "PHPUnit",
+			"X-Project" => "phpgt/fetch",
+		];
+
+		$sut = new CurlOptBuilder(null, [
+			"headers" => $headersArray
+		]);
+
+		$expectedCurlHeaders = [];
+		foreach($headersArray as $key => $value) {
+			$expectedCurlHeaders []= "$key: $value";
+		}
+		self::assertEquals(
+			$expectedCurlHeaders,
+			$sut->asCurlOptArray()[CURLOPT_HTTPHEADER]
+		);
+	}
 }
