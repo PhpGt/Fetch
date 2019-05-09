@@ -12,6 +12,7 @@ use Psr\Http\Message\RequestInterface;
 class CurlOptBuilder {
 	protected $curlOptArray;
 	protected $integrity;
+	protected $signal;
 
 	public function __construct($input, array $init = []) {
 		$this->curlOptArray = [];
@@ -156,7 +157,11 @@ class CurlOptBuilder {
 		$this->curlOptArray[CURLOPT_TCP_KEEPALIVE] = (int)$value;
 	}
 
-	protected function setSignal(string $value):void {
-// TODO: Allow passing an AbortController to cancel a fetch early.
+	protected function setSignal(object $value):void {
+		$this->signal = $value;
+	}
+
+	public function getSignal():?object {
+		return $this->signal ?? null;
 	}
 }

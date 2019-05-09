@@ -5,6 +5,7 @@ use Gt\Fetch\CurlOptBuilder;
 use Gt\Fetch\NotAvailableServerSideException;
 use Gt\Fetch\UnknownCurlOptException;
 use PHPUnit\Framework\TestCase;
+use stdClass;
 
 class CurlOptBuilderTest extends TestCase {
 	public function testInvalidKey() {
@@ -125,5 +126,23 @@ class CurlOptBuilderTest extends TestCase {
 			"integrity" => $hash,
 		]);
 		self::assertEquals($hash, $sut->getIntegrity());
+	}
+
+	public function testSetKeepalive() {
+		$sut = new CurlOptBuilder(null, [
+			"keepalive" => 123,
+		]);
+		self::assertEquals(
+			123,
+			$sut->asCurlOptArray()[CURLOPT_TCP_KEEPALIVE]
+		);
+	}
+
+	public function testSetSignal() {
+		$obj = new StdClass();
+		$sut = new CurlOptBuilder(null, [
+			"signal" => $obj,
+		]);
+		self::assertEquals($obj, $sut->getSignal());
 	}
 }
