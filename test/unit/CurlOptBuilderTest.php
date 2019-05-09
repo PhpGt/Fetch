@@ -77,4 +77,20 @@ class CurlOptBuilderTest extends TestCase {
 			"credentials" => "same-origin"
 		]);
 	}
+
+	public function testSetRedirect() {
+		$sut = new CurlOptBuilder(null, [
+			"redirect" => "follow",
+		]);
+		self::assertTrue(
+			$sut->asCurlOptArray()[CURLOPT_FOLLOWLOCATION]
+		);
+
+		$sut = new CurlOptBuilder(null, [
+			"redirect" => "manual",
+		]);
+		self::assertFalse(
+			$sut->asCurlOptArray()[CURLOPT_FOLLOWLOCATION]
+		);
+	}
 }
