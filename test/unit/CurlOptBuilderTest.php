@@ -12,4 +12,10 @@ class CurlOptBuilderTest extends TestCase {
 			"unknown" => "nothing",
 		]);
 	}
+
+	public function testAsCurlOptArrayEmpty() {
+		$sut = new CurlOptBuilder(null, []);
+		$curlOptArray = $sut->asCurlOptArray();
+		self::assertEquals([], $curlOptArray);
+	}
 }
