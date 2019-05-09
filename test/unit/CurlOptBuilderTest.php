@@ -18,4 +18,13 @@ class CurlOptBuilderTest extends TestCase {
 		$curlOptArray = $sut->asCurlOptArray();
 		self::assertEquals([], $curlOptArray);
 	}
+
+	public function testSetMethod() {
+		$sut = new CurlOptBuilder(null, [
+			"method" => "POST",
+		]);
+		self::assertEquals([
+			CURLOPT_CUSTOMREQUEST => "POST",
+		], $sut->asCurlOptArray());
+	}
 }

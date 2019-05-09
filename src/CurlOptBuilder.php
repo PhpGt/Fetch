@@ -16,7 +16,7 @@ class CurlOptBuilder {
 		$this->curlOptArray = [];
 
 		if($input instanceof RequestInterface) {
-			$this->setFromRequestObject($input);
+			$this->fromRequestObject($input);
 		}
 
 		foreach($init as $key => $value) {
@@ -34,7 +34,7 @@ class CurlOptBuilder {
 		return $this->curlOptArray;
 	}
 
-	protected function setFromRequestObject(RequestInterface $request) {
+	protected function fromRequestObject(RequestInterface $request) {
 		$this->curlOptArray[CURLOPT_URL] = (string)$request->getUri();
 
 		if($method = $request->getMethod()) {
