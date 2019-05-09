@@ -157,11 +157,11 @@ class CurlOptBuilder {
 		$this->curlOptArray[CURLOPT_TCP_KEEPALIVE] = (int)$value;
 	}
 
-	protected function setSignal(object $value):void {
+	protected function setSignal(Controller $value):void {
 		$this->signal = $value;
 	}
 
-	public function getSignal():?object {
+	public function getSignal():?Controller {
 		return $this->signal ?? null;
 	}
 }

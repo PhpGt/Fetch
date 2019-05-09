@@ -27,6 +27,8 @@ class RequestResolver {
 	protected $headerList;
 	/** @var string?[] */
 	protected $integrityList = [];
+	/** @var object?[] */
+	protected $signalList;
 
 	protected $curlClass;
 	protected $curlMultiClass;
@@ -50,7 +52,8 @@ class RequestResolver {
 		UriInterface $uri,
 		array $curlOptArray,
 		Deferred $deferred,
-		?string $integrity
+		string $integrity = null,
+		Controller $signal = null
 	):void {
 		/** @var CurlInterface $curl */
 		$curl = new $this->curlClass($uri);
@@ -68,6 +71,8 @@ class RequestResolver {
 		$curl->setOpt(CURLOPT_HEADER, false);
 		$curl->setOpt(CURLOPT_HEADERFUNCTION, [$this, "writeHeader"]);
 		$curl->setOpt(CURLOPT_WRITEFUNCTION, [$this, "writeBody"]);
+		$curl->setOpt(CURLOPT_PROGRESSFUNCTION, [$this, "progress"]);
+		$curl->setOpt(CURLOPT_NOPROGRESS, false);
 
 		/** @var CurlMultiInterface $curlMulti */
 		$curlMulti = new $this->curlMultiClass();
@@ -81,6 +86,7 @@ class RequestResolver {
 		$bodyResponse->startDeferredResponse($this->loop, $curl);
 		$this->responseList []= $bodyResponse;
 		$this->headerList []= "";
+		$this->signalList []= $signal;
 	}
 
 	public function writeHeader($ch, string $rawHeader) {
@@ -133,6 +139,21 @@ class RequestResolver {
 // return the number of bytes read. If this does not match the same number
 // that cURL sees, cURL will drop the connection.
 		return strlen($content);
+	}
+
+	public function progress(
+		$ch,
+		int $expectedDownloadedBytes,
+		int $downloadedBytes,
+		int $expectedUploadedBytes,
+		int $uploadedBytes
+	):int {
+		$index = $this->getIndex($ch);
+		if($this->signalList[$index]) {
+			return (int)$this->signalList[$index]->aborted;
+		}
+
+		return 0;
 	}
 
 	public function tick():void {
