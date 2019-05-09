@@ -111,4 +111,11 @@ class CurlOptBuilderTest extends TestCase {
 			$sut->asCurlOptArray()[CURLOPT_REFERER]
 		);
 	}
+
+	public function testSetReferrerPolicy() {
+		self::expectException(NotAvailableServerSideException::class);
+		$sut = new CurlOptBuilder(null, [
+			"referrerPolicy" => "cross-origin"
+		]);
+	}
 }

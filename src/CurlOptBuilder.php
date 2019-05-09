@@ -136,7 +136,7 @@ class CurlOptBuilder {
 	 * origin-when-cross-origin, unsafe-url.
 	 */
 	protected function setReferrerPolicy(string $value):void {
-// TODO: Need to understand how this works on the server.
+		throw new NotAvailableServerSideException("referrerPolicy: $value");
 	}
 
 	/**
