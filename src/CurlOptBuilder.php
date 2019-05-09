@@ -124,10 +124,6 @@ class CurlOptBuilder {
 			$this->curlOptArray[CURLOPT_REFERER] = null;
 			break;
 
-		case "client":
-// TODO: What is the significance of "client".
-			break;
-
 		default:
 			$this->curlOptArray[CURLOPT_REFERER] = $value;
 			break;

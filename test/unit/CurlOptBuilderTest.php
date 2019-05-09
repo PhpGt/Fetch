@@ -93,4 +93,14 @@ class CurlOptBuilderTest extends TestCase {
 			$sut->asCurlOptArray()[CURLOPT_FOLLOWLOCATION]
 		);
 	}
+
+	public function testReferrer() {
+		$sut = new CurlOptBuilder(null, [
+			"referrer" => "here",
+		]);
+		self::assertEquals(
+			"here",
+			$sut->asCurlOptArray()[CURLOPT_REFERER]
+		);
+	}
 }
