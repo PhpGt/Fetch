@@ -47,4 +47,19 @@ class CurlOptBuilderTest extends TestCase {
 			$sut->asCurlOptArray()[CURLOPT_HTTPHEADER]
 		);
 	}
+
+	public function testSetBody() {
+		$bodyData = [
+			"param1" => "value1",
+			"param2" => "value2",
+		];
+
+		$sut = new CurlOptBuilder(null, [
+			"body" => $bodyData,
+		]);
+		self::assertEquals(
+			$bodyData,
+			$sut->asCurlOptArray()[CURLOPT_POSTFIELDS]
+		);
+	}
 }
