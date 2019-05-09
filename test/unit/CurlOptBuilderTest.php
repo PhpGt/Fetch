@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch\Test;
 
+use Gt\Fetch\AbortController;
 use Gt\Fetch\CurlOptBuilder;
 use Gt\Fetch\NotAvailableServerSideException;
 use Gt\Fetch\UnknownCurlOptException;
@@ -139,7 +140,7 @@ class CurlOptBuilderTest extends TestCase {
 	}
 
 	public function testSetSignal() {
-		$obj = new StdClass();
+		$obj = self::createMock(AbortController::class);
 		$sut = new CurlOptBuilder(null, [
 			"signal" => $obj,
 		]);
