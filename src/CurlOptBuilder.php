@@ -11,6 +11,7 @@ use Psr\Http\Message\RequestInterface;
  */
 class CurlOptBuilder {
 	protected $curlOptArray;
+	protected $integrity;
 
 	public function __construct($input, array $init = []) {
 		$this->curlOptArray = [];
@@ -144,7 +145,11 @@ class CurlOptBuilder {
 	 * request (e.g., sha256-BpfBw7ivV8q2jLiT13fxDYAe2tJllusRSZ273h2nFSE=).
 	 */
 	protected function setIntegrity(string $value):void {
-// TODO: Set a value to later check on the request, throwing exception on mismatch.
+		$this->integrity = $value;
+	}
+
+	public function getIntegrity():?string {
+		return $this->integrity ?? null;
 	}
 
 	protected function setKeepalive(string $value):void {

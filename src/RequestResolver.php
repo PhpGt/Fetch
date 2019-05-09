@@ -25,6 +25,8 @@ class RequestResolver {
 	protected $responseList;
 	/** @var string[] */
 	protected $headerList;
+	/** @var string?[] */
+	protected $integrityList = [];
 
 	protected $curlClass;
 	protected $curlMultiClass;
@@ -47,7 +49,8 @@ class RequestResolver {
 	public function add(
 		UriInterface $uri,
 		array $curlOptArray,
-		Deferred $deferred
+		Deferred $deferred,
+		?string $integrity
 	):void {
 		/** @var CurlInterface $curl */
 		$curl = new $this->curlClass($uri);
@@ -73,6 +76,7 @@ class RequestResolver {
 		$this->curlList []= $curl;
 		$this->curlMultiList []= $curlMulti;
 		$this->deferredList []= $deferred;
+		$this->integrityList []= $integrity;
 		$bodyResponse = new BodyResponse();
 		$bodyResponse->startDeferredResponse($this->loop, $curl);
 		$this->responseList []= $bodyResponse;
@@ -151,7 +155,9 @@ class RequestResolver {
 
 			if($active === 0) {
 				if($this->responseList[$i]) {
-					$this->responseList[$i]->endDeferredResponse();
+					$this->responseList[$i]->endDeferredResponse(
+						$this->integrityList[$i]
+					);
 					$this->responseList[$i] = null;
 				}
 				if($this->deferredList[$i]) {

@@ -103,7 +103,8 @@ class Http implements HttpClient, HttpAsyncClient {
 		$this->requestResolver->add(
 			$uri,
 			$curlOptArray,
-			$deferred
+			$deferred,
+			$curlOptBuilder->getIntegrity()
 		);
 
 		$newPromise = new Promise($this->loop);

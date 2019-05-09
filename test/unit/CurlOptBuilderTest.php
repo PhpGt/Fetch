@@ -118,4 +118,12 @@ class CurlOptBuilderTest extends TestCase {
 			"referrerPolicy" => "cross-origin"
 		]);
 	}
+
+	public function testSetIntegrity() {
+		$hash = "sha1-aabbccddeeff";
+		$sut = new CurlOptBuilder(null, [
+			"integrity" => $hash,
+		]);
+		self::assertEquals($hash, $sut->getIntegrity());
+	}
 }

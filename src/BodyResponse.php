@@ -2,6 +2,7 @@
 namespace Gt\Fetch;
 
 use Gt\Curl\Curl;
+use Gt\Curl\CurlInterface;
 use Gt\Curl\JsonDecodeException;
 use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
@@ -30,6 +31,41 @@ class BodyResponse extends Response {
 	protected $loop;
 	/** @var Curl */
 	protected $curl;
+
+	public function __get(string $name) {
+		switch($name) {
+		case "headers":
+			return $this->getHeaders();
+			break;
+
+		case "ok":
+			return ($this->statusCode >= 200
+				&& $this->statusCode < 300);
+			break;
+
+		case "redirected":
+			$redirectCount = $this->curl->getInfo(
+				CURLINFO_REDIRECT_COUNT
+			);
+			return $redirectCount > 0;
+			break;
+
+		case "status":
+			return $this->getStatusCode();
+			break;
+
+		case "statusText":
+			return StatusCode::REASON_PHRASE[$this->status] ?? null;
+			break;
+
+		case "uri":
+		case "url":
+			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
+			break;
+		}
+
+		throw new RuntimeException("Undefined property: $name");
+	}
 
 	public function arrayBuffer():Promise {
 		$newPromise = new Promise($this->loop);
@@ -112,7 +148,7 @@ class BodyResponse extends Response {
 
 	public function startDeferredResponse(
 		LoopInterface $loop,
-		Curl $curl
+		CurlInterface $curl
 	):Deferred {
 		$this->loop = $loop;
 		$this->deferred = new Deferred();
@@ -121,11 +157,13 @@ class BodyResponse extends Response {
 		return $this->deferred;
 	}
 
-	public function endDeferredResponse():void {
+	public function endDeferredResponse(string $integrity = null):void {
 		$position = $this->stream->tell();
 		$this->stream->rewind();
 		$contents = $this->stream->getContents();
 		$this->stream->seek($position);
+
+		$this->checkIntegrity($integrity, $contents);
 
 		$this->deferred->resolve($contents);
 		$this->deferredStatus = Promise::FULFILLED;
@@ -135,38 +173,22 @@ class BodyResponse extends Response {
 		return $this->deferredStatus;
 	}
 
-	public function __get(string $name) {
-		switch($name) {
-		case "headers":
-			return $this->getHeaders();
-			break;
-
-		case "ok":
-			return ($this->statusCode >= 200
-				&& $this->statusCode < 300);
-			break;
-
-		case "redirected":
-			$redirectCount = $this->curl->getInfo(
-				CURLINFO_REDIRECT_COUNT
-			);
-			return $redirectCount > 0;
-			break;
-
-		case "status":
-			return $this->getStatusCode();
-			break;
-
-		case "statusText":
-			return StatusCode::REASON_PHRASE[$this->status] ?? null;
-			break;
-
-		case "uri":
-		case "url":
-			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
-			break;
+	protected function checkIntegrity(?string $integrity, $contents) {
+		if(is_null($integrity)) {
+			return;
 		}
 
-		throw new RuntimeException("Undefined property: $name");
+		list($algo, $hash) = explode("-", $integrity);
+
+		$availableAlgos = hash_algos();
+		if(!in_array($algo, $availableAlgos)) {
+			throw new InvalidIntegrityAlgorithmException($algo);
+		}
+
+		$hashedContents = hash($algo, $contents);
+
+		if($hashedContents !== $hash) {
+			throw new IntegrityMismatchException();
+		}
 	}
 }
