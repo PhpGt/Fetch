@@ -2,6 +2,7 @@
 namespace Gt\Fetch\Test;
 
 use Gt\Fetch\CurlOptBuilder;
+use Gt\Fetch\NotAvailableServerSideException;
 use Gt\Fetch\UnknownCurlOptException;
 use PHPUnit\Framework\TestCase;
 
@@ -61,5 +62,19 @@ class CurlOptBuilderTest extends TestCase {
 			$bodyData,
 			$sut->asCurlOptArray()[CURLOPT_POSTFIELDS]
 		);
+	}
+
+	public function testSetMode() {
+		self::expectException(NotAvailableServerSideException::class);
+		$sut = new CurlOptBuilder(null, [
+			"mode" => "cors"
+		]);
+	}
+
+	public function testSetCredentials() {
+		self::expectException(NotAvailableServerSideException::class);
+		$sut = new CurlOptBuilder(null, [
+			"credentials" => "same-origin"
+		]);
 	}
 }

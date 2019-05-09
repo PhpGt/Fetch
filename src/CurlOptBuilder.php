@@ -85,7 +85,7 @@ class CurlOptBuilder {
 	 * e.g., cors, no-cors, or same-origin
 	 */
 	protected function setMode(string $value):void {
-// TODO: Is this even possible to configure server-side?
+		throw new NotAvailableServerSideException("mode: $value");
 	}
 
 	/**
@@ -94,7 +94,7 @@ class CurlOptBuilder {
 	 * cookies for the current domain, this option must be provided.
 	 */
 	protected function setCredentials(string $value):void {
-// TODO: Throw exception until cookies are implemented.
+		throw new NotAvailableServerSideException("credentials: $value");
 	}
 
 	/**
