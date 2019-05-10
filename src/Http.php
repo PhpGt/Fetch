@@ -16,17 +16,17 @@ use React\EventLoop\TimerInterface;
 use React\Promise\Deferred;
 
 class Http implements HttpClient, HttpAsyncClient {
-	const REFERRER = "PhpGt/Fetch";
+	const USER_AGENT = "PhpGt/Fetch";
 
 	/** @var float */
 	protected $interval;
 	/** @var RequestResolver */
 	protected $requestResolver;
 	/** @var array cURL options */
-	protected $options = [
+	protected $curlOptions = [
 		CURLOPT_CUSTOMREQUEST => "GET",
 		CURLOPT_FOLLOWLOCATION => true,
-		CURLOPT_REFERER => self::REFERRER,
+		CURLOPT_USERAGENT => self::USER_AGENT,
 	];
 	/** @var LoopInterface */
 	protected $loop;
@@ -34,12 +34,12 @@ class Http implements HttpClient, HttpAsyncClient {
 	protected $timer;
 
 	public function __construct(
-		array $options = [],
+		array $curlOptions = [],
 		float $interval = 0.01,
 		string $curlClass = Curl::class,
 		string $curlMultiClass = CurlMulti::class
 	) {
-		$this->options = $options + $this->options;
+		$this->curlOptions = $curlOptions + $this->curlOptions;
 		$this->interval = $interval;
 
 		$this->loop = LoopFactory::create();
@@ -99,6 +99,7 @@ class Http implements HttpClient, HttpAsyncClient {
 
 		$curlOptBuilder = new CurlOptBuilder($input, $init);
 		$curlOptArray = $curlOptBuilder->asCurlOptArray();
+		$curlOptArray = array_merge($this->curlOptions, $curlOptArray);
 
 		$this->requestResolver->add(
 			$uri,
@@ -118,8 +119,8 @@ class Http implements HttpClient, HttpAsyncClient {
 		return $newPromise;
 	}
 
-	public function getOptions():array {
-		return $this->options;
+	public function getCurlOptions():array {
+		return $this->curlOptions;
 	}
 
 	/**

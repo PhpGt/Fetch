@@ -1,4 +1,12 @@
 {
+	"repositories": [
+		{
+			"type": "path",
+			"url": "/home/g105b/Code/PhpGt/*"
+		}
+	],
+        "minimum-stability": "dev",
+
 	"name": "phpgt/fetch",
 	"description": "Asynchronous HTTP client with promises for PHP 7 applications.",
 	"type": "library",
