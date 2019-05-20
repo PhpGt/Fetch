@@ -3,7 +3,7 @@ namespace Gt\Fetch\Test;
 
 use Gt\Curl\Curl;
 use Gt\Curl\JsonDecodeException;
-use Gt\Fetch\BodyResponse;
+use Gt\Fetch\Response\BodyResponse;
 use Gt\Fetch\Promise;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

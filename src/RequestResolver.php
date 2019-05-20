@@ -1,10 +1,9 @@
 <?php
 namespace Gt\Fetch;
 
-use Gt\Curl\Curl;
 use Gt\Curl\CurlInterface;
-use Gt\Curl\CurlMulti;
 use Gt\Curl\CurlMultiInterface;
+use Gt\Fetch\Response\BodyResponse;
 use Gt\Http\Header\Parser;
 use Psr\Http\Message\UriInterface;
 use React\EventLoop\LoopInterface;

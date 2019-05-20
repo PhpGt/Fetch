@@ -28,7 +28,7 @@ $http->fetch("https://postman-echo.com/post", [
 ->then(function(BodyResponse $response) {
 	if(!$response->ok) {
 		echo "Error posting to Postman Echo." . PHP_EOL;
-		exit;
+		exit(1);
 	}
 // Postman Echo servers respond with a JSON representation of the request
 // that was received.

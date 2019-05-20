@@ -1,7 +1,6 @@
 <?php
-namespace Gt\Fetch;
+namespace Gt\Fetch\Response;
 
-use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
 
 class BodyResponseFactory {

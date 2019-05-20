@@ -3,6 +3,7 @@ namespace Gt\Fetch;
 
 use Gt\Curl\Curl;
 use Gt\Curl\CurlMulti;
+use Gt\Fetch\Response\BodyResponse;
 use Gt\Http\Uri;
 use Http\Promise\Promise as HttpPromise;
 use Http\Client\HttpClient;

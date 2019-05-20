@@ -1,9 +1,12 @@
 <?php
-namespace Gt\Fetch;
+namespace Gt\Fetch\Response;
 
 use Gt\Curl\Curl;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\JsonDecodeException;
+use Gt\Fetch\IntegrityMismatchException;
+use Gt\Fetch\InvalidIntegrityAlgorithmException;
+use Gt\Fetch\Promise;
 use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
 use Gt\Http\StatusCode;
@@ -88,10 +91,16 @@ class BodyResponse extends Response {
 	public function blob():Promise {
 		$newPromise = new Promise($this->loop);
 
+		$type = $this->getHeaderLine("Content-Type");
+
 		$deferredPromise = $this->deferred->promise();
 		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise) {
-			$newPromise->resolve($resolvedValue);
+		use($newPromise, $type) {
+			$newPromise->resolve(
+				new Blob($resolvedValue, [
+					"type" => $type,
+				])
+			);
 		});
 
 		return $newPromise;

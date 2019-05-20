@@ -6,7 +6,6 @@ use Gt\Fetch\CurlOptBuilder;
 use Gt\Fetch\NotAvailableServerSideException;
 use Gt\Fetch\UnknownCurlOptException;
 use PHPUnit\Framework\TestCase;
-use stdClass;
 
 class CurlOptBuilderTest extends TestCase {
 	public function testInvalidKey() {

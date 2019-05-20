@@ -14,7 +14,7 @@ $http->fetch("https://api.github.com/orgs/phpgt/repos")
 ->then(function(BodyResponse $response) {
 	if(!$response->ok) {
 		echo "Error fetching Github's API.";
-		exit;
+		exit(1);
 	}
 
 	return $response->json();
