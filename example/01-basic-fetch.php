@@ -2,7 +2,7 @@
 require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
-use Gt\Fetch\BodyResponse;
+use Gt\Fetch\Response\BodyResponse;
 
 /*
  * This example fetches the list of repositories in the PhpGt organisation from

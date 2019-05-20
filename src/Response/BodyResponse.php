@@ -137,7 +137,7 @@ class BodyResponse extends Response {
 				$newPromise->reject($exception);
 			}
 
-			$newPromise->resolve($json);
+			$newPromise->resolve(new Json($json));
 		});
 
 		return $newPromise;

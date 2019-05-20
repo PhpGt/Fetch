@@ -2,7 +2,8 @@
 require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
-use Gt\Fetch\BodyResponse;
+use Gt\Fetch\Response\BodyResponse;
+use Gt\Fetch\Response\Json;
 
 /*
  * This example uses postman-echo.com do test the request/response.
@@ -12,7 +13,7 @@ use Gt\Fetch\BodyResponse;
 // Example: Post form data to the echo server.
 
 $http = new Http();
-$http->fetch("https://postman-echo.com/post", [
+$http->fetch("http://g105b.com", [
 // All of the request parameters can be passed directly here, or alternatively
 // the fetch() function can take a PSR-7 RequestInterface object.
 	"method" => "POST",
@@ -26,10 +27,12 @@ $http->fetch("https://postman-echo.com/post", [
 	]),
 ])
 ->then(function(BodyResponse $response) {
+	die("what");
 	if(!$response->ok) {
 		echo "Error posting to Postman Echo." . PHP_EOL;
 		exit(1);
 	}
+	die("this is nit nin");
 // Postman Echo servers respond with a JSON representation of the request
 // that was received.
 	return $response->json();
@@ -45,3 +48,4 @@ $http->fetch("https://postman-echo.com/post", [
 
 // To execute the above Promise(s), call wait() or all().
 $http->wait();
+die("done waiting");
