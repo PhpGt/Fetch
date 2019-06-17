@@ -178,12 +178,13 @@ class RequestResolver {
 					$this->responseList[$i]->endDeferredResponse(
 						$this->integrityList[$i]
 					);
-					$this->responseList[$i] = null;
 				}
 				if($this->deferredList[$i]) {
 					$this->deferredList[$i]->resolve($this->responseList[$i]);
-					$this->deferredList[$i] = null;
 				}
+
+				$this->responseList[$i] = null;
+				$this->deferredList[$i] = null;
 			}
 		}
 

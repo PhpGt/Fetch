@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "php-http/httplug",
-            "version": "v2.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/httplug.git",
-                "reference": "b3842537338c949f2469557ef4ad4bdc47b58603"
+                "reference": "d7f1b189a8f15c2d52a6d1d2cff7b57169973119"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/httplug/zipball/b3842537338c949f2469557ef4ad4bdc47b58603",
-                "reference": "b3842537338c949f2469557ef4ad4bdc47b58603",
+                "url": "https://api.github.com/repos/php-http/httplug/zipball/d7f1b189a8f15c2d52a6d1d2cff7b57169973119",
+                "reference": "d7f1b189a8f15c2d52a6d1d2cff7b57169973119",
                 "shasum": ""
             },
             "require": {
@@ -61,20 +61,20 @@
                 "client",
                 "http"
             ],
-            "time": "2018-10-31T09:14:44+00:00"
+            "time": "2019-03-05T07:37:27+00:00"
         },
         {
             "name": "php-http/promise",
-            "version": "v1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/promise.git",
-                "reference": "dc494cdc9d7160b9a09bd5573272195242ce7980"
+                "reference": "1cc44dc01402d407fc6da922591deebe4659826f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/promise/zipball/dc494cdc9d7160b9a09bd5573272195242ce7980",
-                "reference": "dc494cdc9d7160b9a09bd5573272195242ce7980",
+                "url": "https://api.github.com/repos/php-http/promise/zipball/1cc44dc01402d407fc6da922591deebe4659826f",
+                "reference": "1cc44dc01402d407fc6da922591deebe4659826f",
                 "shasum": ""
             },
             "require-dev": {
@@ -84,7 +84,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.1-dev"
+                    "dev-master": "1.0-dev"
                 }
             },
             "autoload": {
@@ -111,27 +111,21 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-01-26T13:27:02+00:00"
+            "time": "2017-11-22T21:24:54+00:00"
         },
         {
             "name": "phpgt/cookie",
-            "version": "v1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PhpGt/Cookie.git",
-                "reference": "da53e2d7b3bda7bf9c885a8f3875d94a494ef30c"
-            },
+            "version": "dev-master",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Cookie/zipball/da53e2d7b3bda7bf9c885a8f3875d94a494ef30c",
-                "reference": "da53e2d7b3bda7bf9c885a8f3875d94a494ef30c",
-                "shasum": ""
+                "type": "path",
+                "url": "/home/g105b/Code/PhpGt/Cookie",
+                "reference": "329ec32bdb2cbb8becb40005759dbcfd6119c7a8"
             },
             "require": {
-                "php": "^7.2"
+                "php": ">=7.2"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.*"
+                "phpunit/phpunit": "8.*"
             },
             "type": "library",
             "autoload": {
@@ -139,7 +133,11 @@
                     "Gt\\Cookie\\": "./src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Gt\\Cookie\\Test\\": "./test/unit"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -149,22 +147,15 @@
                     "email": "greg.bowler@g105b.com"
                 }
             ],
-            "description": "Object oriented cookie handler.",
-            "time": "2019-01-18T23:27:09+00:00"
+            "description": "Object oriented cookie handler."
         },
         {
             "name": "phpgt/curl",
             "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PhpGt/Curl.git",
-                "reference": "098110502252e77cd22318d72bf43928afdeddcb"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Curl/zipball/098110502252e77cd22318d72bf43928afdeddcb",
-                "reference": "098110502252e77cd22318d72bf43928afdeddcb",
-                "shasum": ""
+                "type": "path",
+                "url": "/home/g105b/Code/PhpGt/Curl",
+                "reference": "8b0ce1631fdc4e76dd29862b9629642d5e920e28"
             },
             "require": {
                 "ext-curl": "*",
@@ -180,7 +171,6 @@
                     "Gt\\Curl\\": "./src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -196,32 +186,25 @@
                 "curl_multi",
                 "http",
                 "interface"
-            ],
-            "time": "2019-06-10T08:12:49+00:00"
+            ]
         },
         {
             "name": "phpgt/http",
             "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PhpGt/Http.git",
-                "reference": "89f60c7f4004a5e2db74c8ab550556953df9fb66"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/89f60c7f4004a5e2db74c8ab550556953df9fb66",
-                "reference": "89f60c7f4004a5e2db74c8ab550556953df9fb66",
-                "shasum": ""
+                "type": "path",
+                "url": "/home/g105b/Code/PhpGt/Http",
+                "reference": "3031187bd1f4bdf332a98eb545c069867979d610"
             },
             "require": {
                 "php": ">=7.2",
-                "phpgt/cookie": "*",
-                "phpgt/input": "*",
+                "phpgt/cookie": "dev-master@dev",
+                "phpgt/input": "dev-master@dev",
                 "psr/http-message": "^1.0.1",
                 "willdurand/negotiation": "^2.3"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.*"
+                "phpunit/phpunit": "8.*"
             },
             "type": "library",
             "autoload": {
@@ -229,32 +212,29 @@
                     "Gt\\Http\\": "./src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Gt\\Http\\Test\\": "./test/unit"
+                }
+            },
             "license": [
                 "MIT"
             ],
-            "description": "PSR-7 HTTP message implementation.",
-            "time": "2019-02-20T16:25:54+00:00"
+            "description": "PSR-7 HTTP message implementation."
         },
         {
             "name": "phpgt/input",
-            "version": "v0.4.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PhpGt/Input.git",
-                "reference": "7b7d85d9a887f0c9b509cd57a206e380354f5ac1"
-            },
+            "version": "dev-master",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Input/zipball/7b7d85d9a887f0c9b509cd57a206e380354f5ac1",
-                "reference": "7b7d85d9a887f0c9b509cd57a206e380354f5ac1",
-                "shasum": ""
+                "type": "path",
+                "url": "/home/g105b/Code/PhpGt/Input",
+                "reference": "edbbcbe14223aca7bf3e9762adfc4eecb44cf166"
             },
             "require": {
-                "phpgt/http": "dev-master"
+                "phpgt/http": "dev-master@dev"
             },
             "require-dev": {
-                "phpunit/phpunit": "7.*"
+                "phpunit/phpunit": "8.*"
             },
             "type": "library",
             "autoload": {
@@ -262,16 +242,19 @@
                     "Gt\\Input\\": "./src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Gt\\Input\\Test\\": "./test/unit"
+                }
+            },
             "license": [
                 "MIT"
             ],
-            "description": "Encapsulated user input.",
-            "time": "2018-11-23T13:39:49+00:00"
+            "description": "Encapsulated user input."
         },
         {
             "name": "psr/http-client",
-            "version": "1.0.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-client.git",
@@ -320,7 +303,7 @@
         },
         {
             "name": "psr/http-message",
-            "version": "1.0.1",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-message.git",
@@ -412,16 +395,16 @@
         },
         {
             "name": "react/promise",
-            "version": "v2.7.1",
+            "version": "2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise.git",
-                "reference": "31ffa96f8d2ed0341a57848cbb84d88b89dd664d"
+                "reference": "43896aa097d0233da13f81ca9df4efef5177cc82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/31ffa96f8d2ed0341a57848cbb84d88b89dd664d",
-                "reference": "31ffa96f8d2ed0341a57848cbb84d88b89dd664d",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/43896aa097d0233da13f81ca9df4efef5177cc82",
+                "reference": "43896aa097d0233da13f81ca9df4efef5177cc82",
                 "shasum": ""
             },
             "require": {
@@ -454,20 +437,20 @@
                 "promise",
                 "promises"
             ],
-            "time": "2019-01-07T21:25:54+00:00"
+            "time": "2019-01-08T16:10:34+00:00"
         },
         {
             "name": "willdurand/negotiation",
-            "version": "v2.3.1",
+            "version": "2.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/willdurand/Negotiation.git",
-                "reference": "03436ededa67c6e83b9b12defac15384cb399dc9"
+                "reference": "cf78c9ac47e8e1e141bf609c71e9e2c3a7780dcf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/willdurand/Negotiation/zipball/03436ededa67c6e83b9b12defac15384cb399dc9",
-                "reference": "03436ededa67c6e83b9b12defac15384cb399dc9",
+                "url": "https://api.github.com/repos/willdurand/Negotiation/zipball/cf78c9ac47e8e1e141bf609c71e9e2c3a7780dcf",
+                "reference": "cf78c9ac47e8e1e141bf609c71e9e2c3a7780dcf",
                 "shasum": ""
             },
             "require": {
@@ -506,7 +489,7 @@
                 "header",
                 "negotiation"
             ],
-            "time": "2017-05-14T17:21:12+00:00"
+            "time": "2017-08-04T15:54:30+00:00"
         }
     ],
     "packages-dev": [
@@ -1185,16 +1168,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.2.2",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "24b6cfcec34c1167ee1d90b7cb22bee324af319f"
+                "reference": "3e9a1656a0a43585642067a904b6814ffb8c4146"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/24b6cfcec34c1167ee1d90b7cb22bee324af319f",
-                "reference": "24b6cfcec34c1167ee1d90b7cb22bee324af319f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3e9a1656a0a43585642067a904b6814ffb8c4146",
+                "reference": "3e9a1656a0a43585642067a904b6814ffb8c4146",
                 "shasum": ""
             },
             "require": {
@@ -1238,7 +1221,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "8.2-dev"
+                    "dev-master": "8.3-dev"
                 }
             },
             "autoload": {
@@ -1264,7 +1247,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2019-06-15T07:25:54+00:00"
+            "time": "2019-06-16T08:36:46+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

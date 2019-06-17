@@ -94,7 +94,9 @@ class BodyResponseTest extends TestCase {
 		});
 		$sut->endDeferredResponse();
 
-		self::assertEquals($exampleObj, $sutOutput);
+		foreach($exampleObj as $key => $value) {
+			self::assertEquals($value, $sutOutput->$key);
+		}
 	}
 
 	public function testInvalidJson() {

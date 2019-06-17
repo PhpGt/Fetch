@@ -13,7 +13,7 @@ use Gt\Fetch\Response\Json;
 // Example: Post form data to the echo server.
 
 $http = new Http();
-$http->fetch("http://g105b.com", [
+$http->fetch("https://postman-echo.com/post", [
 // All of the request parameters can be passed directly here, or alternatively
 // the fetch() function can take a PSR-7 RequestInterface object.
 	"method" => "POST",
@@ -27,23 +27,23 @@ $http->fetch("http://g105b.com", [
 	]),
 ])
 ->then(function(BodyResponse $response) {
-	die("what");
 	if(!$response->ok) {
 		echo "Error posting to Postman Echo." . PHP_EOL;
 		exit(1);
 	}
-	die("this is nit nin");
 // Postman Echo servers respond with a JSON representation of the request
 // that was received.
 	return $response->json();
 })
-->then(function($json) {
+->then(function(Json $json) {
 	echo "The Postman Echo server received the following form fields:";
 	echo PHP_EOL;
 
 	foreach($json->form as $key => $value) {
 		echo "$key = $value" . PHP_EOL;
 	}
+}, function($error) {
+	var_dump($error);
 });
 
 // To execute the above Promise(s), call wait() or all().

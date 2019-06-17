@@ -99,8 +99,11 @@ class Http implements HttpClient, HttpAsyncClient {
 		$uri = $this->ensureUriInterface($input);
 
 		$curlOptBuilder = new CurlOptBuilder($input, $init);
-		$curlOptArray = $curlOptBuilder->asCurlOptArray();
-		$curlOptArray = array_merge($this->curlOptions, $curlOptArray);
+		$curlOptArray = $this->curlOptions;
+
+		foreach($curlOptBuilder->asCurlOptArray() as $key => $value) {
+			$curlOptArray[$key] = $value;
+		}
 
 		$this->requestResolver->add(
 			$uri,
