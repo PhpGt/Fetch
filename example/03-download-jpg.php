@@ -45,6 +45,7 @@ $http->fetch("https://cataas.com/cat")
 	$file = new SplFileObject("/tmp/cat.$extension", "w");
 	$bytesWritten = $file->fwrite($blob);
 	echo "Written $bytesWritten bytes." . PHP_EOL;
+	echo "Photo written to " . $file->getPathname() . PHP_EOL;
 });
 
 // To execute the above Promise(s), call wait() or all().
