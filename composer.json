@@ -1,12 +1,4 @@
 {
-	"repositories": [
-		{
-			"type": "path",
-			"url": "/home/g105b/Code/PhpGt/*"
-		}
-	],
-        "minimum-stability": "dev",
-
 	"name": "phpgt/fetch",
 	"description": "Asynchronous HTTP client with promises for PHP 7 applications.",
 	"type": "library",
@@ -21,8 +13,8 @@
 		"php": ">=7.2",
 		"ext-curl": "*",
 		"ext-json": "*",
-		"phpgt/http": "dev-master@dev",
-		"phpgt/curl": "dev-master@dev",
+		"phpgt/http": "*",
+		"phpgt/curl": "*",
 
 		"php-http/httplug": "^2.0",
 		"react/promise": "2.*",

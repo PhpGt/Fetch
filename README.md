@@ -39,14 +39,14 @@ $http->fetch("http://example.com/api/something.json")
 	if(!$response->ok) {
 		echo "Looks like there was a problem. Status code: "
 			. $response->getStatusCode() . PHP_EOL;
-		return;
+		return null;
 	}
 
 // Within this Promise callback, you have access to the body stream, but
 // to access the contents of the whole body, return a new Promise here:
     return $response->json();
 })
-->then(function($json) {
+->then(function(Json $json) {
 // The second Promise resolves once the whole body has completed downloading.
     echo "Got JSON result length "
     	. count($json->results)
