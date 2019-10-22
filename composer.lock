@@ -115,20 +115,20 @@
         },
         {
             "name": "phpgt/cookie",
-            "version": "v1.0.1",
+            "version": "v1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Cookie.git",
-                "reference": "365b528d2a988c68cbd78be7ecc2b0d9e5c62712"
+                "reference": "dd811b6f04becc7c1f8524d84ad02e4635f4a94e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Cookie/zipball/365b528d2a988c68cbd78be7ecc2b0d9e5c62712",
-                "reference": "365b528d2a988c68cbd78be7ecc2b0d9e5c62712",
+                "url": "https://api.github.com/repos/PhpGt/Cookie/zipball/dd811b6f04becc7c1f8524d84ad02e4635f4a94e",
+                "reference": "dd811b6f04becc7c1f8524d84ad02e4635f4a94e",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.2"
+                "php": ">=7.2"
             },
             "require-dev": {
                 "phpunit/phpunit": "8.*"
@@ -150,7 +150,7 @@
                 }
             ],
             "description": "Object oriented cookie handler.",
-            "time": "2019-04-08T12:24:52+00:00"
+            "time": "2019-07-17T20:11:11+00:00"
         },
         {
             "name": "phpgt/curl",
@@ -201,16 +201,16 @@
         },
         {
             "name": "phpgt/http",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Http.git",
-                "reference": "ee79f465924130301284051d418e8ba392a1a3d0"
+                "reference": "d8f8bf1fd5c92bc9579393030b103636714529fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/ee79f465924130301284051d418e8ba392a1a3d0",
-                "reference": "ee79f465924130301284051d418e8ba392a1a3d0",
+                "url": "https://api.github.com/repos/PhpGt/Http/zipball/d8f8bf1fd5c92bc9579393030b103636714529fe",
+                "reference": "d8f8bf1fd5c92bc9579393030b103636714529fe",
                 "shasum": ""
             },
             "require": {
@@ -234,24 +234,24 @@
                 "MIT"
             ],
             "description": "PSR-7 HTTP message implementation.",
-            "time": "2019-06-19T19:37:13+00:00"
+            "time": "2019-10-21T13:28:06+00:00"
         },
         {
             "name": "phpgt/input",
-            "version": "v1.0.0",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Input.git",
-                "reference": "53f00758408dd48cb5a76e389d296d84a1a339fc"
+                "reference": "bf1d707f8a625f64c77b29126975d065fb96765b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Input/zipball/53f00758408dd48cb5a76e389d296d84a1a339fc",
-                "reference": "53f00758408dd48cb5a76e389d296d84a1a339fc",
+                "url": "https://api.github.com/repos/PhpGt/Input/zipball/bf1d707f8a625f64c77b29126975d065fb96765b",
+                "reference": "bf1d707f8a625f64c77b29126975d065fb96765b",
                 "shasum": ""
             },
             "require": {
-                "phpgt/http": "*"
+                "phpgt/http": ">=1.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "8.*"
@@ -267,7 +267,7 @@
                 "MIT"
             ],
             "description": "Encapsulated user input.",
-            "time": "2019-04-08T15:03:27+00:00"
+            "time": "2019-07-08T13:43:14+00:00"
         },
         {
             "name": "psr/http-client",
