@@ -2,6 +2,7 @@
 namespace Gt\Fetch\Response;
 
 use ArrayAccess;
+use DateTime;
 use Iterator;
 use StdClass;
 
@@ -44,11 +45,11 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 
 	/** @link https://php.net/manual/en/arrayaccess.offsetget.php */
 	public function offsetGet($offset) {
-		if(is_array($this->jsonObject)) {
+		if(is_array($this->jsonObject) && isset($this->jsonObject[0])) {
 			return $this->jsonObject[$offset];
 		}
 
-		return $this->iteratorProperties[$offset];
+		return $this->iteratorProperties[$offset] ?? null;
 	}
 
 	/** @link https://php.net/manual/en/arrayaccess.offsetset.php */
@@ -102,6 +103,51 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 	/** @link https://php.net/manual/en/iterator.rewind.php */
 	public function rewind():void {
 		$this->iteratorKey = 0;
+	}
+
+	public function getBool(string $key):?bool {
+		$value = $this->offsetGet($key);
+		if(is_null($value)) {
+			return null;
+		}
+
+		return (bool)$value;
+	}
+
+	public function getString(string $key):?string {
+		$value = $this->offsetGet($key);
+		if(is_null($value)) {
+			return null;
+		}
+
+		return (string)$value;
+	}
+
+	public function getInt(string $key):?int {
+		$value = $this->offsetGet($key);
+		if(is_null($value)) {
+			return null;
+		}
+
+		return (int)$value;
+	}
+
+	public function getFloat(string $key):?float {
+		$value = $this->offsetGet($key);
+		if(is_null($value)) {
+			return null;
+		}
+
+		return (float)$value;
+	}
+
+	public function getDateTime(string $key):?DateTime {
+		$value = $this->offsetGet($key);
+		if(is_null($value)) {
+			return null;
+		}
+
+		return new DateTime($value);
 	}
 
 	private function setPropertiesRecursive():void {

@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch\Test\Response;
 
+use DateTime;
 use Gt\Fetch\Response\ImmutableObjectModificationException;
 use Gt\Fetch\Response\Json;
 use PHPUnit\Framework\TestCase;
@@ -121,5 +122,31 @@ class JsonTest extends TestCase {
 		$sut = new Json(["example"]);
 		self::expectException(ImmutableObjectModificationException::class);
 		unset($sut->name);
+	}
+
+	public function testGetMissing() {
+		$sut = new Json(["name" => "nothing"]);
+		self::assertNull($sut->thisDoesNotExist);
+	}
+
+	public function testGetTypeSafe() {
+		$obj = new StdClass();
+		$obj->boolean = true;
+		$obj->integer = 123;
+		$obj->string = "Hello!";
+		$obj->floatingPoint = 123.456;
+		$obj->timeString = "2019-11-05 11:22:33";
+		$sut = new Json($obj);
+
+		self::assertIsBool($sut->getBool("boolean"));
+		self::assertEquals($obj->boolean, $sut->getBool("boolean"));
+		self::assertIsInt($sut->getInt("integer"));
+		self::assertEquals($obj->integer, $sut->getInt("integer"));
+		self::assertIsString($sut->getString("string"));
+		self::assertEquals($obj->string, $sut->getString("string"));
+		self::assertIsFloat($sut->getFloat("floatingPoint"));
+		self::assertEquals($obj->floatingPoint, $sut->getFloat("floatingPoint"));
+		self::assertInstanceOf(DateTime::class, $sut->getDateTime("timeString"));
+		self::assertEquals($obj->timeString, $sut->getDateTime("timeString")->format("Y-m-d H:i:s"));
 	}
 }
