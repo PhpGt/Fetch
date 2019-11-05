@@ -22,12 +22,24 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 	}
 
 	public function __get(string $key) {
-		return $this->jsonObject->$key;
+		return $this->offsetGet($key);
+	}
+
+	public function __set(string $key, $value) {
+		$this->offsetSet($key, $value);
+	}
+
+	public function __unset(string $key) {
+		$this->offsetUnset($key);
+	}
+
+	public function __isset(string $key):bool {
+		return $this->offsetExists($key);
 	}
 
 	/** @link https://php.net/manual/en/arrayaccess.offsetexists.php */
 	public function offsetExists($offset):bool {
-		return isset($this->jsonObject[$offset]);
+		return isset($this->iteratorProperties[$offset]);
 	}
 
 	/** @link https://php.net/manual/en/arrayaccess.offsetget.php */
@@ -36,17 +48,17 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 			return $this->jsonObject[$offset];
 		}
 
-		return $this->jsonObject->$offset;
+		return $this->iteratorProperties[$offset];
 	}
 
 	/** @link https://php.net/manual/en/arrayaccess.offsetset.php */
 	public function offsetSet($offset, $value):void {
-		$this->jsonObject->$offset = $value;
+		throw new ImmutableObjectModificationException();
 	}
 
 	/** @link https://php.net/manual/en/arrayaccess.offsetunset.php */
 	public function offsetUnset($offset):void {
-		unset($this->jsonObject->$offset);
+		throw new ImmutableObjectModificationException();
 	}
 
 	/** @link https://php.net/manual/en/iterator.current.php */
