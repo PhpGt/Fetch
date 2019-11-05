@@ -32,6 +32,10 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 
 	/** @link https://php.net/manual/en/arrayaccess.offsetget.php */
 	public function offsetGet($offset) {
+		if(is_array($this->jsonObject)) {
+			return $this->jsonObject[$offset];
+		}
+
 		return $this->jsonObject->$offset;
 	}
 
