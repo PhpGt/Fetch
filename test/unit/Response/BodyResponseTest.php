@@ -1,5 +1,5 @@
 <?php
-namespace Gt\Fetch\Test;
+namespace Gt\Fetch\Test\Response;
 
 use Gt\Curl\Curl;
 use Gt\Curl\JsonDecodeException;
@@ -11,7 +11,7 @@ use Psr\Http\Message\StreamInterface;
 use React\EventLoop\LoopInterface;
 use RuntimeException;
 use SplFixedArray;
-use stdClass;
+use StdClass;
 
 class BodyResponseTest extends TestCase {
 	public function testText() {
