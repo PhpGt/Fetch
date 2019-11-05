@@ -22,6 +22,7 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 		return json_encode($this->jsonObject);
 	}
 
+	/** @return self|int|bool|string|float */
 	public function __get(string $key) {
 		return $this->offsetGet($key);
 	}
@@ -43,7 +44,10 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 		return isset($this->iteratorProperties[$offset]);
 	}
 
-	/** @link https://php.net/manual/en/arrayaccess.offsetget.php */
+	/**
+	 * @return self|int|bool|string|float
+	 * @link https://php.net/manual/en/arrayaccess.offsetget.php
+	 */
 	public function offsetGet($offset) {
 		if(is_array($this->jsonObject) && isset($this->jsonObject[0])) {
 			return $this->jsonObject[$offset];

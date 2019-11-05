@@ -42,6 +42,12 @@ $http->fetch("https://postman-echo.com/post", [
 	foreach($json->form as $key => $value) {
 		echo "$key = $value" . PHP_EOL;
 	}
+
+	$firstName = strtok($json->form->getString("name"), " ");
+	$dob = $json->form->getDateTime("dob");
+	$age = date("Y") - $dob->format("Y");
+	echo PHP_EOL;
+	echo "$firstName is $age years old!" . PHP_EOL;
 }, function($error) {
 	var_dump($error);
 });
