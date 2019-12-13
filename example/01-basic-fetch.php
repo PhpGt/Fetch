@@ -26,7 +26,7 @@ $http->fetch("https://api.github.com/orgs/phpgt/repos")
 	echo "PHP.Gt repository list:" . PHP_EOL;
 
 	foreach($json as $repo) {
-		echo $repo->name . PHP_EOL;
+		echo $repo->getString("name") . PHP_EOL;
 	}
 });
 

@@ -52,8 +52,9 @@ $http->fetch("http://example.com/api/something.json")
     	. count($json->results)
     	. PHP_EOL;
 
+// Notice that type-safe getters are available on all Json objects:
     echo "Name of first result: "
-    	. $json->results[0]->name
+    	. $json->results[0]->getString("name")
     	. PHP_EOL;
 });
 
