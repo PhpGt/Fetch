@@ -66,10 +66,18 @@ class Json extends StdClass implements ArrayAccess, Iterator {
 		throw new ImmutableObjectModificationException();
 	}
 
-	/** @link https://php.net/manual/en/iterator.current.php */
+	/**
+	 * @return int|float|bool|string|null|Json
+	 * @link https://php.net/manual/en/iterator.current.php
+	 */
 	public function current() {
 		if(is_array($this->jsonObject)) {
-			return $this->jsonObject[$this->iteratorKey];
+			$obj = $this->jsonObject[$this->iteratorKey];
+			if($obj instanceof StdClass) {
+				return new self($obj);
+			}
+
+			return $obj;
 		}
 
 		$property = $this->iteratorPropertyNames[$this->iteratorKey];
