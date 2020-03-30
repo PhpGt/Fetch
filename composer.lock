@@ -201,16 +201,16 @@
         },
         {
             "name": "phpgt/http",
-            "version": "v1.0.3",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Http.git",
-                "reference": "394ecdd2a2e2686a467cdf2f837c72105d68398f"
+                "reference": "85f86e273421078f6ed904b8e4d00aafe87f0746"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/394ecdd2a2e2686a467cdf2f837c72105d68398f",
-                "reference": "394ecdd2a2e2686a467cdf2f837c72105d68398f",
+                "url": "https://api.github.com/repos/PhpGt/Http/zipball/85f86e273421078f6ed904b8e4d00aafe87f0746",
+                "reference": "85f86e273421078f6ed904b8e4d00aafe87f0746",
                 "shasum": ""
             },
             "require": {
@@ -234,24 +234,24 @@
                 "MIT"
             ],
             "description": "PSR-7 HTTP message implementation.",
-            "time": "2019-11-28T12:05:15+00:00"
+            "time": "2020-03-28T15:47:03+00:00"
         },
         {
             "name": "phpgt/input",
-            "version": "v1.1.1",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Input.git",
-                "reference": "bc70b65bb5c95cc73c49ac5beee15c1ec9d5620e"
+                "reference": "ae78931ffd5c4800f362db61bd86f8e545733e86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Input/zipball/bc70b65bb5c95cc73c49ac5beee15c1ec9d5620e",
-                "reference": "bc70b65bb5c95cc73c49ac5beee15c1ec9d5620e",
+                "url": "https://api.github.com/repos/PhpGt/Input/zipball/ae78931ffd5c4800f362db61bd86f8e545733e86",
+                "reference": "ae78931ffd5c4800f362db61bd86f8e545733e86",
                 "shasum": ""
             },
             "require": {
-                "phpgt/http": "^1.0"
+                "phpgt/http": "*"
             },
             "require-dev": {
                 "phpunit/phpunit": "8.*"
@@ -267,7 +267,7 @@
                 "MIT"
             ],
             "description": "Encapsulated user input.",
-            "time": "2019-11-28T11:59:06+00:00"
+            "time": "2019-11-29T11:22:35+00:00"
         },
         {
             "name": "psr/http-client",
