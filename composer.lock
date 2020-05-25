@@ -201,16 +201,16 @@
         },
         {
             "name": "phpgt/http",
-            "version": "v1.0.4",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Http.git",
-                "reference": "85f86e273421078f6ed904b8e4d00aafe87f0746"
+                "reference": "064b495a90d03ba2aff90d2b4ebbe7f10dd6a30c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/85f86e273421078f6ed904b8e4d00aafe87f0746",
-                "reference": "85f86e273421078f6ed904b8e4d00aafe87f0746",
+                "url": "https://api.github.com/repos/PhpGt/Http/zipball/064b495a90d03ba2aff90d2b4ebbe7f10dd6a30c",
+                "reference": "064b495a90d03ba2aff90d2b4ebbe7f10dd6a30c",
                 "shasum": ""
             },
             "require": {
@@ -234,7 +234,7 @@
                 "MIT"
             ],
             "description": "PSR-7 HTTP message implementation.",
-            "time": "2020-03-28T15:47:03+00:00"
+            "time": "2020-05-22T22:14:20+00:00"
         },
         {
             "name": "phpgt/input",
