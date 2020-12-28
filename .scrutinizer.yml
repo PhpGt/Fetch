@@ -1,14 +1,25 @@
 build:
   environment:
-    php:
-      version: 7.2.0
-  tests:
-    override:
-    -
-      command: 'vendor/bin/phpunit test/unit --coverage-clover coverage --whitelist src'
-      coverage:
-        file: 'coverage'
-        format: 'php-clover'
+    php: 8.0.0
+
+  nodes:
+    analysis:
+      tests:
+        override:
+          - php-scrutinizer-run
+
+    tests-and-coverage:
+      environment:
+        php:
+          ini:
+            "xdebug.mode": coverage
+      tests:
+        override:
+          - phpcs-run ./src
+          - command: "vendor/bin/phpunit test/phpunit --coverage-clover test/phpunit/_coverage --whitelist src"
+            coverage:
+              file: "test/phpunit/_coverage"
+              format: "php-clover"
 
 checks:
   php:
@@ -17,5 +28,5 @@ checks:
 
 filter:
   excluded_paths:
-  - test/*
-  - vendor/*
+    - test/*
+    - vendor/*

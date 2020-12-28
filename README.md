@@ -8,7 +8,7 @@ See also, the [JavaScript implementation][fetch-js] that ships as standard in al
 
 ***
 
-<a href="https://circleci.com/gh/PhpGt/Fetch" target="_blank">
+<a href="https://github.com/PhpGt/Fetch/actions" target="_blank">
     <img src="https://badge.status.php.gt/fetch-build.svg" alt="Build status" />
 </a>
 <a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
