@@ -11,10 +11,10 @@ class ArrayBuffer extends SplFixedArray {
 		self $oldBuffer,
 		int $newByteLength = null
 	):self {
-
+		return $this;
 	}
 
 	public function slice(int $begin, int $end):self {
-
+		return $this;
 	}
 }
