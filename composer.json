@@ -16,14 +16,14 @@
 		"phpgt/http": "*",
 		"phpgt/curl": "*",
 
-		"php-http/httplug": "^2.0",
+		"php-http/httplug": "^v2.0",
 		"react/promise": "2.*",
 		"react/event-loop": "^1.0"
 	},
 
 	"require-dev": {
-		"phpstan/phpstan": "v1.8.0",
-		"phpunit/phpunit": "v9.5.21"
+		"phpstan/phpstan": "^v1.8",
+		"phpunit/phpunit": "^v9.5"
 	},
 
 	"autoload": {
