@@ -2,8 +2,8 @@
 namespace Gt\Fetch;
 
 use Exception;
+use Gt\Async\Loop;
 use Http\Promise\Promise as HttpPromise;
-use React\EventLoop\LoopInterface;
 use RuntimeException;
 
 class Promise implements HttpPromise {
@@ -18,7 +18,7 @@ class Promise implements HttpPromise {
 	/** @var Exception */
 	protected $exception;
 
-	public function __construct(LoopInterface $loop) {
+	public function __construct(Loop $loop) {
 		$this->loop = $loop;
 		$this->state = self::PENDING;
 	}

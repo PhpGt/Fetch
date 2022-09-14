@@ -249,9 +249,8 @@ class BodyResponseTest extends TestCase {
 		$sut = $sut->withAddedHeader("X-Test-Two", "Example2");
 
 		$headers = $sut->headers;
-		self::assertIsArray($headers);
-		self::assertEquals("Example1", $headers["X-Test-One"]);
-		self::assertEquals("Example2", $headers["X-Test-Two"]);
+		self::assertEquals("Example1", $headers->get("X-Test-One"));
+		self::assertEquals("Example2", $headers->get("X-Test-Two"));
 	}
 
 	public function testGetOk() {

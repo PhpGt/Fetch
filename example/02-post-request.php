@@ -3,7 +3,7 @@ require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
 use Gt\Fetch\Response\BodyResponse;
-use Gt\Fetch\Response\Json;
+use Gt\Json\JsonObject;
 
 /*
  * This example uses postman-echo.com do test the request/response.
@@ -35,16 +35,17 @@ $http->fetch("https://postman-echo.com/post", [
 // that was received.
 	return $response->json();
 })
-->then(function(Json $json) {
+->then(function(JsonObject $json) {
 	echo "The Postman Echo server received the following form fields:";
 	echo PHP_EOL;
 
-	foreach($json->form as $key => $value) {
+	$formObject = $json->getObject("form");
+	foreach($formObject as $key => $value) {
 		echo "$key = $value" . PHP_EOL;
 	}
 
-	$firstName = strtok($json->form->getString("name"), " ");
-	$dob = $json->form->getDateTime("dob");
+	$firstName = strtok($formObject->getString("name"), " ");
+	$dob = $formObject->getDateTime("dob");
 	$age = date("Y") - $dob->format("Y");
 	echo PHP_EOL;
 	echo "$firstName is $age years old!" . PHP_EOL;

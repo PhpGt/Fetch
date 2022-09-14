@@ -1,18 +1,19 @@
 <?php
 namespace Gt\Fetch\Response;
 
+use Gt\Async\Loop;
 use Gt\Curl\Curl;
 use Gt\Curl\CurlInterface;
-use Gt\Curl\JsonDecodeException;
 use Gt\Fetch\IntegrityMismatchException;
 use Gt\Fetch\InvalidIntegrityAlgorithmException;
 use Gt\Fetch\Promise;
 use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
 use Gt\Http\StatusCode;
+use Gt\Json\JsonDecodeException;
+use Gt\Json\JsonObjectBuilder;
+use Gt\Promise\Deferred;
 use Psr\Http\Message\UriInterface;
-use React\EventLoop\LoopInterface;
-use React\Promise\Deferred;
 use RuntimeException;
 use SplFixedArray;
 
@@ -27,44 +28,35 @@ use SplFixedArray;
  * @property-read UriInterface $url
  */
 class BodyResponse extends Response {
-	/** @var Deferred */
-	protected $deferred;
-	protected $deferredStatus;
-	/** @var LoopInterface */
-	protected $loop;
-	/** @var Curl */
-	protected $curl;
+	protected Deferred $deferred;
+	protected string $deferredStatus;
+	protected Loop $loop;
+	protected Curl $curl;
 
 	public function __get(string $name) {
 		switch($name) {
 		case "headers":
-			return $this->getHeaders();
-			break;
+			return $this->getResponseHeaders();
 
 		case "ok":
-			return ($this->statusCode >= 200
-				&& $this->statusCode < 300);
-			break;
+			return ($this->getStatusCode() >= 200
+				&& $this->getStatusCode() < 300);
 
 		case "redirected":
 			$redirectCount = $this->curl->getInfo(
 				CURLINFO_REDIRECT_COUNT
 			);
 			return $redirectCount > 0;
-			break;
 
 		case "status":
 			return $this->getStatusCode();
-			break;
 
 		case "statusText":
 			return StatusCode::REASON_PHRASE[$this->status] ?? null;
-			break;
 
 		case "uri":
 		case "url":
 			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
-			break;
 		}
 
 		throw new RuntimeException("Undefined property: $name");
@@ -122,22 +114,17 @@ class BodyResponse extends Response {
 	public function json(int $depth = 512, int $options = 0):Promise {
 		$newPromise = new Promise($this->loop);
 
-		$deferredPromise = $this->deferred->promise();
+		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
 		use($newPromise, $depth, $options) {
-			$json = json_decode(
-				$resolvedValue,
-				false,
-				$depth,
-				$options
-			);
-			if(is_null($json)) {
-				$errorMessage = json_last_error_msg();
-				$exception = new JsonDecodeException($errorMessage);
+			$builder = new JsonObjectBuilder();
+			try {
+				$json = $builder->fromJsonString($resolvedValue);
+				$newPromise->resolve($json);
+			}
+			catch(JsonDecodeException $exception) {
 				$newPromise->reject($exception);
 			}
-
-			$newPromise->resolve(new Json($json));
 		});
 
 		return $newPromise;
@@ -156,7 +143,7 @@ class BodyResponse extends Response {
 	}
 
 	public function startDeferredResponse(
-		LoopInterface $loop,
+		Loop $loop,
 		CurlInterface $curl
 	):Deferred {
 		$this->loop = $loop;
@@ -187,7 +174,7 @@ class BodyResponse extends Response {
 			return;
 		}
 
-		list($algo, $hash) = explode("-", $integrity);
+		[$algo, $hash] = explode("-", $integrity);
 
 		$availableAlgos = hash_algos();
 		if(!in_array($algo, $availableAlgos)) {

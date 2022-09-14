@@ -1,50 +1,45 @@
 <?php
 namespace Gt\Fetch;
 
+use Gt\Async\Loop;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
 use Gt\Fetch\Response\BodyResponse;
 use Gt\Http\Header\Parser;
+use Gt\Promise\Deferred;
 use Psr\Http\Message\UriInterface;
-use React\EventLoop\LoopInterface;
-use React\Promise\Deferred;
-use React\Promise\Promise as ReactPromise;
 
 class RequestResolver {
-	/** @var LoopInterface */
-	protected $loop;
+	protected Loop $loop;
 
-	/** @var CurlMultiInterface[] */
-	protected $curlMultiList;
-	/** @var CurlInterface[] */
-	protected $curlList;
-	/** @var ReactPromise[] */
-	protected $deferredList;
-	/** @var BodyResponse[] */
-	protected $responseList;
-	/** @var string[] */
-	protected $headerList;
-	/** @var string?[] */
-	protected $integrityList = [];
-	/** @var object?[] */
-	protected $signalList;
-
-	protected $curlClass;
-	protected $curlMultiClass;
+	/** @var array<CurlMultiInterface> */
+	protected array $curlMultiList;
+	/** @var array<CurlInterface> */
+	protected array $curlList;
+	/** @var array<Deferred> */
+	protected array $deferredList;
+	/** @var array<BodyResponse> */
+	protected array $responseList;
+	/** @var array<string> */
+	protected array $headerList;
+	/** @var array<string> */
+	protected array $integrityList;
+	/** @var array<object> */
+	protected array $signalList;
 
 	public function __construct(
-		LoopInterface $loop,
-		string $curlClass,
-		string $curlMultiClass
+		Loop $loop,
+		private readonly string $curlClass,
+		private readonly string $curlMultiClass,
 	) {
 		$this->loop = $loop;
-		$this->curlList = [];
 		$this->curlMultiList = [];
+		$this->curlList = [];
 		$this->deferredList = [];
+		$this->responseList = [];
 		$this->headerList = [];
-
-		$this->curlClass = $curlClass;
-		$this->curlMultiClass = $curlMultiClass;
+		$this->integrityList = [];
+		$this->signalList = [];
 	}
 
 	public function add(
@@ -68,27 +63,27 @@ class RequestResolver {
 // curlopt3: Finally, hard-code these curlopt settings:
 		$curl->setOpt(CURLOPT_RETURNTRANSFER, false);
 		$curl->setOpt(CURLOPT_HEADER, false);
-		$curl->setOpt(CURLOPT_HEADERFUNCTION, [$this, "writeHeader"]);
-		$curl->setOpt(CURLOPT_WRITEFUNCTION, [$this, "writeBody"]);
-		$curl->setOpt(CURLOPT_PROGRESSFUNCTION, [$this, "progress"]);
+		$curl->setOpt(CURLOPT_HEADERFUNCTION, $this->writeHeader(...));
+		$curl->setOpt(CURLOPT_WRITEFUNCTION, $this->writeBody(...));
+		$curl->setOpt(CURLOPT_PROGRESSFUNCTION, $this->progress(...));
 		$curl->setOpt(CURLOPT_NOPROGRESS, false);
 
 		/** @var CurlMultiInterface $curlMulti */
 		$curlMulti = new $this->curlMultiClass();
 		$curlMulti->add($curl);
 
-		$this->curlList []= $curl;
-		$this->curlMultiList []= $curlMulti;
-		$this->deferredList []= $deferred;
-		$this->integrityList []= $integrity;
+		array_push($this->curlList, $curl);
+		array_push($this->curlMultiList, $curlMulti);
+		array_push($this->deferredList, $deferred);
+		array_push($this->integrityList, $integrity);
 		$bodyResponse = new BodyResponse();
 		$bodyResponse->startDeferredResponse($this->loop, $curl);
-		$this->responseList []= $bodyResponse;
-		$this->headerList []= "";
-		$this->signalList []= $signal;
+		array_push($this->responseList, $bodyResponse);
+		array_push($this->headerList, "");
+		array_push($this->signalList, $signal);
 	}
 
-	public function writeHeader($ch, string $rawHeader) {
+	public function writeHeader($ch, string $rawHeader):int {
 		$i = $this->getIndex($ch);
 		$headerLine = trim($rawHeader);
 
@@ -134,12 +129,13 @@ class RequestResolver {
 			$this->deferredList[$i] = null;
 		}
 
-// To indiciate that this function has successfully run, cURL expects it to
+// To indicate that this function has successfully run, cURL expects it to
 // return the number of bytes read. If this does not match the same number
 // that cURL sees, cURL will drop the connection.
 		return strlen($content);
 	}
 
+	/** @noinspection PhpUnusedParameterInspection */
 	public function progress(
 		$ch,
 		int $expectedDownloadedBytes,
@@ -148,11 +144,8 @@ class RequestResolver {
 		int $uploadedBytes
 	):int {
 		$index = $this->getIndex($ch);
-		if($this->signalList[$index]) {
-			return (int)$this->signalList[$index]->aborted;
-		}
+		return (int)$this->signalList[$index]?->aborted;
 
-		return 0;
 	}
 
 	public function tick():void {
@@ -174,11 +167,9 @@ class RequestResolver {
 			$totalActive += $active;
 
 			if($active === 0) {
-				if($this->responseList[$i]) {
-					$this->responseList[$i]->endDeferredResponse(
-						$this->integrityList[$i]
-					);
-				}
+				$this->responseList[$i]?->endDeferredResponse(
+					$this->integrityList[$i]
+				);
 				if($this->deferredList[$i]) {
 					$this->deferredList[$i]->resolve($this->responseList[$i]);
 				}
@@ -189,8 +180,7 @@ class RequestResolver {
 		}
 
 		if($totalActive === 0) {
-			$this->loop->stop();
-			return;
+			$this->loop->halt();
 		}
 	}
 
