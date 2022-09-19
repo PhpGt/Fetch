@@ -72,6 +72,8 @@ class RequestResolver {
 		$curlMulti = new $this->curlMultiClass();
 		$curlMulti->add($curl);
 
+		$this->loop->addDeferredToTimer($deferred);
+
 		array_push($this->curlList, $curl);
 		array_push($this->curlMultiList, $curlMulti);
 		array_push($this->deferredList, $deferred);

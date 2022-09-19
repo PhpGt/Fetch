@@ -9,6 +9,7 @@ use Gt\Curl\CurlMulti;
 use Gt\Fetch\Response\BodyResponse;
 use Gt\Http\Uri;
 use Gt\Promise\Deferred;
+use Gt\Promise\Promise;
 use Http\Promise\Promise as HttpPromise;
 use Http\Client\HttpClient;
 use Http\Client\HttpAsyncClient;
@@ -84,7 +85,7 @@ class Http implements HttpClient, HttpAsyncClient {
 	 *
 	 * @param array<string, mixed> $init
 	 */
-	public function fetch(string|UriInterface|RequestInterface $input, array $init = []):HttpPromise {
+	public function fetch(string|UriInterface|RequestInterface $input, array $init = []):Promise {
 		$deferred = new Deferred();
 		$deferredPromise = $deferred->getPromise();
 
@@ -105,21 +106,14 @@ class Http implements HttpClient, HttpAsyncClient {
 			$curlOptBuilder->getSignal()
 		);
 
-		$newPromise = new Promise($this->loop);
-
-		$deferredPromise->then(function(ResponseInterface $response)
-		use($newPromise) {
-			$newPromise->resolve($response);
-		});
-
-		return $newPromise;
+		return $deferredPromise;
 	}
 
 	public function getCurlOptions():array {
 		return $this->curlOptions;
 	}
 
-	public function ensureUriInterface(string|UriInterface $input):UriInterface {
+	public function ensureUriInterface(string|UriInterface|RequestInterface $input):UriInterface {
 		if($input instanceof RequestInterface) {
 			$uri = $input->getUri();
 		}
@@ -147,8 +141,10 @@ class Http implements HttpClient, HttpAsyncClient {
 		$this->wait();
 		$end = microtime(true);
 
-		$promise = new Promise($this->loop);
-		$promise->resolve($end - $start);
+		$deferred = new Deferred();
+		$this->loop->addDeferredToTimer($deferred);
+		$promise = $deferred->getPromise();
+		$deferred->resolve($end - $start);
 		return $promise;
 	}
 }

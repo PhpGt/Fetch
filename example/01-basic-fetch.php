@@ -4,8 +4,41 @@ require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 use Gt\Fetch\Http;
 use Gt\Fetch\Response\BodyResponse;
 use Gt\Json\JsonKvpObject;
-use Gt\Json\JsonObject;
 use Gt\Json\JsonPrimitive\JsonArrayPrimitive;
+
+// TODO: Remove any reference to REFACTOR_Promise.
+// TODO: Make the promises resolve and reject correctly using Gt/Promise/Promise
+
+$http = new Http();
+$fetchPromise = $http->fetch("https://github.com/orgs/phpgt/repos");
+$jsonPromise = $fetchPromise->then(function(BodyResponse $response) {
+	return $response->json();
+});
+
+$chainedJsonPromise = $jsonPromise->then(function(JsonArrayPrimitive $json) {
+	echo "SUCCESS: Json promise resolved." . PHP_EOL;
+	echo "PHP.Gt has the following repositories: ";
+	/** @var JsonKvpObject $item */
+	foreach($json->getPrimitiveValue() as $i => $item) {
+		if($i > 0) {
+			echo ", ";
+		}
+		echo $item->getString("name");
+	}
+	echo PHP_EOL;
+});
+$chainedJsonPromise->catch(function(Throwable $reason) {
+	echo "ERROR - Json promise rejected with error: " . $reason->getMessage() . PHP_EOL;
+	var_dump(debug_backtrace(limit: 3));
+});
+var_dump($jsonPromise->getState());
+// To execute the above Promise(s), call wait() or all().
+$http->wait();
+
+
+var_dump($jsonPromise->getState());
+exit;
+
 
 /*
  * This example fetches the list of repositories in the PhpGt organisation from

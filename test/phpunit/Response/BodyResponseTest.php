@@ -4,7 +4,7 @@ namespace Gt\Fetch\Test\Response;
 use Gt\Curl\Curl;
 use Gt\Curl\JsonDecodeException;
 use Gt\Fetch\Response\BodyResponse;
-use Gt\Fetch\Promise;
+use Gt\Fetch\REFACTOR_Promise;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
@@ -232,13 +232,13 @@ class BodyResponseTest extends TestCase {
 		);
 		$sut->startDeferredResponse($loop, $curl);
 		self::assertEquals(
-			Promise::PENDING,
+			REFACTOR_Promise::PENDING,
 			$sut->deferredResponseStatus()
 		);
 
 		$sut->endDeferredResponse();
 		self::assertEquals(
-			Promise::FULFILLED,
+			REFACTOR_Promise::FULFILLED,
 			$sut->deferredResponseStatus()
 		);
 	}

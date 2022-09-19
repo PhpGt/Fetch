@@ -6,13 +6,13 @@ use Gt\Curl\Curl;
 use Gt\Curl\CurlInterface;
 use Gt\Fetch\IntegrityMismatchException;
 use Gt\Fetch\InvalidIntegrityAlgorithmException;
-use Gt\Fetch\Promise;
 use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
 use Gt\Http\StatusCode;
 use Gt\Json\JsonDecodeException;
 use Gt\Json\JsonObjectBuilder;
 use Gt\Promise\Deferred;
+use Gt\Promise\Promise;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use SplFixedArray;
@@ -63,7 +63,7 @@ class BodyResponse extends Response {
 	}
 
 	public function arrayBuffer():Promise {
-		$newPromise = new Promise($this->loop);
+		$newPromise = new REFACTOR_Promise($this->loop);
 
 		$deferredPromise = $this->deferred->promise();
 		$deferredPromise->then(function(string $resolvedValue)
@@ -81,7 +81,7 @@ class BodyResponse extends Response {
 	}
 
 	public function blob():Promise {
-		$newPromise = new Promise($this->loop);
+		$newPromise = new REFACTOR_Promise($this->loop);
 
 		$type = $this->getHeaderLine("Content-Type");
 
@@ -99,7 +99,7 @@ class BodyResponse extends Response {
 	}
 
 	public function formData():Promise {
-		$newPromise = new Promise($this->loop);
+		$newPromise = new REFACTOR_Promise($this->loop);
 
 		$deferredPromise = $this->deferred->promise();
 		$deferredPromise->then(function(string $resolvedValue)
@@ -112,28 +112,29 @@ class BodyResponse extends Response {
 	}
 
 	public function json(int $depth = 512, int $options = 0):Promise {
-		$newPromise = new Promise($this->loop);
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
 		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise, $depth, $options) {
+		use($newDeferred, $depth, $options) {
 			$builder = new JsonObjectBuilder();
 			try {
 				$json = $builder->fromJsonString($resolvedValue);
-				$newPromise->resolve($json);
+				$newDeferred->resolve($json);
 			}
 			catch(JsonDecodeException $exception) {
-				$newPromise->reject($exception);
+				$newDeferred->reject($exception);
 			}
 		});
 
 		return $newPromise;
 	}
 
-	public function text():Promise {
-		$newPromise = new Promise($this->loop);
+	public function text():REFACTOR_Promise {
+		$newPromise = new REFACTOR_Promise($this->loop);
 
-		$deferredPromise = $this->deferred->promise();
+		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
 		use($newPromise) {
 			$newPromise->resolve($resolvedValue);
