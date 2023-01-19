@@ -2,7 +2,7 @@
 namespace Gt\Fetch\Test;
 
 use Gt\Fetch\Http;
-use Gt\Fetch\Promise;
+use Gt\Fetch\REFACTOR_Promise;
 use Gt\Fetch\Response\BodyResponse;
 use Gt\Fetch\Test\Helper\ResponseSimulator;
 use Gt\Fetch\Test\Helper\TestCurl;
@@ -109,11 +109,9 @@ class HttpTest extends TestCase {
 		$request->method("getUri")
 			->willReturn($uri);
 
-		/** @var RequestInterface $request */
-
 		$promise = $http->sendAsyncRequest($request);
 		self::assertInstanceOf(
-			Promise::class,
+			REFACTOR_Promise::class,
 			$promise
 		);
 
