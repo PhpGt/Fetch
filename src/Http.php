@@ -25,6 +25,7 @@ class Http implements HttpClient, HttpAsyncClient {
 		CURLOPT_USERAGENT => self::USER_AGENT,
 	];
 
+	/** @var array<string, int|string> */
 	public readonly array $curlOptions;
 	private readonly float $interval;
 	private RequestResolver $requestResolver;
@@ -32,6 +33,9 @@ class Http implements HttpClient, HttpAsyncClient {
 	private Loop $loop;
 	private Timer $timer;
 
+	/**
+	 * @param array<string, int|string> $curlOptions
+	 */
 	public function __construct(
 		array $curlOptions = [],
 		float $interval = 0.01,
