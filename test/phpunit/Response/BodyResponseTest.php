@@ -3,6 +3,7 @@ namespace Gt\Fetch\Test\Response;
 
 use Gt\Async\Loop;
 use Gt\Curl\Curl;
+use Gt\Fetch\Response\Blob;
 use Gt\Fetch\Response\BodyResponse;
 use Gt\Json\JsonDecodeException;
 use Gt\Json\JsonKvpObject;
@@ -50,7 +51,6 @@ class BodyResponseTest extends TestCase {
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn($exampleContents);
-		/** @var MockObject|Curl $curl */
 		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
@@ -58,7 +58,7 @@ class BodyResponseTest extends TestCase {
 		$sut = $sut->withBody($stream);
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->blob();
-		$promise->then(function(string $fulfilledValue)use(&$sutOutput) {
+		$promise->then(function(Blob $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
 		});
 		$sut->endDeferredResponse();

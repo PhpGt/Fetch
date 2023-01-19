@@ -57,6 +57,9 @@ class BodyResponse extends Response {
 		case "uri":
 		case "url":
 			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
+
+		case "type":
+			return $this->headers->get("content-type")?->getValue() ?? "";
 		}
 
 		throw new RuntimeException("Undefined property: $name");
@@ -82,7 +85,15 @@ class BodyResponse extends Response {
 	}
 
 	public function blob():Promise {
-		return $this->text();
+		$newDeferred = new Deferred();
+
+		$this->text()->then(function(string $text)use($newDeferred) {
+			$newDeferred->resolve(new Blob($text, [
+				"type" => $this->type
+			]));
+		});
+
+		return $newDeferred->getPromise();
 	}
 
 	public function formData():Promise {
