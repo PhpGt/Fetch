@@ -1,7 +1,9 @@
 <?php
 namespace Gt\Fetch;
 
+use CurlHandle;
 use Gt\Async\Loop;
+use Gt\Curl\Curl;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
 use Gt\Fetch\Response\BodyResponse;
@@ -10,19 +12,19 @@ use Gt\Promise\Deferred;
 use Psr\Http\Message\UriInterface;
 
 class RequestResolver {
-	/** @var array<CurlMultiInterface> */
+	/** @var array<CurlMultiInterface|null> */
 	private array $curlMultiList;
-	/** @var array<CurlInterface> */
+	/** @var array<CurlInterface|null> */
 	private array $curlList;
-	/** @var array<Deferred> */
+	/** @var array<Deferred|null> */
 	private array $deferredList;
-	/** @var array<BodyResponse> */
+	/** @var array<BodyResponse|null> */
 	private array $responseList;
-	/** @var array<string> */
+	/** @var array<string|null> */
 	private array $headerList;
-	/** @var array<string> */
+	/** @var array<string|null> */
 	private array $integrityList;
-	/** @var array<object> */
+	/** @var array<object|null> */
 	private array $signalList;
 
 	public function __construct(
@@ -48,6 +50,7 @@ class RequestResolver {
 	 * provided hash as Subresource Identity (SRI).
 	 * The optional Controller $signal is used internally by curl to provide
 	 * an abort signal.
+	 * @param array<string, int|string> $curlOptArray
 	 */
 	public function add(
 		UriInterface $uri,
@@ -129,7 +132,7 @@ class RequestResolver {
 		}
 	}
 
-	private function writeHeader($ch, string $rawHeader):int {
+	private function writeHeader(CurlHandle $ch, string $rawHeader):int {
 		$i = $this->getIndex($ch);
 		$headerLine = trim($rawHeader);
 
@@ -164,7 +167,7 @@ class RequestResolver {
 		return strlen($rawHeader);
 	}
 
-	private function writeBody($ch, string $content):int {
+	private function writeBody(CurlHandle $ch, string $content):int {
 		$i = $this->getIndex($ch);
 
 		$body = $this->responseList[$i]->getBody();
@@ -181,9 +184,11 @@ class RequestResolver {
 		return strlen($content);
 	}
 
-	/** @noinspection PhpUnusedParameterInspection */
+	/**
+	 * @noinspection PhpUnusedParameterInspection
+	 */
 	private function progress(
-		$ch,
+		CurlHandle $ch,
 		int $expectedDownloadedBytes,
 		int $downloadedBytes,
 		int $expectedUploadedBytes,
@@ -193,7 +198,7 @@ class RequestResolver {
 		return (int)$this->signalList[$index]?->aborted;
 	}
 
-	private function getIndex($chIncoming):int {
+	private function getIndex(CurlHandle $chIncoming):int {
 		$i = -1;
 		$match = false;
 		foreach($this->curlList as $i => $curl) {

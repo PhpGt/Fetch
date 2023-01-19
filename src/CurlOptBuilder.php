@@ -4,6 +4,7 @@ namespace Gt\Fetch;
 use Gt\Http\RequestMethod;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
+use function _PHPStan_59fb0a3b2\RingCentral\Psr7\parse_query;
 
 /**
  * Converts a Fetch Init array to CURLOPT_* key-values.
@@ -18,7 +19,7 @@ class CurlOptBuilder {
 
 	/** @param array<string, int|string> $init */
 	public function __construct(
-		string|UriInterface|RequestInterface $input,
+		null|string|UriInterface|RequestInterface $input,
 		array $init = [],
 	) {
 		$this->curlOptArray = [];
@@ -80,10 +81,11 @@ class CurlOptBuilder {
 	}
 
 	/**
-	 * @param string $body Any body that you want to add to your request:
-	 * this can be a string, associative array (form data) or binary object.
+	 * @param string|array<string, string> $body Any body that you want to
+	 * add to your request: this can be a string, associative array
+	 * (representing form data) or binary object.
 	 */
-	protected function setBody(string $body):void {
+	protected function setBody(string|array $body):void {
 		$this->curlOptArray[CURLOPT_POSTFIELDS] = $body;
 	}
 

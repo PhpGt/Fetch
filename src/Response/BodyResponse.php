@@ -31,9 +31,9 @@ class BodyResponse extends Response {
 	protected Deferred $deferred;
 	protected string $deferredStatus;
 	protected Loop $loop;
-	protected Curl $curl;
+	protected CurlInterface $curl;
 
-	public function __get(string $name) {
+	public function __get(string $name):mixed {
 		switch($name) {
 		case "headers":
 			return $this->getResponseHeaders();
@@ -117,7 +117,7 @@ class BodyResponse extends Response {
 		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
 		use($newDeferred, $depth, $options) {
-			$builder = new JsonObjectBuilder();
+			$builder = new JsonObjectBuilder($depth, $options);
 			try {
 				$json = $builder->fromJsonString($resolvedValue);
 				$newDeferred->resolve($json);
@@ -169,7 +169,7 @@ class BodyResponse extends Response {
 		return $this->deferredStatus ?? null;
 	}
 
-	protected function checkIntegrity(?string $integrity, $contents) {
+	protected function checkIntegrity(?string $integrity, string $contents):void {
 		if(is_null($integrity)) {
 			return;
 		}
