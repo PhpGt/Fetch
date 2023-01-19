@@ -138,7 +138,7 @@ class HttpTest extends TestCase {
 			uniqid() => uniqid(),
 		];
 		$http = new Http($options);
-		$actualOptions = $http->getCurlOptions();
+		$actualOptions = $http->curlOptions;
 
 		foreach($options as $key => $value) {
 			self::assertEquals($value, $actualOptions[$key]);
