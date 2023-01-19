@@ -2,13 +2,13 @@
 namespace Gt\Fetch\Test;
 
 use Gt\Fetch\Http;
-use Gt\Fetch\REFACTOR_Promise;
 use Gt\Fetch\Response\BodyResponse;
 use Gt\Fetch\Test\Helper\ResponseSimulator;
 use Gt\Fetch\Test\Helper\TestCurl;
 use Gt\Fetch\Test\Helper\TestCurlMulti;
 use Gt\Http\Request;
 use Gt\Http\Uri;
+use Gt\Promise\Promise;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
@@ -111,7 +111,7 @@ class HttpTest extends TestCase {
 
 		$promise = $http->sendAsyncRequest($request);
 		self::assertInstanceOf(
-			REFACTOR_Promise::class,
+			Promise::class,
 			$promise
 		);
 

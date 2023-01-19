@@ -63,49 +63,37 @@ class BodyResponse extends Response {
 	}
 
 	public function arrayBuffer():Promise {
-		$newPromise = new REFACTOR_Promise($this->loop);
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
-		$deferredPromise = $this->deferred->promise();
+		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise) {
+		use($newDeferred) {
 			$bytes = strlen($resolvedValue);
 			$arrayBuffer = new SplFixedArray($bytes);
 			for($i = 0; $i < $bytes; $i++) {
 				$arrayBuffer->offsetSet($i, ord($resolvedValue[$i]));
 			}
 
-			$newPromise->resolve($arrayBuffer);
+			$newDeferred->resolve($arrayBuffer);
 		});
 
 		return $newPromise;
 	}
 
 	public function blob():Promise {
-		$newPromise = new REFACTOR_Promise($this->loop);
-
-		$type = $this->getHeaderLine("Content-Type");
-
-		$deferredPromise = $this->deferred->promise();
-		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise, $type) {
-			$newPromise->resolve(
-				new Blob($resolvedValue, [
-					"type" => $type,
-				])
-			);
-		});
-
-		return $newPromise;
+		return $this->text();
 	}
 
 	public function formData():Promise {
-		$newPromise = new REFACTOR_Promise($this->loop);
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
-		$deferredPromise = $this->deferred->promise();
+		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise) {
+		use($newDeferred) {
 			parse_str($resolvedValue, $bodyData);
-			$newPromise->resolve($bodyData);
+			$newDeferred->resolve($bodyData);
 		});
 
 		return $newPromise;
@@ -131,14 +119,14 @@ class BodyResponse extends Response {
 		return $newPromise;
 	}
 
-	public function text():REFACTOR_Promise {
-		$newPromise = new REFACTOR_Promise($this->loop);
+	public function text():Promise {
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
-		$deferredPromise = $this->deferred->getPromise();
-		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise) {
-			$newPromise->resolve($resolvedValue);
-		});
+		$this->deferred->getPromise()
+			->then(function(string $html)use($newDeferred) {
+				$newDeferred->resolve($html);
+			});
 
 		return $newPromise;
 	}
@@ -167,7 +155,7 @@ class BodyResponse extends Response {
 	}
 
 	public function deferredResponseStatus():?string {
-		return $this->deferredStatus;
+		return $this->deferredStatus ?? null;
 	}
 
 	protected function checkIntegrity(?string $integrity, $contents) {
