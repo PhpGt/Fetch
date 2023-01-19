@@ -4,7 +4,6 @@ namespace Gt\Fetch;
 use Gt\Http\RequestMethod;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
-use function _PHPStan_59fb0a3b2\RingCentral\Psr7\parse_query;
 
 /**
  * Converts a Fetch Init array to CURLOPT_* key-values.
