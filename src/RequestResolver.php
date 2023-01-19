@@ -132,7 +132,7 @@ class RequestResolver {
 		}
 	}
 
-	private function writeHeader(CurlHandle $ch, string $rawHeader):int {
+	private function writeHeader(CurlHandle|CurlInterface $ch, string $rawHeader):int {
 		$i = $this->getIndex($ch);
 		$headerLine = trim($rawHeader);
 
@@ -167,7 +167,7 @@ class RequestResolver {
 		return strlen($rawHeader);
 	}
 
-	private function writeBody(CurlHandle $ch, string $content):int {
+	private function writeBody(CurlHandle|CurlInterface $ch, string $content):int {
 		$i = $this->getIndex($ch);
 
 		$body = $this->responseList[$i]->getBody();
@@ -188,7 +188,7 @@ class RequestResolver {
 	 * @noinspection PhpUnusedParameterInspection
 	 */
 	private function progress(
-		CurlHandle $ch,
+		CurlHandle|CurlInterface $ch,
 		int $expectedDownloadedBytes,
 		int $downloadedBytes,
 		int $expectedUploadedBytes,
@@ -198,7 +198,7 @@ class RequestResolver {
 		return (int)$this->signalList[$index]?->aborted;
 	}
 
-	private function getIndex(CurlHandle $chIncoming):int {
+	private function getIndex(CurlHandle|CurlInterface $chIncoming):int {
 		$i = -1;
 		$match = false;
 		foreach($this->curlList as $i => $curl) {
