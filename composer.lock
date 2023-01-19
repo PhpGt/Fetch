@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cd708c7b992046e3908950d7200b490c",
+    "content-hash": "68177928c08746bd1857e011a9574aee",
     "packages": [
         {
             "name": "php-http/httplug",
@@ -127,16 +127,16 @@
         },
         {
             "name": "phpgt/async",
-            "version": "v0.1.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Async.git",
-                "reference": "45a7766b73697d9456270c120066d353785c5d00"
+                "reference": "3d2bdeca8cafc8573b416da3ac591d5d88f6dea9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Async/zipball/45a7766b73697d9456270c120066d353785c5d00",
-                "reference": "45a7766b73697d9456270c120066d353785c5d00",
+                "url": "https://api.github.com/repos/PhpGt/Async/zipball/3d2bdeca8cafc8573b416da3ac591d5d88f6dea9",
+                "reference": "3d2bdeca8cafc8573b416da3ac591d5d88f6dea9",
                 "shasum": ""
             },
             "require": {
@@ -145,9 +145,10 @@
                 "phpgt/promise": "^2.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^0.12",
-                "phpunit/phpunit": "9.*"
+                "phpstan/phpstan": "^v1.8",
+                "phpunit/phpunit": "^v9.5"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -161,7 +162,7 @@
             "description": "Promise-based non-blocking operations.",
             "support": {
                 "issues": "https://github.com/PhpGt/Async/issues",
-                "source": "https://github.com/PhpGt/Async/tree/v0.1.0"
+                "source": "https://github.com/PhpGt/Async/tree/master"
             },
             "funding": [
                 {
@@ -169,7 +170,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2021-01-21T12:26:42+00:00"
+            "time": "2023-01-19T11:11:58+00:00"
         },
         {
             "name": "phpgt/curl",
@@ -2786,6 +2787,7 @@
     ],
     "minimum-stability": "stable",
     "stability-flags": {
+        "phpgt/async": 20,
         "phpgt/promise": 20
     },
     "prefer-stable": false,

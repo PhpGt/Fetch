@@ -13,7 +13,7 @@
 		"php": ">=8.1",
 		"ext-curl": "*",
 		"ext-json": "*",
-		"phpgt/async": "^v0.1",
+		"phpgt/async": "dev-master",
 		"phpgt/promise": "dev-master as v2.0.0",
 		"phpgt/http": "^v1.1",
 		"phpgt/curl": "^v3.0",
