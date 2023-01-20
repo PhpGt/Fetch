@@ -2,33 +2,35 @@
 require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
+use Gt\Fetch\Response\Blob;
 use Gt\Fetch\Response\BodyResponse;
-use Gt\Fetch\Response\Json;
-
-/*
- * This example fetches the list of repositories in the PhpGt organisation from
- * Github's public API.
- */
+use Gt\Json\JsonKvpObject;
+use Gt\Json\JsonPrimitive\JsonArrayPrimitive;
 
 $http = new Http();
+
 $http->fetch("https://api.github.com/orgs/phpgt/repos")
-->then(function(BodyResponse $response) {
-	if(!$response->ok) {
-		echo "Error fetching Github's API.";
-		exit(1);
-	}
+	->then(function(BodyResponse $response) {
+		if(!$response->ok) {
+			throw new RuntimeException("Can't retrieve Github's API on $response->uri");
+		}
 
-	return $response->json();
-})
-->then(function(Json $json) {
-// $json is a pre-decoded object. Expected response is an array of Repositories,
-// as per https://developer.github.com/v3/repos/#list-organization-repositories
-	echo "PHP.Gt repository list:" . PHP_EOL;
+		return $response->json();
+	})
+	->then(function(JsonArrayPrimitive $json) {
+		echo "SUCCESS: Json promise resolved!", PHP_EOL;
+		echo "PHP.Gt has the following repositories: ";
+		$repoList = [];
+		/** @var JsonKvpObject $item */
+		foreach($json->getPrimitiveValue() as $item) {
+			array_push($repoList, $item->getString("name"));
+		}
 
-	foreach($json as $repo) {
-		echo $repo->getString("name") . PHP_EOL;
-	}
-});
+		echo wordwrap(implode(", ", $repoList)) . ".";
+		echo PHP_EOL, PHP_EOL;
+	})
+	->catch(function(Throwable $reason) {
+		echo "ERROR: ", PHP_EOL, $reason->getMessage(), PHP_EOL, PHP_EOL;
+	});
 
-// To execute the above Promise(s), call wait() or all().
 $http->wait();

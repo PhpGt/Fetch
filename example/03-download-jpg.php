@@ -26,8 +26,6 @@ $http->fetch("https://cataas.com/cat")
 	return $response->blob();
 })
 ->then(function(Blob $blob) {
-	$extension = null;
-
 	switch($blob->type) {
 	case "image/jpeg":
 		$extension = "jpg";

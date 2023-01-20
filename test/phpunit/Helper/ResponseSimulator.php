@@ -48,7 +48,7 @@ class ResponseSimulator {
 	}
 
 	static protected function generateBody():string {
-		if(strlen(self::$bodyBuffer) > 0) {
+		if(strlen(self::$bodyBuffer ?? "") > 0) {
 			return self::$bodyBuffer;
 		}
 

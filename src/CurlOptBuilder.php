@@ -3,6 +3,7 @@ namespace Gt\Fetch;
 
 use Gt\Http\RequestMethod;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
  * Converts a Fetch Init array to CURLOPT_* key-values.
@@ -10,11 +11,16 @@ use Psr\Http\Message\RequestInterface;
  * @see https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Syntax
  */
 class CurlOptBuilder {
-	protected $curlOptArray;
-	protected $integrity;
-	protected $signal;
+	/** @var array<string, int|string> */
+	protected array $curlOptArray;
+	protected ?string $integrity;
+	protected ?Controller $signal;
 
-	public function __construct($input, array $init = []) {
+	/** @param array<string, int|string> $init */
+	public function __construct(
+		null|string|UriInterface|RequestInterface $input,
+		array $init = [],
+	) {
 		$this->curlOptArray = [];
 
 		if($input instanceof RequestInterface) {
@@ -32,11 +38,12 @@ class CurlOptBuilder {
 		}
 	}
 
+	/** @return array<string, int|string> */
 	public function asCurlOptArray():array {
 		return $this->curlOptArray;
 	}
 
-	protected function fromRequestObject(RequestInterface $request) {
+	protected function fromRequestObject(RequestInterface $request):void {
 		$this->curlOptArray[CURLOPT_URL] = (string)$request->getUri();
 
 		if($method = $request->getMethod()) {
@@ -46,17 +53,15 @@ class CurlOptBuilder {
 		$this->setHeaders($request->getHeaders());
 	}
 
-	/**
-	 * @param string $value The request method, e.g., GET, POST.
-	 */
-	protected function setMethod(string $value) {
+	/** @param string $value The request method, e.g., GET, POST. */
+	protected function setMethod(string $value):void {
 		$this->curlOptArray[CURLOPT_CUSTOMREQUEST] =
 			RequestMethod::filterMethodName($value);
 	}
 
 	/**
-	 * @param array $headers Any headers you want to add to your request,
-	 * contained within an associative array.
+	 * @param array<string, string|string[]> $headers Any headers you want
+	 * to add to your request, contained within an associative array.
 	 */
 	protected function setHeaders(array $headers):void {
 		$rawHeaders = [];
@@ -75,10 +80,11 @@ class CurlOptBuilder {
 	}
 
 	/**
-	 * @param string $body Any body that you want to add to your request:
-	 * this can be a string, associative array (form data) or binary object.
+	 * @param string|array<string, string> $body Any body that you want to
+	 * add to your request: this can be a string, associative array
+	 * (representing form data) or binary object.
 	 */
-	protected function setBody($body):void {
+	protected function setBody(string|array $body):void {
 		$this->curlOptArray[CURLOPT_POSTFIELDS] = $body;
 	}
 

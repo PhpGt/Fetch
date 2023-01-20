@@ -1,18 +1,19 @@
 <?php
 namespace Gt\Fetch\Response;
 
+use Gt\Async\Loop;
 use Gt\Curl\Curl;
 use Gt\Curl\CurlInterface;
-use Gt\Curl\JsonDecodeException;
 use Gt\Fetch\IntegrityMismatchException;
 use Gt\Fetch\InvalidIntegrityAlgorithmException;
-use Gt\Fetch\Promise;
 use Gt\Http\Header\ResponseHeaders;
 use Gt\Http\Response;
 use Gt\Http\StatusCode;
+use Gt\Json\JsonDecodeException;
+use Gt\Json\JsonObjectBuilder;
+use Gt\Promise\Deferred;
+use Gt\Promise\Promise;
 use Psr\Http\Message\UriInterface;
-use React\EventLoop\LoopInterface;
-use React\Promise\Deferred;
 use RuntimeException;
 use SplFixedArray;
 
@@ -27,136 +28,122 @@ use SplFixedArray;
  * @property-read UriInterface $url
  */
 class BodyResponse extends Response {
-	/** @var Deferred */
-	protected $deferred;
-	protected $deferredStatus;
-	/** @var LoopInterface */
-	protected $loop;
-	/** @var Curl */
-	protected $curl;
+	protected Deferred $deferred;
+	protected string $deferredStatus;
+	protected Loop $loop;
+	protected CurlInterface $curl;
 
-	public function __get(string $name) {
+	public function __get(string $name):mixed {
 		switch($name) {
 		case "headers":
-			return $this->getHeaders();
-			break;
+			return $this->getResponseHeaders();
 
 		case "ok":
-			return ($this->statusCode >= 200
-				&& $this->statusCode < 300);
-			break;
+			return ($this->getStatusCode() >= 200
+				&& $this->getStatusCode() < 300);
 
 		case "redirected":
 			$redirectCount = $this->curl->getInfo(
 				CURLINFO_REDIRECT_COUNT
 			);
 			return $redirectCount > 0;
-			break;
 
 		case "status":
 			return $this->getStatusCode();
-			break;
 
 		case "statusText":
 			return StatusCode::REASON_PHRASE[$this->status] ?? null;
-			break;
 
 		case "uri":
 		case "url":
 			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
-			break;
+
+		case "type":
+			return $this->headers->get("content-type")?->getValue() ?? "";
 		}
 
 		throw new RuntimeException("Undefined property: $name");
 	}
 
 	public function arrayBuffer():Promise {
-		$newPromise = new Promise($this->loop);
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
-		$deferredPromise = $this->deferred->promise();
+		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise) {
+		use($newDeferred) {
 			$bytes = strlen($resolvedValue);
 			$arrayBuffer = new SplFixedArray($bytes);
 			for($i = 0; $i < $bytes; $i++) {
 				$arrayBuffer->offsetSet($i, ord($resolvedValue[$i]));
 			}
 
-			$newPromise->resolve($arrayBuffer);
+			$newDeferred->resolve($arrayBuffer);
 		});
 
 		return $newPromise;
 	}
 
 	public function blob():Promise {
-		$newPromise = new Promise($this->loop);
+		$newDeferred = new Deferred();
 
-		$type = $this->getHeaderLine("Content-Type");
-
-		$deferredPromise = $this->deferred->promise();
-		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise, $type) {
-			$newPromise->resolve(
-				new Blob($resolvedValue, [
-					"type" => $type,
-				])
-			);
+		$this->text()->then(function(string $text)use($newDeferred) {
+			$newDeferred->resolve(new Blob($text, [
+				"type" => $this->type
+			]));
 		});
 
-		return $newPromise;
+		return $newDeferred->getPromise();
 	}
 
 	public function formData():Promise {
-		$newPromise = new Promise($this->loop);
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
-		$deferredPromise = $this->deferred->promise();
+		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise) {
+		use($newDeferred) {
 			parse_str($resolvedValue, $bodyData);
-			$newPromise->resolve($bodyData);
+			$newDeferred->resolve($bodyData);
 		});
 
 		return $newPromise;
 	}
 
 	public function json(int $depth = 512, int $options = 0):Promise {
-		$newPromise = new Promise($this->loop);
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
-		$deferredPromise = $this->deferred->promise();
+		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise, $depth, $options) {
-			$json = json_decode(
-				$resolvedValue,
-				false,
-				$depth,
-				$options
-			);
-			if(is_null($json)) {
-				$errorMessage = json_last_error_msg();
-				$exception = new JsonDecodeException($errorMessage);
-				$newPromise->reject($exception);
+		use($newDeferred, $depth, $options) {
+			$builder = new JsonObjectBuilder($depth, $options);
+			try {
+				$json = $builder->fromJsonString($resolvedValue);
+				$newDeferred->resolve($json);
 			}
-
-			$newPromise->resolve(new Json($json));
+			catch(JsonDecodeException $exception) {
+				$newDeferred->reject($exception);
+			}
 		});
 
 		return $newPromise;
 	}
 
 	public function text():Promise {
-		$newPromise = new Promise($this->loop);
+		$newDeferred = new Deferred();
+		$newPromise = $newDeferred->getPromise();
 
-		$deferredPromise = $this->deferred->promise();
-		$deferredPromise->then(function(string $resolvedValue)
-		use($newPromise) {
-			$newPromise->resolve($resolvedValue);
-		});
+		$this->deferred->getPromise()
+			->then(function(string $html)use($newDeferred) {
+				$newDeferred->resolve($html);
+			});
 
 		return $newPromise;
 	}
 
 	public function startDeferredResponse(
-		LoopInterface $loop,
+		Loop $loop,
 		CurlInterface $curl
 	):Deferred {
 		$this->loop = $loop;
@@ -179,15 +166,15 @@ class BodyResponse extends Response {
 	}
 
 	public function deferredResponseStatus():?string {
-		return $this->deferredStatus;
+		return $this->deferredStatus ?? null;
 	}
 
-	protected function checkIntegrity(?string $integrity, $contents) {
+	protected function checkIntegrity(?string $integrity, string $contents):void {
 		if(is_null($integrity)) {
 			return;
 		}
 
-		list($algo, $hash) = explode("-", $integrity);
+		[$algo, $hash] = explode("-", $integrity);
 
 		$availableAlgos = hash_algos();
 		if(!in_array($algo, $availableAlgos)) {

@@ -1,9 +1,11 @@
 <?php
 namespace Gt\Fetch\Response;
 
+use RuntimeException;
+
 /**
- * @property-read int size
- * @property-read string type
+ * @property-read int $size
+ * @property-read string $type
  */
 class Blob {
 	const ENDINGS_TRANSPARENT = "transparent";
@@ -13,14 +15,20 @@ class Blob {
 	const PART_TYPE_BLOB = "blob";
 	const PART_TYPE_STRING = "string";
 
-	protected $type;
-	protected $endings;
-	/** @var string */
-	protected $content;
+	private string $type;
+//	private string $endings; // TODO: this is currently unused
+	protected string $content;
 
-	public function __construct($blobParts, array $options = []) {
+	/**
+	 * @param array<string>|ArrayBuffer|Blob|string $blobParts
+	 * @param array<string> $options
+	 */
+	public function __construct(
+		array|ArrayBuffer|self|string $blobParts,
+		array $options = [],
+	) {
 		$this->type = $options["type"] ?? "";
-		$this->endings = $options["endings"] ?? self::ENDINGS_TRANSPARENT;
+//		$this->endings = $options["endings"] ?? self::ENDINGS_TRANSPARENT;
 
 		$partType = $this->getBlobPartsType($blobParts);
 
@@ -47,25 +55,26 @@ class Blob {
 		return $this->getContent();
 	}
 
-	public function __get(string $key) {
-		switch($key) {
+	public function __get(string $name):mixed {
+		switch($name) {
 		case "size":
 			return $this->size;
-			break;
 
 		case "type":
 			return $this->type;
-			break;
 		}
+
+		throw new RuntimeException("Undefined property: $name");
 	}
 
 	public function getContent():string {
 		return $this->content;
 	}
 
-	protected function getBlobPartsType($blobParts):string {
-		$type = null;
-
+	/** @param array<string>|ArrayBuffer|Blob|string $blobParts */
+	protected function getBlobPartsType(
+		array|ArrayBuffer|self|string $blobParts
+	):string {
 		if(is_array($blobParts)) {
 			return self::PART_TYPE_ARRAY;
 		}
@@ -81,12 +90,9 @@ class Blob {
 		if(is_string($blobParts)) {
 			return self::PART_TYPE_STRING;
 		}
-
-		if(is_null($type)) {
-			throw new InvlidBlobPartTypeException($blobParts);
-		}
 	}
 
+	/** @param array<string> $input */
 	protected function loadArray(array $input):string {
 		return $this->loadIterable($input);
 	}
@@ -103,17 +109,16 @@ class Blob {
 		return $input;
 	}
 
+	/** @param iterable<string> $input */
 	protected function loadIterable(iterable $input):string {
 		$buffer = "";
 
 		foreach($input as $i) {
-			if(self::ENDINGS_NATIVE) {
-				$i = str_replace(
-					["\n", "\r\n"],
-					PHP_EOL,
-					$i
-				);
-			}
+			$i = str_replace(
+				["\n", "\r\n"],
+				PHP_EOL,
+				$i
+			);
 
 			$buffer .= $i;
 		}

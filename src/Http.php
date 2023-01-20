@@ -1,63 +1,62 @@
 <?php
 namespace Gt\Fetch;
 
+use Gt\Async\Loop;
+use Gt\Async\Timer\PeriodicTimer;
+use Gt\Async\Timer\Timer;
 use Gt\Curl\Curl;
 use Gt\Curl\CurlMulti;
 use Gt\Fetch\Response\BodyResponse;
 use Gt\Http\Uri;
-use Http\Promise\Promise as HttpPromise;
+use Gt\Promise\Deferred;
+use Gt\Promise\Promise;
+use Http\Promise\Promise as HttpPromiseInterface;
 use Http\Client\HttpClient;
 use Http\Client\HttpAsyncClient;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
-use React\EventLoop\Factory as LoopFactory;
-use React\EventLoop\LoopInterface;
-use React\EventLoop\TimerInterface;
-use React\Promise\Deferred;
 
 class Http implements HttpClient, HttpAsyncClient {
 	const USER_AGENT = "PhpGt/Fetch";
-
-	/** @var float */
-	protected $interval;
-	/** @var RequestResolver */
-	protected $requestResolver;
-	/** @var array cURL options */
-	protected $curlOptions = [
+	const DEFAULT_CURL_OPTIONS = [
 		CURLOPT_CUSTOMREQUEST => "GET",
 		CURLOPT_FOLLOWLOCATION => true,
 		CURLOPT_USERAGENT => self::USER_AGENT,
 	];
-	/** @var LoopInterface */
-	protected $loop;
-	/** @var TimerInterface */
-	protected $timer;
 
+	/** @var array<string, int|string> */
+	public readonly array $curlOptions;
+	private readonly float $interval;
+	private RequestResolver $requestResolver;
+
+	private Loop $loop;
+	private Timer $timer;
+
+	/**
+	 * @param array<string, int|string> $curlOptions
+	 */
 	public function __construct(
 		array $curlOptions = [],
 		float $interval = 0.01,
 		string $curlClass = Curl::class,
 		string $curlMultiClass = CurlMulti::class
 	) {
-		$this->curlOptions = $curlOptions + $this->curlOptions;
+		$this->curlOptions = $curlOptions + self::DEFAULT_CURL_OPTIONS;
 		$this->interval = $interval;
 
-		$this->loop = LoopFactory::create();
+		$this->loop = new Loop();
 		$this->requestResolver = new RequestResolver(
 			$this->loop,
 			$curlClass,
 			$curlMultiClass
 		);
-		$this->timer = $this->loop->addPeriodicTimer(
-			$this->interval,
-			[$this->requestResolver, "tick"]
-		);
+		$this->timer = new PeriodicTimer($this->interval, true);
+		$this->timer->addCallback($this->requestResolver->tick(...));
+		$this->loop->addTimer($this->timer);
 	}
 
-	/**
-	 * @interface HttpClient
-	 */
+	/** @interface HttpClient */
 	public function sendRequest(
 		RequestInterface $request
 	):ResponseInterface {
@@ -74,12 +73,10 @@ class Http implements HttpClient, HttpAsyncClient {
 		return $returnValue;
 	}
 
-	/**
-	 * @interface HttpAsyncClient
-	 */
+	/** @interface HttpAsyncClient */
 	public function sendAsyncRequest(
 		RequestInterface $request
-	):HttpPromise {
+	):HttpPromiseInterface {
 		return $this->fetch($request);
 	}
 
@@ -87,14 +84,14 @@ class Http implements HttpClient, HttpAsyncClient {
 	 * Creates a new Deferred object to perform the resolution of the request and
 	 * returns a PSR-7 compatible promise that represents the result of the response
 	 *
-	 * Long-hand for the GlobalFetchHelper get, head, post, etc.
-	 *
-	 * @param string|UriInterface|RequestInterface $input
-	 * @param array $init
+	 * @param array<string, mixed> $init
 	 */
-	public function fetch($input, array $init = []):HttpPromise {
+	public function fetch(
+		string|UriInterface|RequestInterface $input,
+		array $init = []
+	):Promise {
 		$deferred = new Deferred();
-		$deferredPromise = $deferred->promise();
+		$deferredPromise = $deferred->getPromise();
 
 		$uri = $this->ensureUriInterface($input);
 
@@ -113,25 +110,12 @@ class Http implements HttpClient, HttpAsyncClient {
 			$curlOptBuilder->getSignal()
 		);
 
-		$newPromise = new Promise($this->loop);
-
-		$deferredPromise->then(function(ResponseInterface $response)
-		use($newPromise) {
-			$newPromise->resolve($response);
-		});
-
-		return $newPromise;
+		return $deferredPromise;
 	}
 
-	public function getCurlOptions():array {
-		return $this->curlOptions;
-	}
-
-	/**
-	 * @param string|UriInterface $input
-	 * @return string
-	 */
-	public function ensureUriInterface($input):UriInterface {
+	public function ensureUriInterface(
+		string|UriInterface|RequestInterface $input
+	):UriInterface {
 		if($input instanceof RequestInterface) {
 			$uri = $input->getUri();
 		}
@@ -154,13 +138,15 @@ class Http implements HttpClient, HttpAsyncClient {
 	 * Begins execution of all promises, returning its own Promise that will
 	 * resolve when the last HTTP request is fully resolved.
 	 */
-	public function all():HttpPromise {
+	public function all():HttpPromiseInterface {
 		$start = microtime(true);
 		$this->wait();
 		$end = microtime(true);
 
-		$promise = new Promise($this->loop);
-		$promise->resolve($end - $start);
+		$deferred = new Deferred();
+		$this->loop->addDeferredToTimer($deferred);
+		$promise = $deferred->getPromise();
+		$deferred->resolve($end - $start);
 		return $promise;
 	}
 }
