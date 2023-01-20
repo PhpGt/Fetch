@@ -26,32 +26,32 @@ $http->fetch("https://postman-echo.com/post", [
 		"email" => "zuck@fb.com",
 	]),
 ])
-->then(function(BodyResponse $response) {
-	if(!$response->ok) {
-		echo "Error posting to Postman Echo." . PHP_EOL;
-		exit(1);
-	}
+	->then(function(BodyResponse $response) {
+		if(!$response->ok) {
+			throw new RuntimeException("Error posting to Postman Echo.");
+		}
 // Postman Echo servers respond with a JSON representation of the request
 // that was received.
-	return $response->json();
-})
-->then(function(JsonObject $json) {
-	echo "The Postman Echo server received the following form fields:";
-	echo PHP_EOL;
+		return $response->json();
+	})
+	->then(function(JsonObject $json) {
+		echo "The Postman Echo server received the following form fields:";
+		echo PHP_EOL;
 
-	$formObject = $json->getObject("form");
-	foreach($formObject as $key => $value) {
-		echo "$key = $value" . PHP_EOL;
-	}
+		$formObject = $json->getObject("form");
+		foreach($formObject->asArray() as $key => $value) {
+			echo "$key = $value" . PHP_EOL;
+		}
 
-	$firstName = strtok($formObject->getString("name"), " ");
-	$dob = $formObject->getDateTime("dob");
-	$age = date("Y") - $dob->format("Y");
-	echo PHP_EOL;
-	echo "$firstName is $age years old!" . PHP_EOL;
-}, function($error) {
-	var_dump($error);
-});
+		$firstName = strtok($formObject->getString("name"), " ");
+		$dob = $formObject->getDateTime("dob");
+		$age = date("Y") - $dob->format("Y");
+		echo PHP_EOL;
+		echo "$firstName is $age years old!" . PHP_EOL;
+	})
+	->catch(function(Throwable $error) {
+		echo "An error occurred: ", $error->getMessage();
+	});
 
 // To execute the above Promise(s), call wait() or all().
 $http->wait();
