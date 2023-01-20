@@ -118,13 +118,16 @@ class BodyResponse extends Response {
 		$deferredPromise->then(function(string $resolvedValue)
 		use($newDeferred, $depth, $options) {
 			$builder = new JsonObjectBuilder($depth, $options);
-			try {
-				$json = $builder->fromJsonString($resolvedValue);
-				$newDeferred->resolve($json);
-			}
-			catch(JsonDecodeException $exception) {
-				$newDeferred->reject($exception);
-			}
+			$json = $builder->fromJsonString($resolvedValue);
+			$newDeferred->resolve($json);
+// TODO: Other option of rejecting the outer promise:
+//			try {
+//				$json = $builder->fromJsonString($resolvedValue);
+//				$newDeferred->resolve($json);
+//			}
+//			catch(JsonDecodeException $exception) {
+//				$newDeferred->reject($exception);
+//			}
 		});
 
 		return $newPromise;
