@@ -118,11 +118,13 @@ class BodyResponseTest extends TestCase {
 		$sut = $sut->withBody($stream);
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->json();
-		$promise->then(function($fulfilledValue)use(&$sutOutput) {
-			$sutOutput = $fulfilledValue;
-		}, function($errorValue)use(&$sutError) {
-			$sutError = $errorValue;
-		});
+		$promise
+			->then(function($fulfilledValue)use(&$sutOutput) {
+				$sutOutput = $fulfilledValue;
+			})
+			->catch(function($errorValue)use(&$sutError) {
+				$sutError = $errorValue;
+			});
 		$sut->endDeferredResponse();
 
 		self::assertNull($sutOutput);
