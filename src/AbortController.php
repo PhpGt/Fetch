@@ -2,8 +2,8 @@
 namespace Gt\Fetch;
 
 class AbortController extends Controller {
-	public $signal;
-	public $aborted;
+	public self $signal;
+	public bool $aborted;
 
 	public function __construct() {
 		$this->signal = $this;

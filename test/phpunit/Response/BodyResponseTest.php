@@ -1,14 +1,17 @@
 <?php
 namespace Gt\Fetch\Test\Response;
 
+use Gt\Async\Loop;
 use Gt\Curl\Curl;
-use Gt\Curl\JsonDecodeException;
+use Gt\Fetch\Response\Blob;
 use Gt\Fetch\Response\BodyResponse;
-use Gt\Fetch\Promise;
+use Gt\Json\JsonDecodeException;
+use Gt\Json\JsonKvpObject;
+use Gt\Promise\Promise;
+use Http\Promise\Promise as HttpPromiseInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
-use React\EventLoop\LoopInterface;
 use RuntimeException;
 use SplFixedArray;
 use StdClass;
@@ -17,9 +20,7 @@ class BodyResponseTest extends TestCase {
 	public function testText() {
 		$exampleContents = "Example stream contents";
 
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
-		/** @var MockObject|StreamInterface $stream */
+		$loop = self::createMock(Loop::class);
 		$stream = self::createMock(StreamInterface::class);
 		$stream->method("tell")
 			->willReturn(0);
@@ -44,15 +45,12 @@ class BodyResponseTest extends TestCase {
 	public function testBlob() {
 		$exampleContents = "Example stream contents";
 
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
-		/** @var MockObject|StreamInterface $stream */
+		$loop = self::createMock(Loop::class);
 		$stream = self::createMock(StreamInterface::class);
 		$stream->method("tell")
 			->willReturn(0);
 		$stream->method("getContents")
 			->willReturn($exampleContents);
-		/** @var MockObject|Curl $curl */
 		$curl = self::createMock(Curl::class);
 
 		$sutOutput = null;
@@ -60,7 +58,7 @@ class BodyResponseTest extends TestCase {
 		$sut = $sut->withBody($stream);
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->blob();
-		$promise->then(function(string $fulfilledValue)use(&$sutOutput) {
+		$promise->then(function(Blob $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
 		});
 		$sut->endDeferredResponse();
@@ -73,8 +71,8 @@ class BodyResponseTest extends TestCase {
 		$exampleObj->test = "Example";
 		$jsonString = json_encode($exampleObj);
 
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
+		$loop = self::createMock(Loop::class);
+		$stream = self::createMock(StreamInterface::class);
 		/** @var MockObject|StreamInterface $stream */
 		$stream = self::createMock(StreamInterface::class);
 		$stream->method("tell")
@@ -84,26 +82,27 @@ class BodyResponseTest extends TestCase {
 		/** @var MockObject|Curl $curl */
 		$curl = self::createMock(Curl::class);
 
+		/** @var null|JsonKvpObject $sutOutput */
 		$sutOutput = null;
 		$sut = new BodyResponse();
 		$sut = $sut->withBody($stream);
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->json();
-		$promise->then(function(StdClass $fulfilledValue)use(&$sutOutput) {
+		$promise->then(function(JsonKvpObject $fulfilledValue)use(&$sutOutput) {
 			$sutOutput = $fulfilledValue;
 		});
 		$sut->endDeferredResponse();
 
 		foreach($exampleObj as $key => $value) {
-			self::assertEquals($value, $sutOutput->$key);
+			self::assertEquals($value, $sutOutput->getString($key));
 		}
 	}
 
 	public function testInvalidJson() {
 		$jsonString = "{'this;': is not valid JSON'}";
 
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
+		$loop = self::createMock(Loop::class);
+		$stream = self::createMock(StreamInterface::class);
 		/** @var MockObject|StreamInterface $stream */
 		$stream = self::createMock(StreamInterface::class);
 		$stream->method("tell")
@@ -119,11 +118,13 @@ class BodyResponseTest extends TestCase {
 		$sut = $sut->withBody($stream);
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->json();
-		$promise->then(function($fulfilledValue)use(&$sutOutput) {
-			$sutOutput = $fulfilledValue;
-		}, function($errorValue)use(&$sutError) {
-			$sutError = $errorValue;
-		});
+		$promise
+			->then(function($fulfilledValue)use(&$sutOutput) {
+				$sutOutput = $fulfilledValue;
+			})
+			->catch(function($errorValue)use(&$sutError) {
+				$sutError = $errorValue;
+			});
 		$sut->endDeferredResponse();
 
 		self::assertNull($sutOutput);
@@ -139,8 +140,8 @@ class BodyResponseTest extends TestCase {
 			110, 32,  100, 111, 103,
 		];
 
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
+		$loop = self::createMock(Loop::class);
+		$stream = self::createMock(StreamInterface::class);
 		/** @var MockObject|StreamInterface $stream */
 		$stream = self::createMock(StreamInterface::class);
 		$stream->method("tell")
@@ -183,8 +184,8 @@ class BodyResponseTest extends TestCase {
 			"repository" => "fetch",
 		];
 
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
+		$loop = self::createMock(Loop::class);
+		$stream = self::createMock(StreamInterface::class);
 		/** @var MockObject|StreamInterface $stream */
 		$stream = self::createMock(StreamInterface::class);
 		$stream->method("tell")
@@ -212,8 +213,8 @@ class BodyResponseTest extends TestCase {
 	public function testDeferredResponseStatus() {
 		$exampleContents = "Example stream contents";
 
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
+		$loop = self::createMock(Loop::class);
+		$stream = self::createMock(StreamInterface::class);
 		/** @var MockObject|StreamInterface $stream */
 		$stream = self::createMock(StreamInterface::class);
 		$stream->method("tell")
@@ -232,13 +233,13 @@ class BodyResponseTest extends TestCase {
 		);
 		$sut->startDeferredResponse($loop, $curl);
 		self::assertEquals(
-			Promise::PENDING,
+			HttpPromiseInterface::PENDING,
 			$sut->deferredResponseStatus()
 		);
 
 		$sut->endDeferredResponse();
 		self::assertEquals(
-			Promise::FULFILLED,
+			HttpPromiseInterface::FULFILLED,
 			$sut->deferredResponseStatus()
 		);
 	}
@@ -249,9 +250,8 @@ class BodyResponseTest extends TestCase {
 		$sut = $sut->withAddedHeader("X-Test-Two", "Example2");
 
 		$headers = $sut->headers;
-		self::assertIsArray($headers);
-		self::assertEquals("Example1", $headers["X-Test-One"]);
-		self::assertEquals("Example2", $headers["X-Test-Two"]);
+		self::assertEquals("Example1", $headers->get("X-Test-One"));
+		self::assertEquals("Example2", $headers->get("X-Test-Two"));
 	}
 
 	public function testGetOk() {
@@ -265,9 +265,7 @@ class BodyResponseTest extends TestCase {
 	}
 
 	public function testGetRedirected() {
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
-		/** @var MockObject|Curl $curl */
+		$loop = self::createMock(Loop::class);
 		$curl = self::createMock(Curl::class);
 		$curl->method("getInfo")
 			->willReturn(0, 3);
@@ -290,9 +288,7 @@ class BodyResponseTest extends TestCase {
 	}
 
 	public function testGetUrl() {
-		/** @var MockObject|LoopInterface $loop */
-		$loop = self::createMock(LoopInterface::class);
-		/** @var MockObject|Curl $loop */
+		$loop = self::createMock(Loop::class);
 		$curl = self::createMock(Curl::class);
 		$curl->method("getInfo")
 			->willReturn("/", "/test", "/test/123");
