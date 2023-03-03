@@ -285,27 +285,27 @@
         },
         {
             "name": "phpgt/http",
-            "version": "v1.1.7",
+            "version": "v1.1.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Http.git",
-                "reference": "6d32a4cbf3efea655b3204591501fc84721b00ca"
+                "reference": "477ce4c83ebdd9b6df7e6fad414e6e23bc7a0dab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/6d32a4cbf3efea655b3204591501fc84721b00ca",
-                "reference": "6d32a4cbf3efea655b3204591501fc84721b00ca",
+                "url": "https://api.github.com/repos/PhpGt/Http/zipball/477ce4c83ebdd9b6df7e6fad414e6e23bc7a0dab",
+                "reference": "477ce4c83ebdd9b6df7e6fad414e6e23bc7a0dab",
                 "shasum": ""
             },
             "require": {
                 "php": ">=8.1",
-                "phpgt/input": "^v1",
-                "psr/http-message": "^v1.0.1",
-                "willdurand/negotiation": "v3.1.0"
+                "phpgt/input": "^1",
+                "psr/http-message": "^1.0.1",
+                "willdurand/negotiation": "3.1.0"
             },
             "require-dev": {
-                "phpstan/phpstan": "^v1.8",
-                "phpunit/phpunit": "^v9.5"
+                "phpstan/phpstan": "^v1.10",
+                "phpunit/phpunit": "^10.0"
             },
             "type": "library",
             "autoload": {
@@ -320,7 +320,7 @@
             "description": "PSR-7 HTTP message implementation.",
             "support": {
                 "issues": "https://github.com/PhpGt/Http/issues",
-                "source": "https://github.com/PhpGt/Http/tree/v1.1.7"
+                "source": "https://github.com/PhpGt/Http/tree/v1.1.9"
             },
             "funding": [
                 {
@@ -328,7 +328,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-09-28T16:04:19+00:00"
+            "time": "2023-03-02T22:45:54+00:00"
         },
         {
             "name": "phpgt/input",
@@ -2799,5 +2799,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
