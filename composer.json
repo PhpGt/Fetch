@@ -46,6 +46,7 @@
 	],
 
 	"keywords": [
+		"http-client",
 		"http",
 		"fetch",
 		"async",
