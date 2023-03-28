@@ -174,27 +174,29 @@
         },
         {
             "name": "phpgt/curl",
-            "version": "v3.0.5",
+            "version": "v3.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Curl.git",
-                "reference": "c5fde51ee627dab553c95d7f564b8ec71ee9df6d"
+                "reference": "971279f5343f8ababf5176dda25a62fa86a106ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Curl/zipball/c5fde51ee627dab553c95d7f564b8ec71ee9df6d",
-                "reference": "c5fde51ee627dab553c95d7f564b8ec71ee9df6d",
+                "url": "https://api.github.com/repos/PhpGt/Curl/zipball/971279f5343f8ababf5176dda25a62fa86a106ac",
+                "reference": "971279f5343f8ababf5176dda25a62fa86a106ac",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-json": "*",
-                "php": ">=7.4",
-                "phpgt/json": "^v1.0"
+                "php": ">=8.1",
+                "phpgt/json": "^1.2"
             },
             "require-dev": {
-                "phpstan/phpstan": "^v1.8",
-                "phpunit/phpunit": "^v9.5"
+                "phpmd/phpmd": "^2.13",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^10.0",
+                "squizlabs/php_codesniffer": "^3.7"
             },
             "type": "library",
             "autoload": {
@@ -221,7 +223,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PhpGt/Curl/issues",
-                "source": "https://github.com/PhpGt/Curl/tree/v3.0.5"
+                "source": "https://github.com/PhpGt/Curl/tree/v3.0.6"
             },
             "funding": [
                 {
@@ -229,7 +231,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-09-07T21:39:47+00:00"
+            "time": "2023-03-27T22:08:49+00:00"
         },
         {
             "name": "phpgt/dataobject",
@@ -2799,5 +2801,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.3.0"
 }
