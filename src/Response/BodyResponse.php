@@ -34,35 +34,47 @@ class BodyResponse extends Response {
 	protected CurlInterface $curl;
 
 	public function __get(string $name):mixed {
-		switch($name) {
-		case "headers":
-			return $this->getResponseHeaders();
-
-		case "ok":
-			return ($this->getStatusCode() >= 200
-				&& $this->getStatusCode() < 300);
-
-		case "redirected":
-			$redirectCount = $this->curl->getInfo(
-				CURLINFO_REDIRECT_COUNT
-			);
-			return $redirectCount > 0;
-
-		case "status":
-			return $this->getStatusCode();
-
-		case "statusText":
-			return StatusCode::REASON_PHRASE[$this->status] ?? null;
-
-		case "uri":
-		case "url":
-			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
-
-		case "type":
-			return $this->headers->get("content-type")?->getValue() ?? "";
+		$nameUcFirst = ucfirst($name);
+		$methodName = "prop$nameUcFirst";
+		if(method_exists($this, $methodName)) {
+			return $this->$methodName();
 		}
-
 		throw new RuntimeException("Undefined property: $name");
+	}
+
+	public function propHeaders():ResponseHeaders {
+		return $this->getResponseHeaders();
+	}
+
+	public function propOk():bool {
+		return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
+	}
+
+	public function propRedirected():bool {
+		$redirectCount = $this->curl->getInfo(
+			CURLINFO_REDIRECT_COUNT
+		);
+		return $redirectCount > 0;
+	}
+
+	public function propStatus():int {
+		return $this->getStatusCode();
+	}
+
+	public function propStatusText():string {
+		return StatusCode::REASON_PHRASE[$this->status] ?? "";
+	}
+
+	public function propUri():string {
+		return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
+	}
+
+	public function propUrl():string {
+		return $this->propUri();
+	}
+
+	public function propType():string {
+		return $this->headers->get("content-type")?->getValue() ?? "";
 	}
 
 	public function arrayBuffer():Promise {

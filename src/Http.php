@@ -25,7 +25,7 @@ class Http implements HttpClient, HttpAsyncClient {
 		CURLOPT_USERAGENT => self::USER_AGENT,
 	];
 
-	/** @var array<string, int|string> */
+	/** @var array<int, mixed> */
 	public readonly array $curlOptions;
 	private readonly float $interval;
 	private RequestResolver $requestResolver;
@@ -84,7 +84,7 @@ class Http implements HttpClient, HttpAsyncClient {
 	 * Creates a new Deferred object to perform the resolution of the request and
 	 * returns a PSR-7 compatible promise that represents the result of the response
 	 *
-	 * @param array<string, mixed> $init
+	 * @param array<int|string, mixed> $init
 	 */
 	public function fetch(
 		string|UriInterface|RequestInterface $input,

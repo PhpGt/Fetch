@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Fetch\Test\Helper;
 
+use CurlHandle;
+
 class ResponseSimulator {
 	const RANDOM_BODY_WORDS = ["pursuit","forest","gravel","timber","wonder","eject","slogan","monkey","construct","earthquake","respect","publish","forward","circle","summer","define","highlight","refuse","salon","theater","lily","earwax","variant","account","resource"];
 	static protected $headerCallback;
@@ -67,7 +69,7 @@ class ResponseSimulator {
 		return self::$started;
 	}
 
-	static public function sendChunk($ch):int {
+	static public function sendChunk(CurlHandle $ch):int {
 		if(!empty(self::$headerBuffer)) {
 			$data = array_shift(self::$headerBuffer);
 

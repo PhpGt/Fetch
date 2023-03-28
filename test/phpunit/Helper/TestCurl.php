@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch\Test\Helper;
 
+use CurlHandle;
 use Gt\Curl\Curl;
 
 class TestCurl extends Curl {
@@ -23,7 +24,7 @@ class TestCurl extends Curl {
 		return true;
 	}
 
-	public function getHandle() {
-		return $this;
+	public function getHandle():CurlHandle {
+		return $this->ch;
 	}
 }
