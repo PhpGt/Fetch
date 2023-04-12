@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch\Response;
 
-class FormData {
+class FormData
+{
 
 }
