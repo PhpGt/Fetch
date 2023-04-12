@@ -1,21 +1,22 @@
 <?php
 namespace Gt\Fetch\Response;
 
-use Gt\Async\Loop;
+use Throwable;
 use Gt\Curl\Curl;
+use Gt\Async\Loop;
+use SplFixedArray;
+use Gt\Http\Response;
+use RuntimeException;
+use Gt\Http\StatusCode;
+use Gt\Promise\Promise;
+use Gt\Promise\Deferred;
 use Gt\Curl\CurlInterface;
+use Gt\Json\JsonObjectBuilder;
+use Gt\Json\JsonDecodeException;
+use Psr\Http\Message\UriInterface;
+use Gt\Http\Header\ResponseHeaders;
 use Gt\Fetch\IntegrityMismatchException;
 use Gt\Fetch\InvalidIntegrityAlgorithmException;
-use Gt\Http\Header\ResponseHeaders;
-use Gt\Http\Response;
-use Gt\Http\StatusCode;
-use Gt\Json\JsonDecodeException;
-use Gt\Json\JsonObjectBuilder;
-use Gt\Promise\Deferred;
-use Gt\Promise\Promise;
-use Psr\Http\Message\UriInterface;
-use RuntimeException;
-use SplFixedArray;
 
 /**
  * @property-read ResponseHeaders $headers
@@ -127,6 +128,8 @@ class BodyResponse extends Response
 			} catch (JsonDecodeException $exception) {
 				$newDeferred->reject($exception);
 			}
+		})->catch(function (Throwable $reason) use ($newDeferred) {
+			$newDeferred->reject($reason);
 		});
 
 		return $newPromise;

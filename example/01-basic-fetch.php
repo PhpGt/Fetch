@@ -9,7 +9,7 @@ use Gt\Json\JsonPrimitive\JsonArrayPrimitive;
 
 $http = new Http();
 
-$http->fetch("https://api.github.com/orgs/phpgt/repos")
+$http->fetch("https://github.com/PhpGt/Fetch/blob/59a3d1c447fd44d94ea389404c3a2595d98629ce/broken.json")
 	->then(function (BodyResponse $response) {
 		if (!$response->ok) {
 			throw new RuntimeException("Can't retrieve Github's API on $response->uri");
