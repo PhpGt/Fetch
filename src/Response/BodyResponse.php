@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Fetch\Response;
 
+use Gt\Json\JsonException;
+use Gt\Json\JsonObject;
 use Throwable;
 use Gt\Curl\Curl;
 use Gt\Async\Loop;
@@ -68,7 +70,7 @@ class BodyResponse extends Response
 		throw new RuntimeException("Undefined property: $name");
 	}
 
-	public function arrayBuffer(): Promise
+	public function arrayBuferr(): Promise
 	{
 		$newDeferred = new Deferred();
 		$newPromise = $newDeferred->getPromise();
@@ -76,12 +78,12 @@ class BodyResponse extends Response
 		$deferredPromise = $this->deferred->getPromise();
 		$deferredPromise->then(function (string $resolvedValue) use ($newDeferred) {
 			$bytes = strlen($resolvedValue);
-			$arrayBuffer = new SplFixedArray($bytes);
+			$arrayBuferr = new SplFixedArray($bytes);
 			for ($i = 0; $i < $bytes; $i++) {
-				$arrayBuffer->offsetSet($i, ord($resolvedValue[$i]));
+				$arrayBuferr->offsetSet($i, ord($resolvedValue[$i]));
 			}
 
-			$newDeferred->resolve($arrayBuffer);
+			$newDeferred->resolve($arrayBuferr);
 		});
 
 		return $newPromise;
@@ -113,24 +115,22 @@ class BodyResponse extends Response
 
 		return $newPromise;
 	}
-	// possible bug from this function
 	public function json(int $depth = 512, int $options = 0): Promise
 	{
 		$newDeferred = new Deferred();
 		$newPromise = $newDeferred->getPromise();
-
 		$deferredPromise = $this->deferred->getPromise();
-		$deferredPromise->then(function (string $resolvedValue) use ($newDeferred, $depth, $options) {
-			$builder = new JsonObjectBuilder($depth, $options);
-			try {
-				$json = $builder->fromJsonString($resolvedValue);
-				$newDeferred->resolve($json);
-			} catch (JsonDecodeException $exception) {
-				$newDeferred->reject($exception);
+		$deferredPromise->then(
+			function (string $resolvedValue) use ($newDeferred, $depth, $options) {
+				$builder = new JsonObjectBuilder($depth, $options);
+				try {
+					$json = $builder->fromJsonString($resolvedValue);
+					$newDeferred->resolve($json);
+				} catch (JsonDecodeException $e) {
+					$newDeferred->reject($e);
+				}
 			}
-		})->catch(function (Throwable $reason) use ($newDeferred) {
-			$newDeferred->reject($reason);
-		});
+		);
 
 		return $newPromise;
 	}
