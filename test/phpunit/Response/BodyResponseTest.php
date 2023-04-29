@@ -8,6 +8,7 @@ use Gt\Fetch\Response\FetchResponse;
 use Gt\Json\JsonDecodeException;
 use Gt\Json\JsonKvpObject;
 use Gt\Promise\Promise;
+use Gt\Promise\PromiseState;
 use Http\Promise\Promise as HttpPromiseInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -228,18 +229,19 @@ class BodyResponseTest extends TestCase {
 		$sut = new FetchResponse();
 		$sut = $sut->withBody($stream);
 
-		self::assertNull(
+		self::assertSame(
+			PromiseState::PENDING,
 			$sut->deferredResponseStatus()
 		);
 		$sut->startDeferredResponse($loop, $curl);
 		self::assertEquals(
-			HttpPromiseInterface::PENDING,
+			PromiseState::PENDING,
 			$sut->deferredResponseStatus()
 		);
 
 		$sut->endDeferredResponse();
 		self::assertEquals(
-			HttpPromiseInterface::FULFILLED,
+			PromiseState::RESOLVED,
 			$sut->deferredResponseStatus()
 		);
 	}

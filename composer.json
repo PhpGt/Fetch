@@ -12,8 +12,7 @@
 		"phpgt/promise": "^v2.2.1",
 		"phpgt/http": "^v1.1",
 		"phpgt/curl": "^v3.0",
-		"phpgt/json": "^v1.1",
-		"php-http/httplug": "^2.3"
+		"phpgt/json": "^v1.1"
 	},
 
 	"require-dev": {

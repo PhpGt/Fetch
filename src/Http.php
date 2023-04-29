@@ -10,14 +10,12 @@ use Gt\Fetch\Response\FetchResponse;
 use Gt\Http\Uri;
 use Gt\Promise\Deferred;
 use Gt\Promise\Promise;
-use Http\Promise\Promise as HttpPromiseInterface;
-use Http\Client\HttpClient;
-use Http\Client\HttpAsyncClient;
+use Gt\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
 
-class Http implements HttpClient, HttpAsyncClient {
+class Http {
 	const USER_AGENT = "PhpGt/Fetch";
 	const DEFAULT_CURL_OPTIONS = [
 		CURLOPT_CUSTOMREQUEST => "GET",
@@ -54,30 +52,6 @@ class Http implements HttpClient, HttpAsyncClient {
 		$this->timer = new PeriodicTimer($this->interval, true);
 		$this->timer->addCallback($this->requestResolver->tick(...));
 		$this->loop->addTimer($this->timer);
-	}
-
-	/** @interface HttpClient */
-	public function sendRequest(
-		RequestInterface $request
-	):ResponseInterface {
-		$returnValue = null;
-
-		$this->fetch($request)
-		->then(function(FetchResponse $response) use(&$returnValue) {
-			$returnValue = $response;
-		});
-
-		$this->wait();
-
-		/** @var FetchResponse $returnValue */
-		return $returnValue;
-	}
-
-	/** @interface HttpAsyncClient */
-	public function sendAsyncRequest(
-		RequestInterface $request
-	):HttpPromiseInterface {
-		return $this->fetch($request);
 	}
 
 	/**
@@ -138,7 +112,7 @@ class Http implements HttpClient, HttpAsyncClient {
 	 * Begins execution of all promises, returning its own Promise that will
 	 * resolve when the last HTTP request is fully resolved.
 	 */
-	public function all():HttpPromiseInterface {
+	public function all():PromiseInterface {
 		$start = microtime(true);
 		$this->wait();
 		$end = microtime(true);

@@ -7,6 +7,7 @@ use Gt\Curl\CurlInterface;
 use Gt\Fetch\IntegrityMismatchException;
 use Gt\Fetch\InvalidIntegrityAlgorithmException;
 use Gt\Http\Header\ResponseHeaders;
+use Gt\Http\Request;
 use Gt\Http\Response;
 use Gt\Http\StatusCode;
 use Gt\Json\JsonDecodeException;
@@ -35,9 +36,18 @@ class FetchResponse extends Response {
 	protected Loop $loop;
 	protected CurlInterface $curl;
 
-	public function __construct() {
+	public function __construct(
+		private ?int $statusCode = null,
+		ResponseHeaders $headers = null,
+		private ?Request $request = null,
+	) {
 		$this->deferredStatus = PromiseState::PENDING;
-		parent::__construct();
+
+		parent::__construct(
+			$this->statusCode,
+			$headers,
+			$this->request
+		);
 	}
 
 	public function __get(string $name):mixed {
