@@ -2,7 +2,7 @@
 require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
-use Gt\Fetch\Response\BodyResponse;
+use Gt\Fetch\Response\FetchResponse;
 use Gt\Json\JsonObject;
 
 /*
@@ -26,7 +26,7 @@ $http->fetch("https://postman-echo.com/post", [
 		"email" => "zuck@fb.com",
 	]),
 ])
-	->then(function(BodyResponse $response) {
+	->then(function(FetchResponse $response) {
 		if(!$response->ok) {
 			throw new RuntimeException("Error posting to Postman Echo.");
 		}

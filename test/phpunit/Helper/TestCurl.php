@@ -4,10 +4,11 @@ namespace Gt\Fetch\Test\Helper;
 use Gt\Curl\Curl;
 
 class TestCurl extends Curl {
-	protected $id;
+	protected string $id;
 
 	public function __construct(string $url = null) {
 		$this->id = uniqid("dummy-curl-");
+		$this->ch = curl_init();
 		parent::__construct($url);
 	}
 
