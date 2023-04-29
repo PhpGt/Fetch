@@ -11,7 +11,7 @@
 		"phpgt/async": "dev-master",
 		"phpgt/promise": "^2.2.1",
 		"phpgt/http": "^1.1",
-		"phpgt/curl": "^3.1",
+		"phpgt/curl": "^3.1.1",
 		"phpgt/json": "^1.2",
 		"phpgt/propfunc": "^1.0"
 	},

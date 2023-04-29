@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca04955a3b276f6746b2a5da8bce9378",
+    "content-hash": "477c145aca139f98b56313eb055a9414",
     "packages": [
         {
             "name": "phpgt/async",
@@ -55,16 +55,16 @@
         },
         {
             "name": "phpgt/curl",
-            "version": "v3.1.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Curl.git",
-                "reference": "8c80353c94d27a4d38eee1443f423f4883d7fcfd"
+                "reference": "a7e0856d3735f8f69d6d5fbf2f6f26664e55e3b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Curl/zipball/8c80353c94d27a4d38eee1443f423f4883d7fcfd",
-                "reference": "8c80353c94d27a4d38eee1443f423f4883d7fcfd",
+                "url": "https://api.github.com/repos/PhpGt/Curl/zipball/a7e0856d3735f8f69d6d5fbf2f6f26664e55e3b7",
+                "reference": "a7e0856d3735f8f69d6d5fbf2f6f26664e55e3b7",
                 "shasum": ""
             },
             "require": {
@@ -104,7 +104,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PhpGt/Curl/issues",
-                "source": "https://github.com/PhpGt/Curl/tree/v3.1.0"
+                "source": "https://github.com/PhpGt/Curl/tree/v3.1.1"
             },
             "funding": [
                 {
@@ -112,7 +112,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-03-28T14:37:51+00:00"
+            "time": "2023-04-29T17:28:12+00:00"
         },
         {
             "name": "phpgt/dataobject",
