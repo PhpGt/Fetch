@@ -102,7 +102,7 @@ jobs:
         run: tar -xvf /tmp/github-actions/build.tar ./
 
       - name: PHP Static Analysis
-        uses: php-actions/phpstan@v3
+        uses: php-actions/phpstan@composer
         with:
           php_version: ${{ matrix.php }}
           path: src/
