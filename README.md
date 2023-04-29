@@ -9,10 +9,10 @@ See also, the [JavaScript implementation][fetch-js] that ships as standard in al
 <a href="https://github.com/PhpGt/Fetch/actions" target="_blank">
     <img src="https://badge.status.php.gt/fetch-build.svg" alt="Build status" />
 </a>
-<a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
+<a href="https://app.codacy.com/gh/PhpGt/Fetch" target="_blank">
     <img src="https://badge.status.php.gt/fetch-quality.svg" alt="Code quality" />
 </a>
-<a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
+<a href="https://app.codecov.io/gh/PhpGt/Fetch" target="_blank">
     <img src="https://badge.status.php.gt/fetch-coverage.svg" alt="Code coverage" />
 </a>
 <a href="https://packagist.org/packages/PhpGt/Fetch" target="_blank">
