@@ -54,15 +54,18 @@ class FetchResponse extends Response {
 		);
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_headers():ResponseHeaders {
 		return $this->getResponseHeaders();
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_ok():bool {
 		return ($this->getStatusCode() >= 200
 			&& $this->getStatusCode() < 300);
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_redirected():bool {
 		$redirectCount = $this->curl->getInfo(
 			CURLINFO_REDIRECT_COUNT
@@ -70,22 +73,27 @@ class FetchResponse extends Response {
 		return $redirectCount > 0;
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_status():int {
 		return $this->getStatusCode();
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_statusText():?string {
 		return StatusCode::REASON_PHRASE[$this->status] ?? null;
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_uri():string {
 		return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_url():string {
 		return $this->uri;
 	}
 
+	/** @phpstan-ignore-next-line */
 	private function __prop_get_type():string {
 		return $this->headers->get("content-type")?->getValue() ?? "";
 	}
