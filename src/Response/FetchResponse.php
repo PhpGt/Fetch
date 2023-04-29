@@ -37,16 +37,16 @@ class FetchResponse extends Response {
 	protected CurlInterface $curl;
 
 	public function __construct(
-		private ?int $statusCode = null,
+		?int $statusCode = null,
 		ResponseHeaders $headers = null,
-		private ?Request $request = null,
+		?Request $request = null,
 	) {
 		$this->deferredStatus = PromiseState::PENDING;
 
 		parent::__construct(
-			$this->statusCode,
+			$statusCode,
 			$headers,
-			$this->request
+			$request
 		);
 	}
 
@@ -83,34 +83,27 @@ class FetchResponse extends Response {
 	}
 
 	public function arrayBuffer():Promise {
-		$newDeferred = new Deferred();
-		$newPromise = $newDeferred->getPromise();
-
-		$deferredPromise = $this->deferred->getPromise();
-		$deferredPromise->then(function(string $resolvedValue)
-		use($newDeferred) {
-			$bytes = strlen($resolvedValue);
+		$promise = $this->deferred->getPromise();
+		$promise->then(function(string $responseText) {
+			$bytes = strlen($responseText);
 			$arrayBuffer = new SplFixedArray($bytes);
 			for($i = 0; $i < $bytes; $i++) {
-				$arrayBuffer->offsetSet($i, ord($resolvedValue[$i]));
+				$arrayBuffer->offsetSet($i, ord($responseText[$i]));
 			}
 
-			$newDeferred->resolve($arrayBuffer);
+			$this->deferred->resolve($arrayBuffer);
 		});
 
-		return $newPromise;
+		return $promise;
 	}
 
 	public function blob():Promise {
-		$newDeferred = new Deferred();
-
-		$this->text()->then(function(string $text)use($newDeferred) {
-			$newDeferred->resolve(new Blob($text, [
-				"type" => $this->type
-			]));
+		$promise = $this->deferred->getPromise();
+		$promise->then(function(string $responseText) {
+			$this->deferred->resolve(new Blob($responseText));
 		});
 
-		return $newDeferred->getPromise();
+		return $promise;
 	}
 
 	public function formData():Promise {
@@ -139,15 +132,12 @@ class FetchResponse extends Response {
 	}
 
 	public function text():Promise {
-		$newDeferred = new Deferred();
-		$newPromise = $newDeferred->getPromise();
+		$promise = $this->deferred->getPromise();
+		$promise->then(function(string $responseText) {
+			$this->deferred->resolve($responseText);
+		});
 
-		$this->deferred->getPromise()
-			->then(function(string $html)use($newDeferred) {
-				$newDeferred->resolve($html);
-			});
-
-		return $newPromise;
+		return $promise;
 	}
 
 	public function startDeferredResponse(

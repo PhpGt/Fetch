@@ -23,7 +23,7 @@ class Http {
 		CURLOPT_USERAGENT => self::USER_AGENT,
 	];
 
-	/** @var array<string, int|string> */
+	/** @var array<int, int|string> */
 	public readonly array $curlOptions;
 	private readonly float $interval;
 	private RequestResolver $requestResolver;
