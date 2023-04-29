@@ -13,9 +13,11 @@ use Gt\Json\JsonDecodeException;
 use Gt\Json\JsonObjectBuilder;
 use Gt\Promise\Deferred;
 use Gt\Promise\Promise;
+use Gt\Promise\PromiseState;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use SplFixedArray;
+use Throwable;
 
 /**
  * @property-read ResponseHeaders $headers
@@ -27,11 +29,16 @@ use SplFixedArray;
  * @property-read UriInterface $uri
  * @property-read UriInterface $url
  */
-class BodyResponse extends Response {
+class FetchResponse extends Response {
 	protected Deferred $deferred;
-	protected string $deferredStatus;
+	protected PromiseState $deferredStatus;
 	protected Loop $loop;
 	protected CurlInterface $curl;
+
+	public function __construct() {
+		$this->deferredStatus = PromiseState::PENDING;
+		parent::__construct();
+	}
 
 	public function __get(string $name):mixed {
 		switch($name) {
@@ -111,23 +118,14 @@ class BodyResponse extends Response {
 	}
 
 	public function json(int $depth = 512, int $options = 0):Promise {
-		$newDeferred = new Deferred();
-		$newPromise = $newDeferred->getPromise();
-
-		$deferredPromise = $this->deferred->getPromise();
-		$deferredPromise->then(function(string $resolvedValue)
-		use($newDeferred, $depth, $options) {
+		$promise = $this->deferred->getPromise();
+		$promise->then(function(string $responseText)use($depth, $options) {
 			$builder = new JsonObjectBuilder($depth, $options);
-			try {
-				$json = $builder->fromJsonString($resolvedValue);
-				$newDeferred->resolve($json);
-			}
-			catch(JsonDecodeException $exception) {
-				$newDeferred->reject($exception);
-			}
+			$json = $builder->fromJsonString($responseText);
+			$this->deferred->resolve($json);
 		});
 
-		return $newPromise;
+		return $promise;
 	}
 
 	public function text():Promise {
@@ -148,7 +146,7 @@ class BodyResponse extends Response {
 	):Deferred {
 		$this->loop = $loop;
 		$this->deferred = new Deferred();
-		$this->deferredStatus = Promise::PENDING;
+		$this->deferredStatus = PromiseState::PENDING;
 		$this->curl = $curl;
 		return $this->deferred;
 	}
@@ -162,11 +160,11 @@ class BodyResponse extends Response {
 		$this->checkIntegrity($integrity, $contents);
 
 		$this->deferred->resolve($contents);
-		$this->deferredStatus = Promise::FULFILLED;
+		$this->deferredStatus = PromiseState::RESOLVED;
 	}
 
-	public function deferredResponseStatus():?string {
-		return $this->deferredStatus ?? null;
+	public function deferredResponseStatus():PromiseState {
+		return $this->deferredStatus;
 	}
 
 	protected function checkIntegrity(?string $integrity, string $contents):void {

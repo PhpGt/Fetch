@@ -6,7 +6,7 @@ use Gt\Async\Timer\PeriodicTimer;
 use Gt\Async\Timer\Timer;
 use Gt\Curl\Curl;
 use Gt\Curl\CurlMulti;
-use Gt\Fetch\Response\BodyResponse;
+use Gt\Fetch\Response\FetchResponse;
 use Gt\Http\Uri;
 use Gt\Promise\Deferred;
 use Gt\Promise\Promise;
@@ -63,13 +63,13 @@ class Http implements HttpClient, HttpAsyncClient {
 		$returnValue = null;
 
 		$this->fetch($request)
-		->then(function(BodyResponse $response) use(&$returnValue) {
+		->then(function(FetchResponse $response) use(&$returnValue) {
 			$returnValue = $response;
 		});
 
 		$this->wait();
 
-		/** @var BodyResponse $returnValue */
+		/** @var FetchResponse $returnValue */
 		return $returnValue;
 	}
 

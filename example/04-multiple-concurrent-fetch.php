@@ -3,11 +3,11 @@ require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
 use Gt\Fetch\Response\Blob;
-use Gt\Fetch\Response\BodyResponse;
+use Gt\Fetch\Response\FetchResponse;
 use Gt\Json\JsonKvpObject;
 use Gt\Json\JsonPrimitive\JsonArrayPrimitive;
 
-$getJsonFromResponse = function(BodyResponse $response) {
+$getJsonFromResponse = function(FetchResponse $response) {
 	if(!$response->ok) {
 		throw new RuntimeException("Can't retrieve Github's API on $response->uri");
 	}
@@ -43,7 +43,7 @@ $http->fetch("https://github.com/phpgt/__this-does-not-exist")
 	->catch($errorHandler);
 
 $http->fetch("https://cataas.com/cat")
-	->then(function(BodyResponse $response) {
+	->then(function(FetchResponse $response) {
 		return $response->blob();
 	})
 	->then(function(Blob $blob) {

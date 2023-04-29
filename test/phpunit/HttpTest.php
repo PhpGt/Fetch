@@ -2,7 +2,7 @@
 namespace Gt\Fetch\Test;
 
 use Gt\Fetch\Http;
-use Gt\Fetch\Response\BodyResponse;
+use Gt\Fetch\Response\FetchResponse;
 use Gt\Fetch\Test\Helper\ResponseSimulator;
 use Gt\Fetch\Test\Helper\TestCurl;
 use Gt\Fetch\Test\Helper\TestCurlMulti;
@@ -28,7 +28,7 @@ class HttpTest extends TestCase {
 		$fakeStatus = null;
 
 		$http->fetch("test://should-return")
-		->then(function(BodyResponse $response)use(&$fakeStatus) {
+		->then(function(FetchResponse $response)use(&$fakeStatus) {
 			$fakeStatus = $response->status;
 		});
 
@@ -49,7 +49,7 @@ class HttpTest extends TestCase {
 		$actualResponse = null;
 
 		$http->fetch("test://should-return")
-		->then(function(BodyResponse $response)use(&$fakeStatus) {
+		->then(function(FetchResponse $response)use(&$fakeStatus) {
 			return $response->text();
 		})
 		->then(function(string $text)use(&$actualResponse) {
@@ -117,7 +117,7 @@ class HttpTest extends TestCase {
 
 		$fakeStatus = null;
 
-		$promise->then(function(BodyResponse $response) use(&$fakeStatus) {
+		$promise->then(function(FetchResponse $response) use(&$fakeStatus) {
 			$fakeStatus = $response->status;
 		});
 
@@ -158,7 +158,7 @@ class HttpTest extends TestCase {
 		$actualResponse = null;
 
 		$http->fetch("test://should-return")
-			->then(function(BodyResponse $response)use(&$fakeStatus) {
+			->then(function(FetchResponse $response)use(&$fakeStatus) {
 				return $response->text();
 			})
 			->then(function(string $text)use(&$actualResponse) {

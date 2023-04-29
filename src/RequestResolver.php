@@ -6,7 +6,7 @@ use Gt\Async\Loop;
 use Gt\Curl\Curl;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
-use Gt\Fetch\Response\BodyResponse;
+use Gt\Fetch\Response\FetchResponse;
 use Gt\Http\Header\Parser;
 use Gt\Promise\Deferred;
 use Psr\Http\Message\UriInterface;
@@ -18,7 +18,7 @@ class RequestResolver {
 	private array $curlList;
 	/** @var array<Deferred|null> */
 	private array $deferredList;
-	/** @var array<BodyResponse|null> */
+	/** @var array<FetchResponse|null> */
 	private array $responseList;
 	/** @var array<string|null> */
 	private array $headerList;
@@ -84,7 +84,7 @@ class RequestResolver {
 
 		$this->loop->addDeferredToTimer($deferred);
 
-		$bodyResponse = new BodyResponse();
+		$bodyResponse = new FetchResponse();
 		$bodyResponse->startDeferredResponse($this->loop, $curl);
 
 		array_push($this->curlList, $curl);
@@ -109,7 +109,9 @@ class RequestResolver {
 
 			if($status !== CURLM_OK) {
 				// TODO: Throw exception.
-				die("ERROR!");
+				$errNo = curl_multi_errno($curlMulti->getHandle());
+				$errString = curl_multi_strerror($errNo);
+//				var_dump($errNo);die();
 			}
 
 			$totalActive += $active;
