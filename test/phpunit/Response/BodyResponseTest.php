@@ -9,6 +9,7 @@ use Gt\Json\JsonDecodeException;
 use Gt\Json\JsonKvpObject;
 use Gt\Promise\Promise;
 use Gt\Promise\PromiseState;
+use Gt\PropFunc\PropertyDoesNotExistException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
@@ -302,8 +303,8 @@ class BodyResponseTest extends TestCase {
 
 	public function testUndefinedProperty() {
 		$sut = new FetchResponse();
-		self::expectException(RuntimeException::class);
-		self::expectExceptionMessage("Undefined property: test123");
+		self::expectException(PropertyDoesNotExistException::class);
+		self::expectExceptionMessage("test123");
 
 		$sut->test123;
 	}

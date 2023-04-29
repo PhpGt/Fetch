@@ -9,15 +9,18 @@
 		"ext-curl": "*",
 		"ext-json": "*",
 		"phpgt/async": "dev-master",
-		"phpgt/promise": "^v2.2.1",
-		"phpgt/http": "^v1.1",
-		"phpgt/curl": "^v3.0",
-		"phpgt/json": "^v1.1"
+		"phpgt/promise": "^2.2.1",
+		"phpgt/http": "^1.1",
+		"phpgt/curl": "^3.1",
+		"phpgt/json": "^1.2",
+		"phpgt/propfunc": "^1.0"
 	},
 
 	"require-dev": {
 		"phpstan/phpstan": "^1.10",
-		"phpunit/phpunit": "^10.1"
+		"phpunit/phpunit": "^10.1",
+		"phpmd/phpmd": "^2.13",
+		"squizlabs/php_codesniffer": "^3.7"
 	},
 
 	"autoload": {

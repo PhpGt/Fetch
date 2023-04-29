@@ -15,6 +15,7 @@ use Gt\Json\JsonObjectBuilder;
 use Gt\Promise\Deferred;
 use Gt\Promise\Promise;
 use Gt\Promise\PromiseState;
+use Gt\PropFunc\MagicProp;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use SplFixedArray;
@@ -31,6 +32,8 @@ use Throwable;
  * @property-read UriInterface $url
  */
 class FetchResponse extends Response {
+	use MagicProp;
+
 	protected Deferred $deferred;
 	protected PromiseState $deferredStatus;
 	protected Loop $loop;
@@ -50,36 +53,40 @@ class FetchResponse extends Response {
 		);
 	}
 
-	public function __get(string $name):mixed {
-		switch($name) {
-		case "headers":
-			return $this->getResponseHeaders();
+	private function __prop_get_headers():ResponseHeaders {
+		return $this->getResponseHeaders();
+	}
 
-		case "ok":
-			return ($this->getStatusCode() >= 200
-				&& $this->getStatusCode() < 300);
+	private function __prop_get_ok():bool {
+		return ($this->getStatusCode() >= 200
+			&& $this->getStatusCode() < 300);
+	}
 
-		case "redirected":
-			$redirectCount = $this->curl->getInfo(
-				CURLINFO_REDIRECT_COUNT
-			);
-			return $redirectCount > 0;
+	private function __prop_get_redirected():bool {
+		$redirectCount = $this->curl->getInfo(
+			CURLINFO_REDIRECT_COUNT
+		);
+		return $redirectCount > 0;
+	}
 
-		case "status":
-			return $this->getStatusCode();
+	private function __prop_get_status():int {
+		return $this->getStatusCode();
+	}
 
-		case "statusText":
-			return StatusCode::REASON_PHRASE[$this->status] ?? null;
+	private function __prop_get_statusText():?string {
+		return StatusCode::REASON_PHRASE[$this->status] ?? null;
+	}
 
-		case "uri":
-		case "url":
-			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
+	private function __prop_get_uri():string {
+		return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
+	}
 
-		case "type":
-			return $this->headers->get("content-type")?->getValue() ?? "";
-		}
+	private function __prop_get_url():string {
+		return $this->uri;
+	}
 
-		throw new RuntimeException("Undefined property: $name");
+	private function __prop_get_type():string {
+		return $this->headers->get("content-type")?->getValue() ?? "";
 	}
 
 	public function arrayBuffer():Promise {
