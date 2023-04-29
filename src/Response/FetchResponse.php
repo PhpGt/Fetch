@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedPrivateMethodInspection */
 namespace Gt\Fetch\Response;
 
 use Gt\Async\Loop;
@@ -30,6 +30,7 @@ use Throwable;
  * @property-read string $type
  * @property-read UriInterface $uri
  * @property-read UriInterface $url
+ * @SuppressWarnings("UnusedPrivateMethod")
  */
 class FetchResponse extends Response {
 	use MagicProp;
@@ -53,39 +54,39 @@ class FetchResponse extends Response {
 		);
 	}
 
-	private function __propGetHeaders():ResponseHeaders {
+	private function __prop_get_headers():ResponseHeaders {
 		return $this->getResponseHeaders();
 	}
 
-	private function __propGetOk():bool {
+	private function __prop_get_ok():bool {
 		return ($this->getStatusCode() >= 200
 			&& $this->getStatusCode() < 300);
 	}
 
-	private function __propGetRedirected():bool {
+	private function __prop_get_redirected():bool {
 		$redirectCount = $this->curl->getInfo(
 			CURLINFO_REDIRECT_COUNT
 		);
 		return $redirectCount > 0;
 	}
 
-	private function __propGetStatus():int {
+	private function __prop_get_status():int {
 		return $this->getStatusCode();
 	}
 
-	private function __propGetStatusText():?string {
+	private function __prop_get_statusText():?string {
 		return StatusCode::REASON_PHRASE[$this->status] ?? null;
 	}
 
-	private function __propGetUri():string {
+	private function __prop_get_uri():string {
 		return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
 	}
 
-	private function __propGetUrl():string {
+	private function __prop_get_url():string {
 		return $this->uri;
 	}
 
-	private function __propGetType():string {
+	private function __prop_get_type():string {
 		return $this->headers->get("content-type")?->getValue() ?? "";
 	}
 

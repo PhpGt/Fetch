@@ -16,9 +16,11 @@
 	</rule>
 
 	<rule ref="rulesets/controversial.xml">
+		<exclude name="CamelCaseMethodName" />
 	</rule>
 
 	<rule ref="rulesets/design.xml">
+		<exclude name="CouplingBetweenObjects" />
 	</rule>
 
 	<rule ref="rulesets/naming.xml">
@@ -32,7 +34,7 @@
 
 	<rule ref="rulesets/naming.xml/ShortVariable">
 		<properties>
-			<property name="exceptions" value="a,b,i" />
+			<property name="exceptions" value="a,b,i,ch" />
 		</properties>
 	</rule>
 </ruleset>

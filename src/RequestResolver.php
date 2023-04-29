@@ -4,6 +4,7 @@ namespace Gt\Fetch;
 use CurlHandle;
 use Gt\Async\Loop;
 use Gt\Curl\Curl;
+use Gt\Curl\CurlException;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
 use Gt\Fetch\Response\FetchResponse;
@@ -108,10 +109,9 @@ class RequestResolver {
 			while($status === CURLM_CALL_MULTI_PERFORM);
 
 			if($status !== CURLM_OK) {
-				// TODO: Throw exception.
 				$errNo = curl_multi_errno($curlMulti->getHandle());
 				$errString = curl_multi_strerror($errNo);
-//				var_dump($errNo);die();
+				throw new CurlException($errString);
 			}
 
 			$totalActive += $active;
@@ -191,6 +191,7 @@ class RequestResolver {
 	}
 
 	/**
+	 * @SuppressWarnings("UnusedFormalParameter")
 	 * @noinspection PhpUnusedParameterInspection
 	 */
 	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
