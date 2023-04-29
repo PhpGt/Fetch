@@ -9,7 +9,6 @@ use Gt\Json\JsonDecodeException;
 use Gt\Json\JsonKvpObject;
 use Gt\Promise\Promise;
 use Gt\Promise\PromiseState;
-use Http\Promise\Promise as HttpPromiseInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
