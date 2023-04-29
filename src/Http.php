@@ -55,8 +55,8 @@ class Http {
 	}
 
 	/**
-	 * Creates a new Deferred object to perform the resolution of the request and
-	 * returns a PSR-7 compatible promise that represents the result of the response
+	 * Creates a new Deferred object to perform the resolution of the request
+	 * and returns a promise that represents the result of the response
 	 *
 	 * @param array<string, mixed> $init
 	 */

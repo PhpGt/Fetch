@@ -53,39 +53,39 @@ class FetchResponse extends Response {
 		);
 	}
 
-	private function __prop_get_headers():ResponseHeaders {
+	private function __propGetHeaders():ResponseHeaders {
 		return $this->getResponseHeaders();
 	}
 
-	private function __prop_get_ok():bool {
+	private function __propGetOk():bool {
 		return ($this->getStatusCode() >= 200
 			&& $this->getStatusCode() < 300);
 	}
 
-	private function __prop_get_redirected():bool {
+	private function __propGetRedirected():bool {
 		$redirectCount = $this->curl->getInfo(
 			CURLINFO_REDIRECT_COUNT
 		);
 		return $redirectCount > 0;
 	}
 
-	private function __prop_get_status():int {
+	private function __propGetStatus():int {
 		return $this->getStatusCode();
 	}
 
-	private function __prop_get_statusText():?string {
+	private function __propGetStatusText():?string {
 		return StatusCode::REASON_PHRASE[$this->status] ?? null;
 	}
 
-	private function __prop_get_uri():string {
+	private function __propGetUri():string {
 		return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
 	}
 
-	private function __prop_get_url():string {
+	private function __propGetUrl():string {
 		return $this->uri;
 	}
 
-	private function __prop_get_type():string {
+	private function __propGetType():string {
 		return $this->headers->get("content-type")?->getValue() ?? "";
 	}
 

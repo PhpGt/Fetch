@@ -30,7 +30,6 @@
 	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie" />
 	<rule ref="Generic.Metrics.CyclomaticComplexity" />
 	<rule ref="Generic.Metrics.NestingLevel" />
-	<rule ref="Generic.NamingConventions.CamelCapsFunctionName" />
 	<rule ref="Generic.NamingConventions.ConstructorName" />
 	<rule ref="Generic.NamingConventions.UpperCaseConstantName" />
 	<rule ref="Generic.PHP.BacktickOperator" />
