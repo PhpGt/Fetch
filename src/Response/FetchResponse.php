@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnusedPrivateMethodInspection */
 namespace Gt\Fetch\Response;
 
 use Gt\Async\Loop;
@@ -15,6 +15,7 @@ use Gt\Json\JsonObjectBuilder;
 use Gt\Promise\Deferred;
 use Gt\Promise\Promise;
 use Gt\Promise\PromiseState;
+use Gt\PropFunc\MagicProp;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use SplFixedArray;
@@ -29,88 +30,96 @@ use Throwable;
  * @property-read string $type
  * @property-read UriInterface $uri
  * @property-read UriInterface $url
+ * @SuppressWarnings("UnusedPrivateMethod")
  */
 class FetchResponse extends Response {
+	use MagicProp;
+
 	protected Deferred $deferred;
 	protected PromiseState $deferredStatus;
 	protected Loop $loop;
 	protected CurlInterface $curl;
 
 	public function __construct(
-		private ?int $statusCode = null,
+		?int $statusCode = null,
 		ResponseHeaders $headers = null,
-		private ?Request $request = null,
+		?Request $request = null,
 	) {
 		$this->deferredStatus = PromiseState::PENDING;
 
 		parent::__construct(
-			$this->statusCode,
+			$statusCode,
 			$headers,
-			$this->request
+			$request
 		);
 	}
 
-	public function __get(string $name):mixed {
-		switch($name) {
-		case "headers":
-			return $this->getResponseHeaders();
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_headers():ResponseHeaders {
+		return $this->getResponseHeaders();
+	}
 
-		case "ok":
-			return ($this->getStatusCode() >= 200
-				&& $this->getStatusCode() < 300);
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_ok():bool {
+		return ($this->getStatusCode() >= 200
+			&& $this->getStatusCode() < 300);
+	}
 
-		case "redirected":
-			$redirectCount = $this->curl->getInfo(
-				CURLINFO_REDIRECT_COUNT
-			);
-			return $redirectCount > 0;
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_redirected():bool {
+		$redirectCount = $this->curl->getInfo(
+			CURLINFO_REDIRECT_COUNT
+		);
+		return $redirectCount > 0;
+	}
 
-		case "status":
-			return $this->getStatusCode();
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_status():int {
+		return $this->getStatusCode();
+	}
 
-		case "statusText":
-			return StatusCode::REASON_PHRASE[$this->status] ?? null;
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_statusText():?string {
+		return StatusCode::REASON_PHRASE[$this->status] ?? null;
+	}
 
-		case "uri":
-		case "url":
-			return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_uri():string {
+		return $this->curl->getInfo(CURLINFO_EFFECTIVE_URL);
+	}
 
-		case "type":
-			return $this->headers->get("content-type")?->getValue() ?? "";
-		}
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_url():string {
+		return $this->uri;
+	}
 
-		throw new RuntimeException("Undefined property: $name");
+	/** @phpstan-ignore-next-line */
+	private function __prop_get_type():string {
+		return $this->headers->get("content-type")?->getValue() ?? "";
 	}
 
 	public function arrayBuffer():Promise {
-		$newDeferred = new Deferred();
-		$newPromise = $newDeferred->getPromise();
-
-		$deferredPromise = $this->deferred->getPromise();
-		$deferredPromise->then(function(string $resolvedValue)
-		use($newDeferred) {
-			$bytes = strlen($resolvedValue);
+		$promise = $this->deferred->getPromise();
+		$promise->then(function(string $responseText) {
+			$bytes = strlen($responseText);
 			$arrayBuffer = new SplFixedArray($bytes);
 			for($i = 0; $i < $bytes; $i++) {
-				$arrayBuffer->offsetSet($i, ord($resolvedValue[$i]));
+				$arrayBuffer->offsetSet($i, ord($responseText[$i]));
 			}
 
-			$newDeferred->resolve($arrayBuffer);
+			$this->deferred->resolve($arrayBuffer);
 		});
 
-		return $newPromise;
+		return $promise;
 	}
 
 	public function blob():Promise {
-		$newDeferred = new Deferred();
-
-		$this->text()->then(function(string $text)use($newDeferred) {
-			$newDeferred->resolve(new Blob($text, [
-				"type" => $this->type
-			]));
+		$promise = $this->deferred->getPromise();
+		$promise->then(function(string $responseText) {
+			$this->deferred->resolve(new Blob($responseText));
 		});
 
-		return $newDeferred->getPromise();
+		return $promise;
 	}
 
 	public function formData():Promise {
@@ -139,15 +148,12 @@ class FetchResponse extends Response {
 	}
 
 	public function text():Promise {
-		$newDeferred = new Deferred();
-		$newPromise = $newDeferred->getPromise();
+		$promise = $this->deferred->getPromise();
+		$promise->then(function(string $responseText) {
+			$this->deferred->resolve($responseText);
+		});
 
-		$this->deferred->getPromise()
-			->then(function(string $html)use($newDeferred) {
-				$newDeferred->resolve($html);
-			});
-
-		return $newPromise;
+		return $promise;
 	}
 
 	public function startDeferredResponse(

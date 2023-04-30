@@ -87,9 +87,7 @@ class Blob {
 			return self::PART_TYPE_BLOB;
 		}
 
-		if(is_string($blobParts)) {
-			return self::PART_TYPE_STRING;
-		}
+		return self::PART_TYPE_STRING;
 	}
 
 	/** @param array<string> $input */

@@ -18,6 +18,11 @@ class ArrayBuffer extends SplFixedArray {
 		throw new RuntimeException("Undefined property: $name");
 	}
 
+	/**
+	 * @SuppressWarnings("UnusedFormalParameter")
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	// phpcs:ignore
 	public function transfer(
 		self $oldBuffer,
 		int $newByteLength = null
@@ -25,7 +30,15 @@ class ArrayBuffer extends SplFixedArray {
 		return $this;
 	}
 
-	public function slice(int $begin, int $end):self {
+	/**
+	 * @SuppressWarnings("UnusedFormalParameter")
+	 * @noinspection PhpUnusedParameterInspection
+	 */
+	// phpcs:ignore
+	public function slice(
+		int $begin,
+		int $end,
+	):self {
 		return $this;
 	}
 }
