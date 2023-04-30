@@ -53,7 +53,10 @@ class CurlOptBuilder {
 		$this->setHeaders($request->getHeaders());
 	}
 
-	/** @param string $value The request method, e.g., GET, POST. */
+	/**
+	 * @param string $value The request method, e.g., GET, POST.
+	 * @SuppressWarnings("StaticAccess")
+	 */
 	protected function setMethod(string $value):void {
 		$this->curlOptArray[CURLOPT_CUSTOMREQUEST] =
 			RequestMethod::filterMethodName($value);
@@ -107,6 +110,7 @@ class CurlOptBuilder {
 
 	/**
 	 * @param string $value The cache mode you want to use for the request.
+	 * @SuppressWarnings("UnusedFormalParameter")
 	 * @see https://developer.mozilla.org/en-US/docs/Web/API/Request/cache
 	 */
 	protected function setCache(string $value):void {

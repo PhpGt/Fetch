@@ -4,6 +4,7 @@ namespace Gt\Fetch;
 use CurlHandle;
 use Gt\Async\Loop;
 use Gt\Curl\Curl;
+use Gt\Curl\CurlException;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
 use Gt\Fetch\Response\FetchResponse;
@@ -50,7 +51,7 @@ class RequestResolver {
 	 * provided hash as Subresource Identity (SRI).
 	 * The optional Controller $signal is used internally by curl to provide
 	 * an abort signal.
-	 * @param array<string, int|string> $curlOptArray
+	 * @param array<int, int|string> $curlOptArray
 	 */
 	public function add(
 		UriInterface $uri,
@@ -108,10 +109,9 @@ class RequestResolver {
 			while($status === CURLM_CALL_MULTI_PERFORM);
 
 			if($status !== CURLM_OK) {
-				// TODO: Throw exception.
 				$errNo = curl_multi_errno($curlMulti->getHandle());
 				$errString = curl_multi_strerror($errNo);
-//				var_dump($errNo);die();
+				throw new CurlException($errString);
 			}
 
 			$totalActive += $active;
@@ -134,12 +134,16 @@ class RequestResolver {
 		}
 	}
 
-	private function writeHeader(CurlHandle|CurlInterface $ch, string $rawHeader):int {
+	private function writeHeader(
+		CurlHandle|CurlInterface $ch,
+		string $rawHeader,
+	):int {
 		$i = $this->getIndex($ch);
 		$headerLine = trim($rawHeader);
 
 // If $headerLine is empty, it represents the last line before the body starts.
-// HTTP headers always end on an empty line. See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html
+// HTTP headers always end on an empty line.
+// See https://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html
 		if($headerLine === "") {
 			$parser = new Parser($this->headerList[$i]);
 			$this->responseList[$i] = $this->responseList[$i]->withProtocolVersion(
@@ -187,8 +191,10 @@ class RequestResolver {
 	}
 
 	/**
+	 * @SuppressWarnings("UnusedFormalParameter")
 	 * @noinspection PhpUnusedParameterInspection
 	 */
+	// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
 	private function progress(
 		CurlHandle|CurlInterface $ch,
 		int $expectedDownloadedBytes,
@@ -211,8 +217,7 @@ class RequestResolver {
 		}
 
 		if(!$match) {
-			// TODO: Throw exception.
-			die("NO CURL HANDLE!!!!");
+			throw new FetchException("There is no curl handle");
 		}
 
 		return $i;

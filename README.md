@@ -1,8 +1,6 @@
 # Asynchronous HTTP client with promises.
 
-Asynchronous HTTP client, [PSR-7 compatible][psr-7] implementation of the [Fetch Standard][fetch-standard] which defines requests, responses, and the process that binds them: _fetching_.
-
-This repository provides a [_PHP-HTTP Client Implementation_][php-http-client] for standardised HTTP interoperability.
+Asynchronous HTTP client, implementation of the [Fetch Standard][fetch-standard] which defines requests, responses, and the process that binds them: _fetching_.
 
 See also, the [JavaScript implementation][fetch-js] that ships as standard in all modern browsers.
 
@@ -11,10 +9,10 @@ See also, the [JavaScript implementation][fetch-js] that ships as standard in al
 <a href="https://github.com/PhpGt/Fetch/actions" target="_blank">
     <img src="https://badge.status.php.gt/fetch-build.svg" alt="Build status" />
 </a>
-<a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
+<a href="https://app.codacy.com/gh/PhpGt/Fetch" target="_blank">
     <img src="https://badge.status.php.gt/fetch-quality.svg" alt="Code quality" />
 </a>
-<a href="https://scrutinizer-ci.com/g/PhpGt/Fetch" target="_blank">
+<a href="https://app.codecov.io/gh/PhpGt/Fetch" target="_blank">
     <img src="https://badge.status.php.gt/fetch-coverage.svg" alt="Code coverage" />
 </a>
 <a href="https://packagist.org/packages/PhpGt/Fetch" target="_blank">
@@ -75,31 +73,7 @@ $http->all()->then(function() {
 });
 ```
 
-## Example usage: HTTPlug PHP-HTTP Client & Asynchronous Client
-
-```php
-<?php
-$http = new Gt\Fetch\Http();
-
-$slowRequest = new Request("GET", "http://slow.example.com");
-$fastRequest = new Request("GET", "http://fast.example.com");
-
-// Send the slow request asynchronously (returns a Http\Promise)
-$http->sendAsyncRequest($slowRequest)
-->then(function(ResponseInterface $response) {
-	echo $response->getBody();
-});
-
-// Perform fast request synchronously (block until response ready)
-$response = $http->sendRequest($fastRequest);
-
-// Wait for any asynchronous requests to be completed.
-$http->wait();
-``` 
-
 For more extensive examples, check out the code in the [example directory](/example).
 
-[psr-7]: http://www.php-fig.org/psr/psr-7/
 [fetch-standard]: https://fetch.spec.whatwg.org/
 [fetch-js]: https://developer.mozilla.org/en/docs/Web/API/Fetch_API
-[php-http-client]: http://docs.php-http.org/en/latest/index.html
