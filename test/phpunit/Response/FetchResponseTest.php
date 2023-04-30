@@ -5,6 +5,8 @@ use Gt\Async\Loop;
 use Gt\Curl\Curl;
 use Gt\Fetch\Response\Blob;
 use Gt\Fetch\Response\FetchResponse;
+use Gt\Fetch\Response\FormData;
+use Gt\Http\Header\ResponseHeaders;
 use Gt\Json\JsonDecodeException;
 use Gt\Json\JsonKvpObject;
 use Gt\Promise\Promise;
@@ -16,8 +18,9 @@ use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 use SplFixedArray;
 use StdClass;
+use Throwable;
 
-class BodyResponseTest extends TestCase {
+class FetchResponseTest extends TestCase {
 	public function testText() {
 		$exampleContents = "Example stream contents";
 
@@ -54,8 +57,11 @@ class BodyResponseTest extends TestCase {
 			->willReturn($exampleContents);
 		$curl = self::createMock(Curl::class);
 
+		/** @var null|Blob $sutOutput */
 		$sutOutput = null;
-		$sut = new FetchResponse();
+		$sut = new FetchResponse(200, new ResponseHeaders([
+			"content-type" => "text/example",
+		]));
 		$sut = $sut->withBody($stream);
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->blob();
@@ -65,6 +71,7 @@ class BodyResponseTest extends TestCase {
 		$sut->endDeferredResponse();
 
 		self::assertEquals($exampleContents, $sutOutput);
+		self::assertEquals("text/example", $sutOutput->type);
 	}
 
 	public function testJson() {
@@ -120,10 +127,10 @@ class BodyResponseTest extends TestCase {
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->json();
 		$promise
-			->then(function($fulfilledValue)use(&$sutOutput) {
+			->then(function(JsonKvpObject $fulfilledValue)use(&$sutOutput) {
 				$sutOutput = $fulfilledValue;
 			})
-			->catch(function($errorValue)use(&$sutError) {
+			->catch(function(Throwable $errorValue)use(&$sutError) {
 				$sutError = $errorValue;
 			});
 		$sut->endDeferredResponse();
@@ -196,19 +203,22 @@ class BodyResponseTest extends TestCase {
 		/** @var MockObject|Curl $curl */
 		$curl = self::createMock(Curl::class);
 
+		/** @var null|FormData $sutOutput */
 		$sutOutput = null;
 		$sut = new FetchResponse();
 		$sut = $sut->withBody($stream);
 		$sut->startDeferredResponse($loop, $curl);
 		$promise = $sut->formData();
-		$promise->then(function(array $fulfilledValue)use(&$sutOutput) {
-			$sutOutput = $fulfilledValue;
+		$promise->then(function(FormData $formData)use(&$sutOutput) {
+			$sutOutput = $formData;
 		});
 		$sut->endDeferredResponse();
+// TODO: This needs to be done in PHP.Gt/Http - FormData is part of the Http spec
+// see https://developer.mozilla.org/en-US/docs/Web/API/FormData
 
-		self::assertIsArray($sutOutput);
-		self::assertEquals("phpgt", $sutOutput["organisation"]);
-		self::assertEquals("fetch", $sutOutput["repository"]);
+		self::assertInstanceOf(FormData::class, $sutOutput);
+		self::assertEquals("phpgt", $sutOutput->getString("organisation"));
+		self::assertEquals("fetch", $sutOutput->getString("repository"));
 	}
 
 	public function testDeferredResponseStatus() {

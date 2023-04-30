@@ -116,7 +116,15 @@ class FetchResponse extends Response {
 	public function blob():Promise {
 		$promise = $this->deferred->getPromise();
 		$promise->then(function(string $responseText) {
-			$this->deferred->resolve(new Blob($responseText));
+			$options = [
+				"size" => strlen($responseText),
+				"type" => $this->type,
+			];
+
+			$this->deferred->resolve(new Blob(
+				$responseText,
+				$options
+			));
 		});
 
 		return $promise;
