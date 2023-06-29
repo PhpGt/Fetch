@@ -119,8 +119,7 @@ class Http {
 
 		$deferred = new Deferred();
 		$this->loop->addDeferredToTimer($deferred);
-		$promise = $deferred->getPromise();
 		$deferred->resolve($end - $start);
-		return $promise;
+		return $deferred->getPromise();
 	}
 }

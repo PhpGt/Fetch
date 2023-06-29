@@ -97,14 +97,16 @@ class HttpTest extends TestCase {
 				$actualResponse = $text;
 			});
 
-		$finalPromiseResolved = false;
+		$resolutionTime = null;
 
-		$http->all()
-		->then(function() use(&$finalPromiseResolved) {
-			$finalPromiseResolved = true;
+		$prom = $http->all();
+		$prom->then(function(int $dt) use(&$resolutionTime) {
+			$resolutionTime = $dt;
 		});
 
-		self::assertTrue($finalPromiseResolved);
+		self::assertNotNull($actualResponse);
+		self::assertNotNull($resolutionTime);
+		self::assertGreaterThanOrEqual(0, $resolutionTime);
 	}
 
 	public function testEnsureUriInterface() {
