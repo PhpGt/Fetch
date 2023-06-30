@@ -122,6 +122,7 @@ class HttpTest extends TestCase {
 		self::assertInstanceOf(UriInterface::class, $uri);
 	}
 
+	/** @runInSeparateProcess  */
 	public function testFetchRedirectError():void {
 		$actualResolution = null;
 		$actualRejection = null;
