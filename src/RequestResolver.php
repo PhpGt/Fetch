@@ -9,6 +9,7 @@ use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
 use Gt\Fetch\Response\FetchResponse;
 use Gt\Http\Header\Parser;
+use Gt\Http\Response;
 use Gt\Promise\Deferred;
 use Psr\Http\Message\UriInterface;
 
@@ -19,7 +20,7 @@ class RequestResolver {
 	private array $curlList;
 	/** @var array<Deferred|null> */
 	private array $deferredList;
-	/** @var array<FetchResponse|null> */
+	/** @var array<FetchResponse|Response|null> */
 	private array $responseList;
 	/** @var array<string|null> */
 	private array $headerList;
@@ -117,14 +118,17 @@ class RequestResolver {
 			$totalActive += $active;
 
 			if($active === 0) {
-				$this->responseList[$i]?->endDeferredResponse(
-					$this->integrityList[$i]
-				);
+				$response = $this->responseList[$i] ?? null;
+				if($response instanceof FetchResponse) {
+					$response->endDeferredResponse(
+						$this->integrityList[$i]
+					);
+				}
 				if($this->deferredList[$i]) {
-					$this->deferredList[$i]->resolve($this->responseList[$i]);
+					$this->deferredList[$i]->resolve($response);
 				}
 
-				$this->responseList[$i] = null;
+				$response = null;
 				$this->deferredList[$i] = null;
 			}
 		}
