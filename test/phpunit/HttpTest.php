@@ -13,8 +13,8 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 use Throwable;
 
+/** @runTestsInSeparateProcesses */
 class HttpTest extends TestCase {
-	/** @runInSeparateProcess */
 	public function testFetchBodyResponsePromise() {
 		$http = new Http(
 			[],
@@ -122,7 +122,6 @@ class HttpTest extends TestCase {
 		self::assertInstanceOf(UriInterface::class, $uri);
 	}
 
-	/** @runInSeparateProcess  */
 	public function testFetchRedirectError():void {
 		$actualResolution = null;
 		$actualRejection = null;
