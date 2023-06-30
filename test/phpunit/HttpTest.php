@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch\Test;
 
+use Gt\Fetch\FetchException;
 use Gt\Fetch\Http;
 use Gt\Fetch\Response\FetchResponse;
 use Gt\Fetch\Test\Helper\ResponseSimulator;
@@ -8,12 +9,9 @@ use Gt\Fetch\Test\Helper\TestCurl;
 use Gt\Fetch\Test\Helper\TestCurlMulti;
 use Gt\Http\Request;
 use Gt\Http\Uri;
-use Gt\Promise\Promise;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
+use Throwable;
 
 class HttpTest extends TestCase {
 	/** @runInSeparateProcess */
@@ -122,5 +120,31 @@ class HttpTest extends TestCase {
 			->willReturn($uriInterface);
 		$uri = $sut->ensureUriInterface($request);
 		self::assertInstanceOf(UriInterface::class, $uri);
+	}
+
+	public function testFetchRedirectError():void {
+		$actualResolution = null;
+		$actualRejection = null;
+
+		$sut = new Http(
+			[],
+			0.01,
+			TestCurl::class,
+			TestCurlMulti::class
+		);
+		$sut->fetch("test://should-redirect", [
+			"redirect" => "error"
+		])->then(function(mixed $resolution) use(&$actualResolution) {
+			$actualResolution = $resolution;
+		})->catch(function(Throwable $rejection) use(&$actualRejection) {
+			$actualRejection = $rejection;
+		});
+
+		self::expectException(FetchException::class);
+		self::expectExceptionMessage("Redirect is disallowed");
+		$sut->wait();
+
+		self::assertNull($actualResolution);
+		self::assertInstanceOf(FetchException::class, $actualRejection);
 	}
 }

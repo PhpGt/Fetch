@@ -122,8 +122,14 @@ class CurlOptBuilder {
 	 * follow redirects) or manual (handle redirects manually).
 	 */
 	protected function setRedirect(string $value):void {
-		$this->curlOptArray[CURLOPT_FOLLOWLOCATION] =
-			strtolower($value) === "follow";
+		$value = strtolower($value);
+
+		if($value === "follow" || $value === "manual") {
+			$this->curlOptArray[CURLOPT_FOLLOWLOCATION] = $value === "follow";
+		}
+		elseif($value === "error") {
+			$this->curlOptArray[CURLOPT_MAXREDIRS] = 0;
+		}
 	}
 
 	/**

@@ -67,8 +67,8 @@ class RequestResolver {
 		$curl->setOpt(CURLOPT_USERAGENT, Http::USER_AGENT);
 
 // curlopt2: Then override any curlopt values that are provided:
-		if(!empty($curlOptArray)) {
-			$curl->setOptArray($curlOptArray);
+		foreach($curlOptArray as $option => $value) {
+			$curl->setOpt($option, $value);
 		}
 
 // curlopt3: Finally, hard-code these curlopt settings:
@@ -162,6 +162,12 @@ class RequestResolver {
 					$key,
 					$value
 				);
+			}
+		}
+
+		if(str_starts_with(strtolower($headerLine), "location: ")) {
+			if($ch->getInfo(CURLOPT_MAXREDIRS) === 0) {
+				throw new FetchException("Redirect is disallowed");
 			}
 		}
 
