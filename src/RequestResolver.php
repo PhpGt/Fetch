@@ -85,7 +85,7 @@ class RequestResolver {
 		$this->loop->addDeferredToTimer($deferred);
 
 		$bodyResponse = new Response();
-		$bodyResponse->startDeferredResponse($this->loop, $curl);
+		$bodyResponse->startDeferredResponse($curl);
 
 		array_push($this->curlList, $curl);
 		array_push($this->curlMultiList, $curlMulti);
