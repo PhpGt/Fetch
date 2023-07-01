@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Fetch\Test\Helper;
 
+use Gt\Curl\Curl;
+
 class ResponseSimulator {
 	const RANDOM_BODY_WORDS = ["pursuit","forest","gravel","timber","wonder","eject","slogan","monkey","construct","earthquake","respect","publish","forward","circle","summer","define","highlight","refuse","salon","theater","lily","earwax","variant","account","resource"];
 	static protected $headerCallback;
@@ -8,6 +10,10 @@ class ResponseSimulator {
 	static protected $headerBuffer;
 	static protected $bodyBuffer;
 	static protected $started = false;
+	/**
+	 * @var true
+	 */
+	private static bool $redirectAdded = false;
 
 	static public function setHeaderCallback(callable $callback) {
 		self::$headerCallback = $callback;
@@ -67,7 +73,16 @@ class ResponseSimulator {
 		return self::$started;
 	}
 
-	static public function sendChunk($ch):int {
+	static public function sendChunk(Curl $ch):int {
+// TODO: If the URL is test://should-redirect, send the redirect header here
+		$url = $ch->getInfo(CURLINFO_EFFECTIVE_URL);
+		if($url === "test://should-redirect") {
+			$locationRedirect = "Location: /redirected";
+			if(!self::$redirectAdded) {
+				array_splice(self::$headerBuffer, 1, 0, $locationRedirect);
+				self::$redirectAdded = true;
+			}
+		}
 		if(!empty(self::$headerBuffer)) {
 			$data = array_shift(self::$headerBuffer);
 

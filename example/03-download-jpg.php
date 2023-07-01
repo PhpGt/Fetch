@@ -2,8 +2,8 @@
 require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
-use Gt\Fetch\Response\Blob;
-use Gt\Fetch\Response\FetchResponse;
+use Gt\Http\Blob;
+use Gt\Http\Response;
 
 /*
  * This example uses Cat-as-a-Service API to request a random photo of a cat.
@@ -14,7 +14,7 @@ use Gt\Fetch\Response\FetchResponse;
 
 $http = new Http();
 $http->fetch("https://cataas.com/cat")
-->then(function(FetchResponse $response) {
+->then(function(Response $response) {
 	if(!$response->ok) {
 		throw new RuntimeException("Error getting a cat. (ERROR $response->status)");
 	}

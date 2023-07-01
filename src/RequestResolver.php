@@ -3,12 +3,11 @@ namespace Gt\Fetch;
 
 use CurlHandle;
 use Gt\Async\Loop;
-use Gt\Curl\Curl;
 use Gt\Curl\CurlException;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
-use Gt\Fetch\Response\FetchResponse;
 use Gt\Http\Header\Parser;
+use Gt\Http\Response;
 use Gt\Promise\Deferred;
 use Psr\Http\Message\UriInterface;
 
@@ -19,7 +18,7 @@ class RequestResolver {
 	private array $curlList;
 	/** @var array<Deferred|null> */
 	private array $deferredList;
-	/** @var array<FetchResponse|null> */
+	/** @var array<Response|null> */
 	private array $responseList;
 	/** @var array<string|null> */
 	private array $headerList;
@@ -67,8 +66,8 @@ class RequestResolver {
 		$curl->setOpt(CURLOPT_USERAGENT, Http::USER_AGENT);
 
 // curlopt2: Then override any curlopt values that are provided:
-		if(!empty($curlOptArray)) {
-			$curl->setOptArray($curlOptArray);
+		foreach($curlOptArray as $option => $value) {
+			$curl->setOpt($option, $value);
 		}
 
 // curlopt3: Finally, hard-code these curlopt settings:
@@ -85,8 +84,8 @@ class RequestResolver {
 
 		$this->loop->addDeferredToTimer($deferred);
 
-		$bodyResponse = new FetchResponse();
-		$bodyResponse->startDeferredResponse($this->loop, $curl);
+		$bodyResponse = new Response();
+		$bodyResponse->startDeferredResponse($curl);
 
 		array_push($this->curlList, $curl);
 		array_push($this->curlMultiList, $curlMulti);
@@ -117,14 +116,15 @@ class RequestResolver {
 			$totalActive += $active;
 
 			if($active === 0) {
-				$this->responseList[$i]?->endDeferredResponse(
+				$response = $this->responseList[$i] ?? null;
+				$response->endDeferredResponse(
 					$this->integrityList[$i]
 				);
 				if($this->deferredList[$i]) {
-					$this->deferredList[$i]->resolve($this->responseList[$i]);
+					$this->deferredList[$i]->resolve($response);
 				}
 
-				$this->responseList[$i] = null;
+				$response = null;
 				$this->deferredList[$i] = null;
 			}
 		}
@@ -162,6 +162,12 @@ class RequestResolver {
 					$key,
 					$value
 				);
+			}
+		}
+
+		if(str_starts_with(strtolower($headerLine), "location: ")) {
+			if($ch->getInfo(CURLOPT_MAXREDIRS) === 0) {
+				throw new FetchException("Redirect is disallowed");
 			}
 		}
 

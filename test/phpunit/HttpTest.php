@@ -1,22 +1,19 @@
 <?php
 namespace Gt\Fetch\Test;
 
+use Gt\Fetch\FetchException;
 use Gt\Fetch\Http;
-use Gt\Fetch\Response\FetchResponse;
 use Gt\Fetch\Test\Helper\ResponseSimulator;
 use Gt\Fetch\Test\Helper\TestCurl;
 use Gt\Fetch\Test\Helper\TestCurlMulti;
 use Gt\Http\Request;
+use Gt\Http\Response;
 use Gt\Http\Uri;
-use Gt\Promise\Promise;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Http\Message\RequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\UriInterface;
+use Throwable;
 
 class HttpTest extends TestCase {
-	/** @runInSeparateProcess */
 	public function testFetchBodyResponsePromise() {
 		$http = new Http(
 			[],
@@ -28,7 +25,7 @@ class HttpTest extends TestCase {
 		$fakeStatus = null;
 
 		$http->fetch("test://should-return")
-		->then(function(FetchResponse $response)use(&$fakeStatus) {
+		->then(function(Response $response)use(&$fakeStatus) {
 			$fakeStatus = $response->status;
 		});
 
@@ -49,7 +46,7 @@ class HttpTest extends TestCase {
 		$actualResponse = null;
 
 		$http->fetch("test://should-return")
-		->then(function(FetchResponse $response)use(&$fakeStatus) {
+		->then(function(Response $response)use(&$fakeStatus) {
 			return $response->text();
 		})
 		->then(function(string $text)use(&$actualResponse) {
@@ -90,21 +87,23 @@ class HttpTest extends TestCase {
 		$actualResponse = null;
 
 		$http->fetch("test://should-return")
-			->then(function(FetchResponse $response)use(&$fakeStatus) {
+			->then(function(Response $response)use(&$fakeStatus) {
 				return $response->text();
 			})
 			->then(function(string $text)use(&$actualResponse) {
 				$actualResponse = $text;
 			});
 
-		$finalPromiseResolved = false;
+		$resolutionTime = null;
 
-		$http->all()
-		->then(function() use(&$finalPromiseResolved) {
-			$finalPromiseResolved = true;
+		$prom = $http->all();
+		$prom->then(function(int $dt) use(&$resolutionTime) {
+			$resolutionTime = $dt;
 		});
 
-		self::assertTrue($finalPromiseResolved);
+		self::assertNotNull($actualResponse);
+		self::assertNotNull($resolutionTime);
+		self::assertGreaterThanOrEqual(0, $resolutionTime);
 	}
 
 	public function testEnsureUriInterface() {
@@ -120,5 +119,31 @@ class HttpTest extends TestCase {
 			->willReturn($uriInterface);
 		$uri = $sut->ensureUriInterface($request);
 		self::assertInstanceOf(UriInterface::class, $uri);
+	}
+
+	public function testFetchRedirectError():void {
+		$actualResolution = null;
+		$actualRejection = null;
+
+		$sut = new Http(
+			[],
+			0.01,
+			TestCurl::class,
+			TestCurlMulti::class
+		);
+		$sut->fetch("test://should-redirect", [
+			"redirect" => "error"
+		])->then(function(mixed $resolution) use(&$actualResolution) {
+			$actualResolution = $resolution;
+		})->catch(function(Throwable $rejection) use(&$actualRejection) {
+			$actualRejection = $rejection;
+		});
+
+		self::expectException(FetchException::class);
+		self::expectExceptionMessage("Redirect is disallowed");
+		$sut->wait();
+
+		self::assertNull($actualResolution);
+		self::assertInstanceOf(FetchException::class, $actualRejection);
 	}
 }

@@ -5,10 +5,10 @@ use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMulti;
 
 class TestCurlMulti extends CurlMulti {
-	protected $ch;
+	protected array $curlHandleArray;
 
 	public function add(CurlInterface $curl):void {
-		$this->ch = $curl;
+		array_push($this->curlHandleArray, $curl);
 	}
 
 	public function exec(int &$stillRunning):int {
@@ -16,7 +16,9 @@ class TestCurlMulti extends CurlMulti {
 			ResponseSimulator::start();
 		}
 
-		$stillRunning += ResponseSimulator::sendChunk($this->ch);
+		foreach($this->curlHandleArray as $ch) {
+			$stillRunning += ResponseSimulator::sendChunk($ch);
+		}
 		return CURLM_OK;
 	}
 }
