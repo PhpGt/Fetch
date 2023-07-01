@@ -3,11 +3,11 @@ namespace Gt\Fetch\Test;
 
 use Gt\Fetch\FetchException;
 use Gt\Fetch\Http;
-use Gt\Fetch\Response\FetchResponse;
 use Gt\Fetch\Test\Helper\ResponseSimulator;
 use Gt\Fetch\Test\Helper\TestCurl;
 use Gt\Fetch\Test\Helper\TestCurlMulti;
 use Gt\Http\Request;
+use Gt\Http\Response;
 use Gt\Http\Uri;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
@@ -25,7 +25,7 @@ class HttpTest extends TestCase {
 		$fakeStatus = null;
 
 		$http->fetch("test://should-return")
-		->then(function(FetchResponse $response)use(&$fakeStatus) {
+		->then(function(Response $response)use(&$fakeStatus) {
 			$fakeStatus = $response->status;
 		});
 
@@ -46,7 +46,7 @@ class HttpTest extends TestCase {
 		$actualResponse = null;
 
 		$http->fetch("test://should-return")
-		->then(function(FetchResponse $response)use(&$fakeStatus) {
+		->then(function(Response $response)use(&$fakeStatus) {
 			return $response->text();
 		})
 		->then(function(string $text)use(&$actualResponse) {
@@ -87,7 +87,7 @@ class HttpTest extends TestCase {
 		$actualResponse = null;
 
 		$http->fetch("test://should-return")
-			->then(function(FetchResponse $response)use(&$fakeStatus) {
+			->then(function(Response $response)use(&$fakeStatus) {
 				return $response->text();
 			})
 			->then(function(string $text)use(&$actualResponse) {

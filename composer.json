@@ -3,13 +3,6 @@
 	"description": "Asynchronous HTTP client with promises.",
 	"type": "library",
 	"license": "MIT",
-	"repositories": [{
-		"type": "path",
-		"url": "/home/g105b/Code/PhpGt/Http",
-		"options": {
-			"symlink": true
-		}
-	}],
 
 	"require": {
 		"php": ">=8.1",
@@ -17,7 +10,7 @@
 		"ext-json": "*",
 		"phpgt/async": "^1.0",
 		"phpgt/promise": "^2.2.3",
-		"phpgt/http": "dev-formdata as v1.1.10",
+		"phpgt/http": "^1.2",
 		"phpgt/curl": "^3.1.1",
 		"phpgt/json": "^1.2",
 		"phpgt/propfunc": "^1.0"

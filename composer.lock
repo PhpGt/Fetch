@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9102466fcbf779a98503059ba30adc84",
+    "content-hash": "f5f6d5c6402c2decdd7da615cf91d534",
     "packages": [
         {
             "name": "phpgt/async",
@@ -169,16 +169,24 @@
         },
         {
             "name": "phpgt/http",
-            "version": "dev-formdata",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PhpGt/Http.git",
+                "reference": "292e850bd76a697f07742f706ac3d90429899bd8"
+            },
             "dist": {
-                "type": "path",
-                "url": "/home/g105b/Code/PhpGt/Http",
-                "reference": "d25839812d08fd07cbc1498f779846c45ac9d869"
+                "type": "zip",
+                "url": "https://api.github.com/repos/PhpGt/Http/zipball/292e850bd76a697f07742f706ac3d90429899bd8",
+                "reference": "292e850bd76a697f07742f706ac3d90429899bd8",
+                "shasum": ""
             },
             "require": {
+                "ext-curl": "*",
                 "ext-dom": "*",
                 "php": ">=8.1",
                 "phpgt/async": "^1.0",
+                "phpgt/curl": "^3.1",
                 "phpgt/input": "^1.2",
                 "phpgt/json": "^1.2",
                 "phpgt/promise": "^2.2",
@@ -205,25 +213,22 @@
                     "Gt\\Http\\": "./src"
                 }
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "Gt\\Http\\Test\\": "./test/phpunit"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "PSR-7 HTTP message implementation.",
+            "support": {
+                "issues": "https://github.com/PhpGt/Http/issues",
+                "source": "https://github.com/PhpGt/Http/tree/v1.2.0"
+            },
             "funding": [
                 {
-                    "type": "github",
-                    "url": "https://github.com/sponsors/PhpGt"
+                    "url": "https://github.com/sponsors/PhpGt",
+                    "type": "github"
                 }
             ],
-            "transport-options": {
-                "symlink": true,
-                "relative": false
-            }
+            "time": "2023-07-01T18:35:46+00:00"
         },
         {
             "name": "phpgt/input",
@@ -3316,18 +3321,9 @@
             "time": "2021-07-28T10:34:58+00:00"
         }
     ],
-    "aliases": [
-        {
-            "package": "phpgt/http",
-            "version": "dev-formdata",
-            "alias": "v1.1.10",
-            "alias_normalized": "1.1.10.0"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "phpgt/http": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
