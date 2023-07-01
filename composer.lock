@@ -4,11 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "477c145aca139f98b56313eb055a9414",
+    "content-hash": "c8da817b82f9465778b231b46454b92c",
     "packages": [
         {
             "name": "phpgt/async",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Async.git",
@@ -29,7 +29,6 @@
                 "phpstan/phpstan": "^v1.8",
                 "phpunit/phpunit": "^v9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -43,7 +42,7 @@
             "description": "Promise-based non-blocking operations.",
             "support": {
                 "issues": "https://github.com/PhpGt/Async/issues",
-                "source": "https://github.com/PhpGt/Async/tree/master"
+                "source": "https://github.com/PhpGt/Async/tree/v1.0.0"
             },
             "funding": [
                 {
@@ -324,16 +323,16 @@
         },
         {
             "name": "phpgt/promise",
-            "version": "v2.2.2",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Promise.git",
-                "reference": "c1fbcdc600811c2061b8f6bf059543e6da6b786d"
+                "reference": "907b3a450f3252077f80b50289f73ab930ca2cdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Promise/zipball/c1fbcdc600811c2061b8f6bf059543e6da6b786d",
-                "reference": "c1fbcdc600811c2061b8f6bf059543e6da6b786d",
+                "url": "https://api.github.com/repos/PhpGt/Promise/zipball/907b3a450f3252077f80b50289f73ab930ca2cdc",
+                "reference": "907b3a450f3252077f80b50289f73ab930ca2cdc",
                 "shasum": ""
             },
             "require": {
@@ -369,7 +368,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PhpGt/Promise/issues",
-                "source": "https://github.com/PhpGt/Promise/tree/v2.2.2"
+                "source": "https://github.com/PhpGt/Promise/tree/v2.2.3"
             },
             "funding": [
                 {
@@ -377,7 +376,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-06-29T12:52:55+00:00"
+            "time": "2023-07-01T10:59:01+00:00"
         },
         {
             "name": "phpgt/propfunc",
@@ -1105,16 +1104,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.21",
+            "version": "1.10.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5"
+                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
-                "reference": "b2a30186be2e4d97dce754ae4e65eb0ec2f04eb5",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
+                "reference": "97d694dfd4ceb57bcce4e3b38548f13ea62e4287",
                 "shasum": ""
             },
             "require": {
@@ -1163,7 +1162,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-21T20:07:58+00:00"
+            "time": "2023-06-30T20:04:11+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1487,16 +1486,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "10.2.2",
+            "version": "10.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "1ab521b24b88b88310c40c26c0cc4a94ba40ff95"
+                "reference": "35c8cac1734ede2ae354a6644f7088356ff5b08e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1ab521b24b88b88310c40c26c0cc4a94ba40ff95",
-                "reference": "1ab521b24b88b88310c40c26c0cc4a94ba40ff95",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/35c8cac1734ede2ae354a6644f7088356ff5b08e",
+                "reference": "35c8cac1734ede2ae354a6644f7088356ff5b08e",
                 "shasum": ""
             },
             "require": {
@@ -1568,7 +1567,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.2"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/10.2.3"
             },
             "funding": [
                 {
@@ -1584,7 +1583,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-06-11T06:15:20+00:00"
+            "time": "2023-06-30T06:17:38+00:00"
         },
         {
             "name": "psr/container",
@@ -3316,9 +3315,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "phpgt/async": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

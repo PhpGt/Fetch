@@ -7,7 +7,6 @@ use Gt\Fetch\NotAvailableServerSideException;
 use Gt\Fetch\UnknownCurlOptException;
 use PHPUnit\Framework\TestCase;
 
-/** @runTestsInSeparateProcesses */
 class CurlOptBuilderTest extends TestCase {
 	public function testInvalidKey() {
 		self::expectException(UnknownCurlOptException::class);

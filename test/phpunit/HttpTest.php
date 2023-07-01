@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\UriInterface;
 use Throwable;
 
-/** @runTestsInSeparateProcesses */
 class HttpTest extends TestCase {
 	public function testFetchBodyResponsePromise() {
 		$http = new Http(
