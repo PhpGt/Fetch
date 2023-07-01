@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c8da817b82f9465778b231b46454b92c",
+    "content-hash": "9102466fcbf779a98503059ba30adc84",
     "packages": [
         {
             "name": "phpgt/async",
@@ -169,21 +169,21 @@
         },
         {
             "name": "phpgt/http",
-            "version": "v1.1.10",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/PhpGt/Http.git",
-                "reference": "8b2b6b99d218147c203c466a9bbf12cdb8971942"
-            },
+            "version": "dev-formdata",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/8b2b6b99d218147c203c466a9bbf12cdb8971942",
-                "reference": "8b2b6b99d218147c203c466a9bbf12cdb8971942",
-                "shasum": ""
+                "type": "path",
+                "url": "/home/g105b/Code/PhpGt/Http",
+                "reference": "d25839812d08fd07cbc1498f779846c45ac9d869"
             },
             "require": {
+                "ext-dom": "*",
                 "php": ">=8.1",
+                "phpgt/async": "^1.0",
                 "phpgt/input": "^1.2",
+                "phpgt/json": "^1.2",
+                "phpgt/promise": "^2.2",
+                "phpgt/propfunc": "^1.0",
+                "phpgt/typesafegetter": "^1.3",
                 "psr/http-message": "^2.0",
                 "willdurand/negotiation": "3.1.0"
             },
@@ -205,22 +205,25 @@
                     "Gt\\Http\\": "./src"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "Gt\\Http\\Test\\": "./test/phpunit"
+                }
+            },
             "license": [
                 "MIT"
             ],
             "description": "PSR-7 HTTP message implementation.",
-            "support": {
-                "issues": "https://github.com/PhpGt/Http/issues",
-                "source": "https://github.com/PhpGt/Http/tree/v1.1.10"
-            },
             "funding": [
                 {
-                    "url": "https://github.com/sponsors/PhpGt",
-                    "type": "github"
+                    "type": "github",
+                    "url": "https://github.com/sponsors/PhpGt"
                 }
             ],
-            "time": "2023-05-03T10:42:38+00:00"
+            "transport-options": {
+                "symlink": true,
+                "relative": false
+            }
         },
         {
             "name": "phpgt/input",
@@ -3313,9 +3316,18 @@
             "time": "2021-07-28T10:34:58+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "phpgt/http",
+            "version": "dev-formdata",
+            "alias": "v1.1.10",
+            "alias_normalized": "1.1.10.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "phpgt/http": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

@@ -2,8 +2,7 @@
 require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
-use Gt\Fetch\Response\Blob;
-use Gt\Fetch\Response\FetchResponse;
+use Gt\Http\Response;
 use Gt\Json\JsonKvpObject;
 use Gt\Json\JsonPrimitive\JsonArrayPrimitive;
 
@@ -11,7 +10,7 @@ $http = new Http();
 
 $http->fetch("https://api.github.com/orgs/phpgt/repos")
 //$http->fetch("https://raw.githubusercontent.com/PhpGt/Fetch/master/broken.json")
-	->then(function(FetchResponse $response) {
+	->then(function(Response $response) {
 		echo "Got a response. Processing JSON... ", PHP_EOL;
 
 		if(!$response->ok) {
@@ -21,7 +20,7 @@ $http->fetch("https://api.github.com/orgs/phpgt/repos")
 		return $response->json();
 	})
 	->then(function(JsonArrayPrimitive $json) {
-		echo "SUCCESS: Json promise resolved!", PHP_EOL;
+		echo "SUCCESS: Json promise resolved!", PHP_EOL, PHP_EOL;
 		echo "PHP.Gt has the following repositories: ";
 		$repoList = [];
 		/** @var JsonKvpObject $item */

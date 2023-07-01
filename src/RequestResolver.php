@@ -3,11 +3,9 @@ namespace Gt\Fetch;
 
 use CurlHandle;
 use Gt\Async\Loop;
-use Gt\Curl\Curl;
 use Gt\Curl\CurlException;
 use Gt\Curl\CurlInterface;
 use Gt\Curl\CurlMultiInterface;
-use Gt\Fetch\Response\FetchResponse;
 use Gt\Http\Header\Parser;
 use Gt\Http\Response;
 use Gt\Promise\Deferred;
@@ -20,7 +18,7 @@ class RequestResolver {
 	private array $curlList;
 	/** @var array<Deferred|null> */
 	private array $deferredList;
-	/** @var array<FetchResponse|Response|null> */
+	/** @var array<Response|null> */
 	private array $responseList;
 	/** @var array<string|null> */
 	private array $headerList;
@@ -86,7 +84,7 @@ class RequestResolver {
 
 		$this->loop->addDeferredToTimer($deferred);
 
-		$bodyResponse = new FetchResponse();
+		$bodyResponse = new Response();
 		$bodyResponse->startDeferredResponse($this->loop, $curl);
 
 		array_push($this->curlList, $curl);
@@ -119,11 +117,9 @@ class RequestResolver {
 
 			if($active === 0) {
 				$response = $this->responseList[$i] ?? null;
-				if($response instanceof FetchResponse) {
-					$response->endDeferredResponse(
-						$this->integrityList[$i]
-					);
-				}
+				$response->endDeferredResponse(
+					$this->integrityList[$i]
+				);
 				if($this->deferredList[$i]) {
 					$this->deferredList[$i]->resolve($response);
 				}
