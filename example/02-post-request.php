@@ -2,6 +2,7 @@
 require(implode(DIRECTORY_SEPARATOR, ["..", "vendor", "autoload.php"]));
 
 use Gt\Fetch\Http;
+use Gt\Http\FormData;
 use Gt\Http\Response;
 use Gt\Json\JsonObject;
 
@@ -12,6 +13,11 @@ use Gt\Json\JsonObject;
 
 // Example: Post form data to the echo server.
 
+$formData = new FormData();
+$formData->set("name", "Mark Zuckerberg");
+$formData->set("dob", "1984-05-14");
+$formData->set("email", "zuck@fb.com");
+
 $http = new Http();
 $http->fetch("https://postman-echo.com/post", [
 // All of the request parameters can be passed directly here, or alternatively
@@ -20,11 +26,7 @@ $http->fetch("https://postman-echo.com/post", [
 	"headers" => [
 		"Content-Type" => "application/x-www-form-urlencoded",
 	],
-	"body" => http_build_query([
-		"name" => "Mark Zuckerberg",
-		"dob" => "1984-05-14",
-		"email" => "zuck@fb.com",
-	]),
+	"body" => $formData,
 ])
 	->then(function(Response $response) {
 		if(!$response->ok) {
