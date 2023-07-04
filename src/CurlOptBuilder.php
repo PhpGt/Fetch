@@ -1,6 +1,8 @@
 <?php
 namespace Gt\Fetch;
 
+use Gt\Http\File;
+use Gt\Http\FormData;
 use Gt\Http\RequestMethod;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
@@ -87,7 +89,17 @@ class CurlOptBuilder {
 	 * add to your request: this can be a string, associative array
 	 * (representing form data) or binary object.
 	 */
-	protected function setBody(string|array $body):void {
+	protected function setBody(string|array|FormData $body):void {
+		if($body instanceof FormData) {
+			$formData = $body;
+			$body = [];
+			foreach($formData as $key => $value) {
+				if($value instanceof File) {
+					$value = new \CURLFile($value->name);
+				}
+				$body[$key] = $value;
+			}
+		}
 		$this->curlOptArray[CURLOPT_POSTFIELDS] = $body;
 	}
 

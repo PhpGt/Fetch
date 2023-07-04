@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f5f6d5c6402c2decdd7da615cf91d534",
+    "content-hash": "c5ad117c8f0bb3a72c13f24cb2ded9f0",
     "packages": [
         {
             "name": "phpgt/async",
@@ -169,21 +169,22 @@
         },
         {
             "name": "phpgt/http",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PhpGt/Http.git",
-                "reference": "292e850bd76a697f07742f706ac3d90429899bd8"
+                "reference": "677c4561573f05ab719192319dc6411708df8620"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PhpGt/Http/zipball/292e850bd76a697f07742f706ac3d90429899bd8",
-                "reference": "292e850bd76a697f07742f706ac3d90429899bd8",
+                "url": "https://api.github.com/repos/PhpGt/Http/zipball/677c4561573f05ab719192319dc6411708df8620",
+                "reference": "677c4561573f05ab719192319dc6411708df8620",
                 "shasum": ""
             },
             "require": {
                 "ext-curl": "*",
                 "ext-dom": "*",
+                "ext-fileinfo": "*",
                 "php": ">=8.1",
                 "phpgt/async": "^1.0",
                 "phpgt/curl": "^3.1",
@@ -220,7 +221,7 @@
             "description": "PSR-7 HTTP message implementation.",
             "support": {
                 "issues": "https://github.com/PhpGt/Http/issues",
-                "source": "https://github.com/PhpGt/Http/tree/v1.2.0"
+                "source": "https://github.com/PhpGt/Http/tree/v1.2.1"
             },
             "funding": [
                 {
@@ -228,7 +229,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-07-01T18:35:46+00:00"
+            "time": "2023-07-03T15:31:32+00:00"
         },
         {
             "name": "phpgt/input",
