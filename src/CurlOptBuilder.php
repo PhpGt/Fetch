@@ -1,6 +1,7 @@
 <?php
 namespace Gt\Fetch;
 
+use CURLFile;
 use Gt\Http\File;
 use Gt\Http\FormData;
 use Gt\Http\RequestMethod;
@@ -95,7 +96,7 @@ class CurlOptBuilder {
 			$body = [];
 			foreach($formData as $key => $value) {
 				if($value instanceof File) {
-					$value = new \CURLFile($value->name);
+					$value = new CURLFile($value->name);
 				}
 				$body[$key] = $value;
 			}
