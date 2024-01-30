@@ -88,6 +88,7 @@ class Http {
 		return $deferredPromise;
 	}
 
+	/** @param array<string, mixed> $init */
 	public function awaitFetch(string $input, array $init = []):Response {
 		$response = null;
 
