@@ -7,6 +7,7 @@ use Gt\Async\Timer\Timer;
 use Gt\Curl\Curl;
 use Gt\Curl\CurlMulti;
 use Gt\Fetch\Response\FetchResponse;
+use Gt\Http\Response;
 use Gt\Http\Uri;
 use Gt\Promise\Deferred;
 use Gt\Promise\Promise;
@@ -85,6 +86,18 @@ class Http {
 		);
 
 		return $deferredPromise;
+	}
+
+	public function awaitFetch(string $input, array $init = []):Response {
+		$response = null;
+
+		$promise = $this->fetch($input, $init);
+		$promise->then(function(Response $resolved) use(&$response) {
+			$response = $resolved;
+		});
+		$this->wait();
+
+		return $response;
 	}
 
 	public function ensureUriInterface(
