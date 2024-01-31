@@ -147,6 +147,7 @@ class HttpTest extends TestCase {
 		self::assertInstanceOf(FetchException::class, $actualRejection);
 	}
 
+	/** @runInSeparateProcess */
 	public function testAwaitFetch():void {
 		$http = new Http(
 			[],
