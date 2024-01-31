@@ -97,7 +97,7 @@ class HttpTest extends TestCase {
 		$resolutionTime = null;
 
 		$prom = $http->all();
-		$prom->then(function(int $dt) use(&$resolutionTime) {
+		$prom->then(function(float $dt) use(&$resolutionTime) {
 			$resolutionTime = $dt;
 		});
 
@@ -145,5 +145,21 @@ class HttpTest extends TestCase {
 
 		self::assertNull($actualResolution);
 		self::assertInstanceOf(FetchException::class, $actualRejection);
+	}
+
+	/** @runInSeparateProcess */
+	public function testAwaitFetch():void {
+		$http = new Http(
+			[],
+			0.01,
+			TestCurl::class,
+			TestCurlMulti::class
+		);
+
+		$response = $http->awaitFetch("test://should-return");
+		$text = $response->awaitText();
+
+		self::assertNotNull($response);
+		self::assertGreaterThan(0, strlen($text));
 	}
 }
