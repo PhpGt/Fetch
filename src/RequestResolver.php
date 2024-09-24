@@ -71,6 +71,7 @@ class RequestResolver {
 		}
 
 // curlopt3: Finally, hard-code these curlopt settings:
+		$curl->setOpt(CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 		$curl->setOpt(CURLOPT_RETURNTRANSFER, false);
 		$curl->setOpt(CURLOPT_HEADER, false);
 		$curl->setOpt(CURLOPT_HEADERFUNCTION, $this->writeHeader(...));
@@ -102,6 +103,8 @@ class RequestResolver {
 		foreach($this->curlMultiList as $i => $curlMulti) {
 			$active = 0;
 
+// 1) This first do-while loop initiates all underlying curl handles, but on
+// slow networks, this might not be enough to download all responses...
 			do {
 				$status = $curlMulti->exec($active);
 			}
@@ -126,6 +129,19 @@ class RequestResolver {
 
 				$response = null;
 				$this->deferredList[$i] = null;
+			}
+			else {
+				while($active && $status === CURLM_OK) {
+// 2) We must wait for network activity, because there may be no activity
+// between us starting the request and checking the response, especially with
+// slow servers.
+					if($curlMulti->select() !== -1) {
+						do {
+							$status = $curlMulti->exec($active);
+						}
+						while($status === CURLM_CALL_MULTI_PERFORM);
+					}
+				}
 			}
 		}
 
