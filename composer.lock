@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "justinrainbow/json-schema",
-            "version": "6.8.0",
+            "version": "6.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jsonrainbow/json-schema.git",
-                "reference": "89ac92bcfe5d0a8a4433c7b89d394553ae7250cc"
+                "reference": "8b1308a9d7bdbdb20ce87ef920f82b4564bb2d33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/89ac92bcfe5d0a8a4433c7b89d394553ae7250cc",
-                "reference": "89ac92bcfe5d0a8a4433c7b89d394553ae7250cc",
+                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/8b1308a9d7bdbdb20ce87ef920f82b4564bb2d33",
+                "reference": "8b1308a9d7bdbdb20ce87ef920f82b4564bb2d33",
                 "shasum": ""
             },
             "require": {
@@ -27,7 +27,7 @@
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "3.3.0",
-                "json-schema/json-schema-test-suite": "^23.2",
+                "json-schema/json-schema-test-suite": "dev-main",
                 "marc-mabe/php-enum-phpstan": "^2.0",
                 "phpspec/prophecy": "^1.19",
                 "phpstan/phpstan": "^1.12",
@@ -77,9 +77,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jsonrainbow/json-schema/issues",
-                "source": "https://github.com/jsonrainbow/json-schema/tree/6.8.0"
+                "source": "https://github.com/jsonrainbow/json-schema/tree/6.10.0"
             },
-            "time": "2026-04-02T12:43:11+00:00"
+            "time": "2026-06-16T20:50:26+00:00"
         },
         {
             "name": "marc-mabe/php-enum",
@@ -156,16 +156,16 @@
         },
         {
             "name": "phpgt/async",
-            "version": "v1.0.1",
+            "version": "v1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpgt/Async.git",
-                "reference": "3daab887eacd04d297a1383a22957f0ab7ecaf68"
+                "reference": "d1f3679f4200e32457b57211f49b999641ef8fa4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpgt/Async/zipball/3daab887eacd04d297a1383a22957f0ab7ecaf68",
-                "reference": "3daab887eacd04d297a1383a22957f0ab7ecaf68",
+                "url": "https://api.github.com/repos/phpgt/Async/zipball/d1f3679f4200e32457b57211f49b999641ef8fa4",
+                "reference": "d1f3679f4200e32457b57211f49b999641ef8fa4",
                 "shasum": ""
             },
             "require": {
@@ -182,6 +182,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
+                    "GT\\Async\\": "./src",
                     "Gt\\Async\\": "./src"
                 }
             },
@@ -192,15 +193,15 @@
             "description": "Promise-based non-blocking operations.",
             "support": {
                 "issues": "https://github.com/phpgt/Async/issues",
-                "source": "https://github.com/phpgt/Async/tree/v1.0.1"
+                "source": "https://github.com/phpgt/Async/tree/v1.0.3"
             },
             "funding": [
                 {
-                    "url": "https://github.com/phpgt",
+                    "url": "https://github.com/sponsors/PhpGt",
                     "type": "github"
                 }
             ],
-            "time": "2025-03-07T17:26:32+00:00"
+            "time": "2026-05-04T16:34:25+00:00"
         },
         {
             "name": "phpgt/curl",
@@ -321,16 +322,16 @@
         },
         {
             "name": "phpgt/http",
-            "version": "v1.3.8",
+            "version": "v1.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpgt/Http.git",
-                "reference": "5e12783b8a339340fd886217a805ae70bbf82b23"
+                "reference": "eca66ac787bae767d2ff0363c5b243f809619ec4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpgt/Http/zipball/5e12783b8a339340fd886217a805ae70bbf82b23",
-                "reference": "5e12783b8a339340fd886217a805ae70bbf82b23",
+                "url": "https://api.github.com/repos/phpgt/Http/zipball/eca66ac787bae767d2ff0363c5b243f809619ec4",
+                "reference": "eca66ac787bae767d2ff0363c5b243f809619ec4",
                 "shasum": ""
             },
             "require": {
@@ -362,6 +363,7 @@
             },
             "autoload": {
                 "psr-4": {
+                    "GT\\Http\\": "./src",
                     "Gt\\Http\\": "./src"
                 }
             },
@@ -372,7 +374,7 @@
             "description": "PSR-7 HTTP message implementation.",
             "support": {
                 "issues": "https://github.com/phpgt/Http/issues",
-                "source": "https://github.com/phpgt/Http/tree/v1.3.8"
+                "source": "https://github.com/phpgt/Http/tree/v1.3.9"
             },
             "funding": [
                 {
@@ -380,7 +382,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-19T18:22:33+00:00"
+            "time": "2026-04-24T12:58:50+00:00"
         },
         {
             "name": "phpgt/input",
@@ -438,16 +440,16 @@
         },
         {
             "name": "phpgt/json",
-            "version": "v2.2.1",
+            "version": "v2.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpgt/Json.git",
-                "reference": "df697c3fc7b3527ae3a01d3f96b1bfbab80feee2"
+                "reference": "6e39d18f884315916a2b5b0ef1ed9a2ceac1a8e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpgt/Json/zipball/df697c3fc7b3527ae3a01d3f96b1bfbab80feee2",
-                "reference": "df697c3fc7b3527ae3a01d3f96b1bfbab80feee2",
+                "url": "https://api.github.com/repos/phpgt/Json/zipball/6e39d18f884315916a2b5b0ef1ed9a2ceac1a8e7",
+                "reference": "6e39d18f884315916a2b5b0ef1ed9a2ceac1a8e7",
                 "shasum": ""
             },
             "require": {
@@ -482,7 +484,7 @@
             "description": " Structured, type-safe, immutable JSON objects.",
             "support": {
                 "issues": "https://github.com/phpgt/Json/issues",
-                "source": "https://github.com/phpgt/Json/tree/v2.2.1"
+                "source": "https://github.com/phpgt/Json/tree/v2.3.1"
             },
             "funding": [
                 {
@@ -490,20 +492,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-04-21T13:31:54+00:00"
+            "time": "2026-07-15T09:27:37+00:00"
         },
         {
             "name": "phpgt/promise",
-            "version": "v2.4.0",
+            "version": "v2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpgt/Promise.git",
-                "reference": "a5cdc154f2aaf3478dd474470cd768d401cdaf91"
+                "reference": "bf781780866fe5c52d20c071740e07c59df4c1c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpgt/Promise/zipball/a5cdc154f2aaf3478dd474470cd768d401cdaf91",
-                "reference": "a5cdc154f2aaf3478dd474470cd768d401cdaf91",
+                "url": "https://api.github.com/repos/phpgt/Promise/zipball/bf781780866fe5c52d20c071740e07c59df4c1c0",
+                "reference": "bf781780866fe5c52d20c071740e07c59df4c1c0",
                 "shasum": ""
             },
             "require": {
@@ -518,6 +520,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
+                    "GT\\Promise\\": "./src",
                     "Gt\\Promise\\": "./src"
                 }
             },
@@ -539,15 +542,15 @@
             ],
             "support": {
                 "issues": "https://github.com/phpgt/Promise/issues",
-                "source": "https://github.com/phpgt/Promise/tree/v2.4.0"
+                "source": "https://github.com/phpgt/Promise/tree/v2.4.1"
             },
             "funding": [
                 {
-                    "url": "https://github.com/sponsors/PhpGt",
+                    "url": "https://github.com/sponsors/phpgt",
                     "type": "github"
                 }
             ],
-            "time": "2025-04-30T21:42:58+00:00"
+            "time": "2026-05-04T15:49:22+00:00"
         },
         {
             "name": "phpgt/propfunc",
@@ -603,16 +606,16 @@
         },
         {
             "name": "phpgt/typesafegetter",
-            "version": "v1.3.3",
+            "version": "v1.3.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpgt/TypeSafeGetter.git",
-                "reference": "a0d339103828791989cbb81f760d252f3c2f8b8c"
+                "reference": "729261c04b76febaa21a921a3719f625abe9b55e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpgt/TypeSafeGetter/zipball/a0d339103828791989cbb81f760d252f3c2f8b8c",
-                "reference": "a0d339103828791989cbb81f760d252f3c2f8b8c",
+                "url": "https://api.github.com/repos/phpgt/TypeSafeGetter/zipball/729261c04b76febaa21a921a3719f625abe9b55e",
+                "reference": "729261c04b76febaa21a921a3719f625abe9b55e",
                 "shasum": ""
             },
             "require": {
@@ -627,6 +630,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
+                    "GT\\TypeSafeGetter\\": "./src",
                     "Gt\\TypeSafeGetter\\": "./src"
                 }
             },
@@ -643,7 +647,7 @@
             "description": "An interface for objects that expose type-safe getter methods.",
             "support": {
                 "issues": "https://github.com/phpgt/TypeSafeGetter/issues",
-                "source": "https://github.com/phpgt/TypeSafeGetter/tree/v1.3.3"
+                "source": "https://github.com/phpgt/TypeSafeGetter/tree/v1.3.4"
             },
             "funding": [
                 {
@@ -651,7 +655,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-10T22:28:01+00:00"
+            "time": "2026-05-04T15:53:13+00:00"
         },
         {
             "name": "psr/http-message",
